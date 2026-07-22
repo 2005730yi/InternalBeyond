@@ -233,7 +233,7 @@ const FIXED_LINES = {
   bed_sleep: "晚安。",
   crystal_intro: "要使用塔罗牌占卜吗？",
   desk_intro: "今天会给我设计怎样的游戏呢？",
-  wardrobe_intro: ["让我偶尔试试看你喜欢的风格，怎么样？","想看我穿什么样的衣服呢？","（小声）想买新衣服了……"],
+  wardrobe_intro: ["让我偶尔试试你喜欢的风格，怎么样？","想看我穿什么样的衣服呢？","（小声）想买新衣服了……"],
   stairs_blocked: "……这扇门是锁着的。",
   no_api: "还没有配置API呢。去设置页面添加一个吧。",
   sui_open: "请问有什么我可以帮助你的吗？\n如果你有其他想问我的事情，可以按下右下角的NEXT来和我开启对话。",
@@ -246,7 +246,7 @@ const MARKERS = [
   {id:'crystal',  en:'Tarot',    cn:'占卜'},
   {id:'desk',     en:'Story',    cn:'故事'},
   {id:'wardrobe', en:'Wardrobe', cn:'衣柜'},
-  {id:'bed',      en:'Sleep',    cn:'安睡'}
+  {id:'bed',      en:'Sleep',    cn:'睡觉'}
 ];
 
 /* ── GUIDED HOME TOUR ─────────────────────────────────── */
@@ -254,7 +254,7 @@ const MARKERS = [
 function getTourIntro(){
   var mode=document.body.classList.contains('theme-infernal')?'Infernal':'Internal';
   return [
-    "欢迎来到"+mode+" Beyond。\n我是这个房间里的主控角色，Sui。我会带领你了解这个游戏房间的玩法。\n点击[Back]按钮会直接退出引导，点击[Next]则进入下一页。",
+    "欢迎来到"+mode+" Beyond的世界。\n我是这个房间里的主控角色，Sui。我会带领你了解这个游戏房间的玩法。\n点击[Back]按钮会直接退出引导，点击[Next]则进入下一页。",
     mode+" Beyond（IB）是一个免费的GitHub开源作品。\n如果你是通过付费购买的方式来到这里，那你收到的不会是正版游戏。\n请通过GitHub：Sui-IB，或QQ：1282901880来找到真正的游戏作者。",
     "所有玩法后续均可通过点击对应区域，或点击导航栏中的各个功能按钮来开启互动。\n来吧。现在，请跟着我。"
   ];
@@ -271,7 +271,7 @@ const TOUR_STEPS = [
     "这里是我的衣柜，在这里可以给我自由换装。\n请注意：更换服装后，我的立绘、模型与角色动画也会同步更换。"]},
   {id:'bed',     face:'up',    pages:[
     "这里是我的床。到这里，房间的所有互动功能就介绍完了。\n你想白天睡觉还是晚上睡觉都可以。",
-    "Room浮窗标题栏里有一个Mini按钮。\n按下后，游戏浮窗会变成一个小型视窗。你可以在浏览网站其他页面时，让我在一旁安静地陪着你。",
+    "Room浮窗标题栏里有一个Mini按钮。\n按下后，游戏浮窗会变成一个小型视窗。\n你可以在浏览网站其他页面时，让我在一旁安静地陪着你。",
     "茶歇进行时也可以进入小窗，其他互动需要退出小窗后才能使用。\n小窗的标题栏可以拖动位置，按✕退出，或者回到Room页面会自动恢复全屏。",
     "如果你想切换房间的昼夜模式，可以点击屏幕右上角的水滴按钮。\n如果想听歌，你可以使用左下角的音乐播放器添加本地音乐来在这个房间里播放，但歌单不会存档。\n祝你游戏愉快。"]}
 ];
@@ -2169,7 +2169,7 @@ async function runTarotInterpret(panel,cfg){
     const aiName=cfg.nickname||cfg.model||'AI';
     const reply=_isStreamEnabled(cfg)?await callApiChatStream(cfg,[{role:'system',content:tarotSys},{role:'user',content:userPrompt}]):await callApiChat(cfg,[{role:'system',content:tarotSys},{role:'user',content:userPrompt}]);
     t.readingText=reply||'';
-    if(!t.readingText){t.readingText='AI沉默了…请尝试重新解读。'}
+    if(!t.readingText){t.readingText='API没有反应…请尝试重新解读。'}
     t._aiName=aiName;
     t._history=[{role:'system',content:tarotSys},{role:'user',content:userPrompt},{role:'assistant',content:t.readingText}];
     /* Log AI reading to session */
