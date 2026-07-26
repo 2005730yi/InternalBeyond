@@ -5830,7 +5830,7 @@ i would like the room to be enough.
           <p><strong>新建</strong>：左侧填写类型、标题、日期、重复方式、可见范围与备注；「计划」和「记录」可额外填写结束日期，重复方式增加「每天」。结束日期与相遇纪念日使用同一套日期识别，支持 2026-10-31、2026/10/31、2026年10月31日 等写法；早于开始日期时不会保存。右侧设置提醒开关与提前天数，默认 7 天，每条日程各自设置。纪念日与生日默认按年重复，计划与记录默认单次；记录默认仅自己可见，且关闭 AI 提醒。备注选填，填写后会随日程一并提供给有读取权限的 AI，留空则不发送。</p>
           <p><strong>日程</strong>：首页显示你与本站的相遇纪念日，列出全部日程。左右翻页可查看每位 AI 与你的相遇纪念日，以及对该 AI 可见的日程。行卡显示日期或日期范围、重复方式与提醒设置，悬停可删除。</p>
           <p><strong>留言</strong>：AI 写的便笺按时间倒序排列，可按成员筛选。每张便笺标注署名与关联的事项标题，悬停可删除。关闭日历总开关只会停止 AI 继续读取与写入，历史便笺仍可查看。</p>
-          <p><strong>设置</strong>：左侧控制日历的显示偏好、总开关与节日提醒；右侧设定你与本站的相遇纪念日，以及每位 AI 的读取与留言权限及纪念日。总开关关闭后，AI 不再读取日程，也不写新便笺。留言依赖读取权限：关闭读取会同时关闭留言，开启留言会同时开启读取。节日提醒默认关闭，开启后部分节日临近时会在聊天中被提起。相遇纪念日默认按首条聊天记录推算，填入日期可手动覆盖，清空即恢复。</p>
+          <p><strong>设置</strong>：左侧控制日历的显示偏好、总开关与节日提醒；右侧设定你与本站的相遇纪念日，以及每位 AI 的读取与留言权限及纪念日。总开关关闭后，AI 不再读取日程，也不写新便笺。留言依赖读取权限：关闭读取会同时关闭留言，开启留言会同时开启读取。节日提醒默认关闭，开启后部分节日临近时会在聊天中被提起；有留言权限的 AI 也可留下便笺。相遇纪念日默认按首条聊天记录推算，填入日期可手动覆盖，清空即恢复。</p>
           <p><strong>数据与缓存</strong>：临近日程、日期范围与备注附在消息末尾，按天生成，不影响固定提示缓存。同一事项每位 AI 至多写一张便笺，提及标记 3 轮后自动收口。改动读写权限或总开关时，相关好友的下一条消息会重建一次缓存，之后恢复。节日开关不触发重建。所有数据存在浏览器本地，包含在导出与备份中。群聊不接入日历。</p>
           <p><strong>关于提醒</strong>：提醒只发生在你主动发消息的那一次回复里——有读取权限的 AI 会在消息末尾看到临近事项，可能自然提起或写下便笺。日历不会主动弹窗、推送，也不会在你未打开网站时发出任何提醒。</p>
         </div>
@@ -6647,7 +6647,7 @@ i would like the room to be enough.
           <div class="set-block" id="sb-holiday">
             <div class="sb-t"><svg aria-hidden="true"><use href="#sym-bell"/></svg>Festivals — 节日</div>
             <div class="tog-line">
-              <span><span class="tl-t">传统节日提醒</span><span class="tl-s">默认关闭。开启后部分节日临近时并入日历栏，有读取权限的 AI 可在聊天中道一句祝福；节日不写便笺。</span></span>
+              <span><span class="tl-t">传统节日提醒</span><span class="tl-s">默认关闭。开启后部分节日临近时并入日历栏，有读取权限的 AI 可在聊天中提起和留下便笺。</span></span>
               <label class="ib-switch"><input type="checkbox" id="set-holiday"><span class="kn"></span></label>
             </div>
           </div>
@@ -21724,7 +21724,7 @@ async function openCalendar(tab){
    〔未提及〕最多随注入出现 3 轮，之后视为已提及；回复正文出现事项标题即打勾；
    〔可留笺〕在 该AI可写 且 本次日期未写过 时出现；每事项每次日期至多收录一张便笺。 */
 var CAL_TAIL_HEAD='【备忘日历｜〔未提及〕= 可自然提一句，提过即止；〔可留笺〕= 可附便笺】';
-var CAL_NOTE_INSTR='【便笺】当日历中某事项标有〔可留笺〕且你想为它留一张便笺时，在回复末尾追加：\n<cal_note item="事项标题">30–150 字正文</cal_note>\n便笺会出现在对方的日历留言页，界面自动署名并标时间；正文不要写称呼、署名或日期。\n每条事项每次日期至多一张。';
+var CAL_NOTE_INSTR='【便笺】当日历中某事项或者节日标有〔可留笺〕且你想为它留一张便笺时，在回复末尾追加：\n<cal_note item="事项标题">30–150 字正文</cal_note>\n便笺会出现在对方的日历留言页，界面自动署名并标时间；正文不要写称呼、署名或日期。\n每条事项每次日期至多一张。';
 function _calToday(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
 function ledKey(itemId,occIso,aid){return itemId+'|'+occIso+'|'+aid}
 async function ledGet(k){try{return await dbGet('calLedger',k)}catch(e){return null}}
@@ -21768,7 +21768,7 @@ async function buildTail(cfg){
     if(du>(it.lead!=null?it.lead:LEAD))continue;
     rows.push({it:it,du:du,occ:occKey(it,o),show:isoOf(o)});
   }
-  /* v39 — 节日：开关开启时并入同一栏，复用〔未提及〕规则；不给〔可留笺〕，不新增任何提示词 */
+  /* v45 — 节日：开关开启时并入同一栏，复用〔未提及〕与〔可留笺〕规则 */
   if(HOLIDAY_ON){
     holidaysIn(t,HOL_LEAD).forEach(function(h){rows.push({hol:h.name,du:h.du,occ:h.occ})});
   }
@@ -21783,6 +21783,7 @@ async function buildTail(cfg){
         if((hled.shown|0)>=3){hled.mentioned=1;ledPut(hled)}
         else{mark='〔未提及〕';hled.shown=(hled.shown|0)+1;ledPut(hled)}
       }
+      if(p[1]&&!hled.noted)mark+='〔可留笺〕';
       lines.push('· '+r.hol+' — '+when+'（'+(+seg[1])+'月'+(+seg[2])+'日 · 节日）'+mark);
       continue;
     }
@@ -21844,7 +21845,26 @@ async function execNote(op,cfg){
     du=diffD(t,o);if(du<0||du>(it.lead!=null?it.lead:LEAD))continue;
     hit=it;occ=occKey(it,o);break;
   }
-  if(!matched)return fail('日历中没有「'+op.item+'」这一事项，或它对这位 AI 不可见');
+  /* v45 — 普通事项未成功命中时，允许当前提醒窗口内的系统节日留笺 */
+  if(!hit&&HOLIDAY_ON){
+    var hs=holidaysIn(t,HOL_LEAD),hol=null;
+    for(var hi=0;hi<hs.length;hi++){
+      if(hs[hi].name===op.item){hol=hs[hi];break}
+    }
+    if(hol){
+      var hk=ledKey('hol:'+hol.name,hol.occ,cfg.id),hled=(await ledGet(hk))||{id:hk,mentioned:0,shown:0,noted:0};
+      var hy=String(hol.occ||'').split('-')[0],htitle=(hy?hy+'年·':'')+hol.name;
+      if(hled.noted)return fail('「'+htitle+'」本次日期已留过便笺');
+      var hnote={id:'cnote_'+Date.now().toString(36)+'_'+Math.floor(Math.random()*46656).toString(36),
+        ai:cfg.id,aiName:cfg.nickname||cfg.model||'AI',itemId:'hol:'+hol.name,itemTitle:htitle,
+        body:String(op.body).slice(0,300),ts:Date.now()};
+      try{await dbPut('calNotes',hnote)}catch(e){return fail('写入本地数据库失败')}
+      NOTES.unshift(hnote);
+      hled.noted=1;ledPut(hled);
+      return {ok:true,label:'已在日历留下便笺 ·「'+htitle+'」',detail:hnote.body};
+    }
+  }
+  if(!matched)return fail('日历中没有「'+op.item+'」这一事项或节日，或它对这位 AI 不可见');
   if(!remindMatched)return fail('「'+op.item+'」未开启临近提醒便笺');
   if(!hit)return fail('「'+op.item+'」还未进入提醒窗口');
   var k=ledKey(hit.id,occ,cfg.id),led=(await ledGet(k))||{id:k,mentioned:0,shown:0,noted:0};
@@ -22804,6 +22824,7 @@ if(!REDUCED)requestAnimationFrame(loop);
   else revealIBEmails();
 })();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
