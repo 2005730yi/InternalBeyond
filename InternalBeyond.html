@@ -1421,7 +1421,7 @@ body.theme-infernal .home-content{--ti:#f5f0ee;--tb:#4c1a22;--tiglow:0 1px 12px 
 #fab-dock.dock-swap-in{transition:opacity 0.78s cubic-bezier(0.22,1,0.36,1),transform 0.78s cubic-bezier(0.22,1,0.36,1),filter 0.55s ease}
 
 /* CHAT PANEL */
-#chat-panel{position:fixed;bottom:24px;right:24px;z-index:98;width:438px;height:720px;max-width:calc(100vw - 48px);max-height:calc(100vh - 100px);/* v40 — 撤 iPhone 比例：改 438×720；屏高不足时由 max-height 收口。z-index 91→98：快捷聊天窗压在日历大窗(97)与小窗(95)之上 */border-radius:20px;display:none;flex-direction:column;overflow:hidden;animation:panelIn 0.4s var(--transition)}
+#chat-panel{position:fixed;bottom:24px;right:24px;z-index:98;width:438px;height:770px;max-width:calc(100vw - 48px);max-height:calc(100vh - 100px);/* v40 — 撤 iPhone 比例：改 438×720；屏高不足时由 max-height 收口。z-index 91→98：快捷聊天窗压在日历大窗(97)与小窗(95)之上 */border-radius:20px;display:none;flex-direction:column;overflow:hidden;animation:panelIn 0.4s var(--transition)}
 #chat-panel.lifted{bottom:calc(24px + var(--fab-h,42px) + 12px)}/* 面板上移：给 ICode 按钮让位 */
 #chat-panel.show{display:flex}
 
@@ -22804,6 +22804,7 @@ if(!REDUCED)requestAnimationFrame(loop);
   else revealIBEmails();
 })();
 </script>
+<script src="signs.js"></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
