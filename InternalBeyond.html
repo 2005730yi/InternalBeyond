@@ -6553,7 +6553,7 @@ i would like the room to be enough.
             <button data-k="memo">记录</button>
           </div>
           <div class="f-row" style="margin:2px 0 0"><label>Title — 标题</label>
-            <input class="f-input" id="f-title" placeholder="例如：与 Glasswing 相遇纪念日" maxlength="40">
+            <input class="f-input" id="f-title" placeholder="例如：与 Glasswing 的相遇纪念日" maxlength="40">
           </div>
           <div class="f-row" style="margin-bottom:0"><label id="date-repeat-label">Date &amp; Repeat — 日期与重复</label>
             <div class="f-cols f-cols4">
@@ -6647,7 +6647,7 @@ i would like the room to be enough.
           <div class="set-block" id="sb-holiday">
             <div class="sb-t"><svg aria-hidden="true"><use href="#sym-bell"/></svg>Festivals — 节日</div>
             <div class="tog-line">
-              <span><span class="tl-t">传统节日提醒</span><span class="tl-s">默认关闭。开启后部分节日临近时并入日历栏，有读取权限的 AI 可在聊天中提起和留下便笺。</span></span>
+              <span><span class="tl-t">传统节日提醒</span><span class="tl-s">默认关闭。开启后部分节日临近时并入日历栏，有读取权限的 AI 可在聊天中提起；有留言权限时也可留下便笺。</span></span>
               <label class="ib-switch"><input type="checkbox" id="set-holiday"><span class="kn"></span></label>
             </div>
           </div>
@@ -9030,43 +9030,50 @@ async function populateLetterAiSelect(){
 }
 
 var _lastLetterRequestTime=0;
+var _letterRequestBusy=false;/* Letters：防止快速连点在配置刷新完成前并发发出两次请求 */
 async function requestLetterFromSelected(){
-  /* Rate limiting: 3 minute cooldown between requests */
+  /* 成功收到一封信后冷却 3 分钟；失败或空回复不进入冷却，避免一次故障后看起来“怎么都发不出去” */
   const now=Date.now();const cooldown=180000;
+  if(_letterRequestBusy){toast('信件正在生成，请稍候');return}
   if(now-_lastLetterRequestTime<cooldown){const remaining=Math.ceil((cooldown-(now-_lastLetterRequestTime))/1000);toast('请稍候 '+remaining+' 秒后再接收信件');return}
   const sel=document.getElementById('letter-ai-select');
   const id=sel?sel.value:'';
   if(!id){toast('Please chose one first');return}
-  await loadApiConfigs();/* 确保API配置为最新 */
-  const cfg=apiConfigs.find(a=>a.id===id);
-  if(!cfg||!cfg.apiKey){toast('该API未配置密钥');return}
-  if(!cfg.endpoint){toast('该API未配置接口地址');return}
-  _lastLetterRequestTime=now;
-  const _letterSender=cfg.nickname||cfg.model||'AI';/* 在此刻捕获发件人名 */
 
-  /* Show loading state */
-  const btn=document.getElementById('letter-request-btn');
-  const oldText=btn.textContent;
-  btn.disabled=true;btn.textContent='写信中…';
-
-  const container=document.getElementById('letters-container');
-  const loadingDiv=document.createElement('div');
-  loadingDiv.className='letter-loading glass-card';
-  loadingDiv.id='letter-loading';
-  loadingDiv.innerHTML='<span class="letter-loading-spinner"></span>'+esc(cfg.nickname||'AI')+' 正在阅读你的内容并写信…';
-  container.insertBefore(loadingDiv,container.firstChild);
-
+  _letterRequestBusy=true;
+  let btn=null,oldText='';
   try{
+    await loadApiConfigs();/* 确保API配置为最新 */
+    const cfg=apiConfigs.find(a=>a.id===id);
+    if(!cfg||!cfg.apiKey){toast('该API未配置密钥');return}
+    if(!cfg.endpoint){toast('该API未配置接口地址');return}
+    const _letterSender=cfg.nickname||cfg.model||'AI';/* 在此刻捕获发件人名 */
+
+    /* Show loading state */
+    btn=document.getElementById('letter-request-btn');
+    if(!btn)throw new Error('未找到接收信件按钮，请刷新页面后重试');
+    oldText=btn.textContent;
+    btn.disabled=true;btn.textContent='写信中…';
+
+    const container=document.getElementById('letters-container');
+    if(!container)throw new Error('未找到信件列表，请刷新页面后重试');
+    const loadingDiv=document.createElement('div');
+    loadingDiv.className='letter-loading glass-card';
+    loadingDiv.id='letter-loading';
+    loadingDiv.innerHTML='<span class="letter-loading-spinner"></span>'+esc(cfg.nickname||'AI')+' 正在阅读你的内容并写信…';
+    container.insertBefore(loadingDiv,container.firstChild);
+
     /* Gather rich context from the website */
     const about=await dbGet('about','main');
     const lim=await getReadingLimits();
     const posts=await dbGetAll('posts');
     const letters=await dbGetAll('letters');
-    const recentPosts=posts.filter(p=>!isLockedPost(p)).sort((a,b)=>b.created-a.created).slice(0,lim.postsLimit);
+    /* 只读取结构完整的公开日志。旧备份或手工导入若混入无正文记录，不再导致整个 Letters 请求中断。 */
+    const recentPosts=posts.filter(p=>p&&typeof p.content==='string'&&!isLockedPost(p)).sort((a,b)=>(b.created||0)-(a.created||0)).slice(0,lim.postsLimit);
     /* v46 — 必须先滤掉内部标记记录（删除示例信件留下的 __demo_deleted__ 没有 content/created），
        否则它会被排进最近两封里，读 content 时抛 Cannot read properties of undefined (reading 'slice')，
        症状是删过示例信件后 Letters 再也写不出信。同时对 content 缺失的历史/导入数据做兜底。 */
-    const recentLetters=letters.filter(l=>l&&l.id!==DEMO_DELETED_FLAG&&!l._flag&&typeof l.content==='string').sort((a,b)=>b.created-a.created).slice(0,2);
+    const recentLetters=letters.filter(l=>l&&l.id!==DEMO_DELETED_FLAG&&!l._flag&&typeof l.content==='string').sort((a,b)=>(b.created||0)-(a.created||0)).slice(0,2);
 
     /* Gather recent chat history with this AI — exclude thread messages */
     const _letSealTs=await getChatSealTimestamp(cfg.id);
@@ -9131,21 +9138,22 @@ async function requestLetterFromSelected(){
     /* fix: 先截断正文、再拼接请求块（同 9453 行 wsBlock 的做法），防止上下文过长时写信指令整段被砍；AM 的 sys/tail 计入预算 */
     const _amLen=(_amL.sys?_amL.sys.length+2:0)+(_amL.tail?_amL.tail.length+2:0);
     const response=await callApi(cfg,(_amL.sys?_amL.sys+'\n\n':'')+truncateContext(context,Math.max(2000,8000-reqBlock.length-_amLen))+(_amL.tail?'\n\n'+_amL.tail:'')+reqBlock);
-    const le=document.getElementById('letter-loading');if(le)le.remove();
 
     let _lm={clean:String(response||''),ops:[]};
     try{_lm=_parseMemOps(String(response||''))}catch(e){}
     if(_lm.ops.length&&amEnabled(cfg)&&!cfg.amRecordOnly){try{await _execMemOps(_lm.ops,cfg,_letterSender)}catch(e){}}
-    if(!_lm.clean||!_lm.clean.trim()){toast('AI 返回了空内容，未生成信件；请稍后重试');}
-    else{
-      const letter={id:'letter_'+Date.now(),from:_letterSender,content:_lm.clean,friendId:cfg.id,created:Date.now()};
-      if(isDiablo)letter.isDiablo=true;/* 标记后信封换用无字邮票 */
-      await dbPut('letters',letter);
-      loadLetters();
-      toast('收到 '+_letterSender+' 的新信件！');
+    if(!_lm.clean||!_lm.clean.trim()){
+      toast('AI 返回了空内容，未生成信件；请稍后重试');
+      return;
     }
+
+    const letter={id:'letter_'+Date.now(),from:_letterSender,content:_lm.clean,friendId:cfg.id,created:Date.now()};
+    if(isDiablo)letter.isDiablo=true;/* 标记后信封换用无字邮票 */
+    await dbPut('letters',letter);
+    _lastLetterRequestTime=Date.now();/* 只有实际入库成功才开始冷却 */
+    loadLetters();
+    toast('收到 '+_letterSender+' 的新信件！');
   }catch(e){
-    const le=document.getElementById('letter-loading');if(le)le.remove();
     let msg='请求失败';
     if(e.message){
       if(e.message.includes('Failed to fetch'))msg='无法连接到API服务器';
@@ -9154,8 +9162,11 @@ async function requestLetterFromSelected(){
       else msg=e.message;
     }
     toast(msg);
+  }finally{
+    const le=document.getElementById('letter-loading');if(le)le.remove();
+    if(btn){btn.disabled=false;btn.textContent=oldText||'✉ 接收信件'}
+    _letterRequestBusy=false;
   }
-  btn.disabled=false;btn.textContent=oldText;
 }
 
 
@@ -21080,7 +21091,7 @@ function meetHero(a){
      +'<div class="ah-r"><div class="ah-num">—</div><div class="ah-unit">No record</div></div></div>'
      +tail;
   }
-  var it={kind:'anniv',title:'与 '+a.name+' 相遇纪念日',date:iso,repeat:'yearly',vis:'ai:'+a.id};
+  var it={kind:'anniv',title:'与 '+a.name+' 的相遇纪念日',date:iso,repeat:'yearly',vis:'ai:'+a.id};
   var b=itemDate(it);
   var o=nextOcc(it,TODAY),du=o?diffD(TODAY,o):9999;
   var comp=(b&&TODAY.getTime()>=b.getTime())?diffD(b,TODAY):0;
@@ -21095,7 +21106,7 @@ function meetHero(a){
    +tail;
 }
 /* v37 — 首页：与站点本身的相遇纪念日；站名随主题由 CSS 联动切换 */
-function ibNameHTML(){return '与 <span class="ibn-int">Internal</span><span class="ibn-inf">Infernal</span> Beyond 相遇纪念日'}
+function ibNameHTML(){return '与 <span class="ibn-int">Internal</span><span class="ibn-inf">Infernal</span> Beyond 的相遇纪念日'}
 function ibHero(){
   var iso=meetIsoIB(),total=AIS.length+1;
   var head='<div class="anni-hero">'
@@ -21177,7 +21188,7 @@ function selectedStartIso(){return selY&&selM&&selD?(1950+selY.get())+'-'+p2(sel
 function syncReminderUI(){var r=$('#f-remind'),l=$('#lead-row');if(r&&l)l.style.display=r.checked?'':'none'}
 function syncVisibilityReminder(){var o=selVis&&VIS_OPTS[selVis.get()],r=$('#f-remind');if(o&&o.v==='self'&&r&&r.checked){r.checked=false;syncReminderUI()}}
 function syncKindUI(kind,defaults){
-  var c={anniv:['例如：与 Sui 相遇纪念日',0,0,0,1],birthday:['例如：My Birthday',0,0,0,1],plan:['例如：学习计划',1,4,0,1],memo:['例如：写作进度记录',1,4,-1,0]}[kind]||[];
+  var c={anniv:['例如：与 Sui 的相遇纪念日',0,0,0,1],birthday:['例如：My Birthday',0,0,0,1],plan:['例如：学习计划',1,4,0,1],memo:['例如：写作进度记录',1,4,-1,0]}[kind]||[];
   $('#f-title').placeholder=c[0]||'事项标题';$('#end-date-row').style.display=c[1]?'':'none';
   if(!c[1]){$('#f-end-date').value='';$('#f-end-date').dataset.valid=''}
   $('#date-repeat-label').textContent=c[1]?'Start Date & Repeat — 开始日期与重复':'Date & Repeat — 日期与重复';
@@ -21992,6 +22003,61 @@ window.IBCAL={open:openCalendar,buildSys:buildSys,buildTail:buildTail,processRep
 })();
 </script>
 <script src="game/game_module.js"></script>
+<script>
+/* ROOM 侧边标签上移：避开右下角 Chat 悬浮窗 */
+(function(){
+  'use strict';
+  var ROOM_TAB_TOP='25vh';
+
+  function norm(value){
+    return String(value||'').replace(/[^a-z]/gi,'').toLowerCase();
+  }
+
+  function isRoomEdgeTab(el){
+    if(!(el instanceof HTMLElement))return false;
+    var labels=[el.getAttribute('aria-label'),el.getAttribute('title'),el.textContent];
+    if(!labels.some(function(value){return norm(value)==='room'}))return false;
+
+    var style=getComputedStyle(el);
+    if(style.position!=='fixed')return false;
+
+    var rect=el.getBoundingClientRect();
+    return style.right!=='auto'||rect.right>=window.innerWidth-24;
+  }
+
+  function moveRoomTab(root){
+    var nodes=[];
+    if(root instanceof HTMLElement)nodes.push(root);
+    if(root&&root.querySelectorAll)nodes=nodes.concat(Array.prototype.slice.call(root.querySelectorAll('*')));
+
+    for(var i=0;i<nodes.length;i++){
+      if(!isRoomEdgeTab(nodes[i]))continue;
+      nodes[i].style.setProperty('top',ROOM_TAB_TOP,'important');
+      nodes[i].style.setProperty('bottom','auto','important');
+      return true;
+    }
+    return false;
+  }
+
+  if(moveRoomTab(document.body))return;
+
+  var observer=new MutationObserver(function(records){
+    for(var i=0;i<records.length;i++){
+      for(var j=0;j<records[i].addedNodes.length;j++){
+        var node=records[i].addedNodes[j];
+        if(node.nodeType===1&&moveRoomTab(node)){
+          observer.disconnect();
+          return;
+        }
+      }
+    }
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('load',function(){
+    if(moveRoomTab(document.body))observer.disconnect();
+  },{once:true});
+})();
+</script>
 
 <script>
 /* ============================================================
@@ -22824,6 +22890,8 @@ if(!REDUCED)requestAnimationFrame(loop);
   else revealIBEmails();
 })();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
