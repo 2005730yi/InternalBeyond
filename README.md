@@ -43,6 +43,7 @@
 
 <img width="1431" height="714" alt="QQ_1785873557359" src="https://github.com/user-attachments/assets/c0ab7e92-3d74-4ae4-a522-02f8bf68e3cc" />
 
+
 点击导航栏水滴按钮切换：
 
 - **Internal** — 明亮模式。Room 中呈现白天场景（棱镜彩虹光影、天气效果与浮动光斑）。
@@ -71,9 +72,6 @@
 - **Sleep**：角色躺下休息，点击唤醒。
 
 
-<img width="2543" height="1301" alt="QQ_1785873727800" src="https://github.com/user-attachments/assets/6bfcbb32-97b4-44d0-af7d-89c1ec05db6b" />
-
-
 ### Chat — 实时对话
 
 浮动面板与全屏模式。好友列表由 API 配置自动生成，支持群聊与话题频道。思考链显示、消息删除、历史搜索、日历视图。可一键生成记忆到 Memory。
@@ -87,6 +85,7 @@
 
 <img width="959" height="574" alt="QQ_1785874438803" src="https://github.com/user-attachments/assets/62e4113c-8061-4ca8-946f-d05f80d6808c" />
 
+
 ### Calendar — AI 日历
 
 悬浮小窗随站点载入出现在右上角（可拖拽，双击展开完整视窗，可在设置中关闭常驻），另有右下角组合按钮与 Chat 侧栏两个入口。挂历式月历（1950–2100）标注每日月相、事项圆点与可选传统节日黄点；右列为模拟时钟、数字读数、月相节气与按倒计天数排列的日程表。
@@ -97,14 +96,10 @@
 - **设置**：日历接入总开关、逐位读取 / 留言权限、传统节日与花瓣特效开关。数据存于本地 IndexedDB，包含在全站导出与备份中；群聊不接入日历。
 
 
-<img width="2018" height="1059" alt="QQ_1785873889877" src="https://github.com/user-attachments/assets/26715ca9-3b99-46cd-a38d-064d552bdad0" />
-
 ### Blog — 日志系统
 
 写日志、分类管理、AI 评论、AI 批注。密码日记本受密码保护，Tea 和 Story 存档默认保存至此，对所有 API 不可见。日志可触发 AI 生成记忆。支持邀请 AI 好友在阅读视图中为文章段落添加批注。
 
-
-<img width="1548" height="528" alt="QQ_1785873932048" src="https://github.com/user-attachments/assets/799bfedb-6046-49b9-8f0b-2360848f4893" />
 
 ### Letters — 信件系统
 
@@ -113,14 +108,13 @@
 
 <img width="2487" height="1253" alt="QQ_1785874015075" src="https://github.com/user-attachments/assets/bbd41176-1287-4d78-a86c-bc44b8266b6c" />
 
+
 ### Memory — 长期记忆库
 
 借鉴 GitHub Ombre Brain 理念的 AI 长期记忆系统。每条记忆带有情感坐标（效价 / 唤醒度）、重要性评分和自然衰减。星图以二维情感坐标可视化所有记忆，时间轴以行星形态展示分布。最多 7 条置顶记忆，四种可见性级别。多来源创建（手动 / Chat / Blog / Letters / Story / Tea）。API 调用时自动检索相关记忆注入上下文，Token 预算可配置。
 
 - **Auto Memory**：每个 API 可独立开启的 AI 自主长期记忆。AI 在对话中自行决定何时创建、更新记忆，档案以舷窗（Porthole）液态玻璃镜片可视化展示。支持归档后的 API 档案保留。
 
-
-<img width="1704" height="1059" alt="QQ_1785874071233" src="https://github.com/user-attachments/assets/6c6b2555-e3bb-4076-8561-b6e9a5ec1d60" />
 
 ### ICode — AI 代码工作区
 
@@ -130,8 +124,6 @@
 - **增强文件读取**：支持 PDF / DOCX / XLSX / PPTX 等格式的文本提取，AI 可直接阅读用户上传的文档内容。
 - **脚本运行**：支持 Python 与 JavaScript，在浏览器本地沙箱中执行。Python 支持科学计算包（numpy / pandas / scipy / sympy / matplotlib 等），按 import 自动加载。matplotlib 生成的图表以图片回传到聊天中。默认超时 20 秒，最长 120 秒。
 
-
-<img width="918" height="1135" alt="QQ_1785874109950" src="https://github.com/user-attachments/assets/a41d8a3d-3168-4a50-9402-6fc4a5e90eb3" />
 
 ### DIY — 创意工坊
 
