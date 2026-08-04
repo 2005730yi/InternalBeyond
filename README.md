@@ -41,6 +41,8 @@
 
 ## ✦ 主题系统
 
+<img width="1431" height="714" alt="QQ_1785873557359" src="https://github.com/user-attachments/assets/c0ab7e92-3d74-4ae4-a522-02f8bf68e3cc" />
+
 点击导航栏水滴按钮切换：
 
 - **Internal** — 明亮模式。Room 中呈现白天场景（棱镜彩虹光影、天气效果与浮动光斑）。
@@ -53,6 +55,8 @@
 ## ✦ 模块详情
 
 ### Room — 像素互动空间
+
+<img width="1430" height="904" alt="QQ_1785873589697" src="https://github.com/user-attachments/assets/2d8b4713-ec9e-4667-bd2a-bd74e2c535a7" />
 
 可通过导航栏进入全屏模式，或通过屏幕右侧标签打开浮动面板（支持缩放与拖拽）。浮动面板支持 Mini 小窗模式——缩成可拖拽的小窗悬浮于屏幕角落，适合在浏览其他页面时让 Sui 挂在一旁陪伴。
 
@@ -114,6 +118,8 @@
 - **沙箱扩展**：Python 沙箱支持科学计算包（按 import 自动加载），白名单可配置。JS 沙箱已启用安全加固。
 
 ## ✦ API 配置指南
+
+<img width="1088" height="1008" alt="d6335d7c1cd51e5b07891aa95f492564" src="https://github.com/user-attachments/assets/b43b3a06-1ba0-4fd7-9ed3-a69d5a9f5e31" />
 
 IB 支持多种 AI 服务（最多 10 个端口）：
 
