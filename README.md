@@ -42,6 +42,8 @@
 ## ✦ 主题系统
 
 <img width="1431" height="714" alt="QQ_1785873557359" src="https://github.com/user-attachments/assets/c0ab7e92-3d74-4ae4-a522-02f8bf68e3cc" />
+<img width="2539" height="1301" alt="QQ_1785874243226" src="https://github.com/user-attachments/assets/5d126524-7226-4060-8041-f523e60ec2d0" />
+
 
 点击导航栏水滴按钮切换：
 
@@ -54,9 +56,12 @@
 
 ## ✦ 模块详情
 
-### Room — 像素互动空间
 
+<img width="1659" height="850" alt="QQ_1785874302357" src="https://github.com/user-attachments/assets/bc8465e0-f7f4-40d2-9187-f4c5c8d39717" />
 <img width="1430" height="904" alt="QQ_1785873589697" src="https://github.com/user-attachments/assets/2d8b4713-ec9e-4667-bd2a-bd74e2c535a7" />
+
+
+### Room — 像素互动空间
 
 可通过导航栏进入全屏模式，或通过屏幕右侧标签打开浮动面板（支持缩放与拖拽）。浮动面板支持 Mini 小窗模式——缩成可拖拽的小窗悬浮于屏幕角落，适合在浏览其他页面时让 Sui 挂在一旁陪伴。
 
@@ -68,9 +73,10 @@
 - **Sleep**：角色躺下休息，点击唤醒。
 
 
-### Chat — 实时对话
-
 <img width="2543" height="1301" alt="QQ_1785873727800" src="https://github.com/user-attachments/assets/6bfcbb32-97b4-44d0-af7d-89c1ec05db6b" />
+
+
+### Chat — 实时对话
 
 浮动面板与全屏模式。好友列表由 API 配置自动生成，支持群聊与话题频道。思考链显示、消息删除、历史搜索、日历视图。可一键生成记忆到 Memory。
 
@@ -80,9 +86,12 @@
 - **Token 仪表盘**：汇总用量，含缓存命中率、模型明细、费用估算。支持按时间段查看和清除。
 - **提示缓存（Prompt Caching）**：自动优化缓存命中率以降低输入费用，默认开启。支持长效缓存（1 小时 TTL，仅 Anthropic 官方 API）。
 
-### Calendar — AI 日历
 
-<img width="1240" height="1156" alt="feb747d152c61412623b06f72564a1d3" src="https://github.com/user-attachments/assets/2ebc8747-fcdb-449d-9a15-410ecee41249" />
+<img width="959" height="574" alt="QQ_1785874438803" src="https://github.com/user-attachments/assets/62e4113c-8061-4ca8-946f-d05f80d6808c" />
+<img width="938" height="565" alt="QQ_1785874452422" src="https://github.com/user-attachments/assets/c847f075-cfdd-4e56-b50f-41f0ac3d5220" />
+
+
+### Calendar — AI 日历
 
 悬浮小窗随站点载入出现在右上角（可拖拽，双击展开完整视窗，可在设置中关闭常驻），另有右下角组合按钮与 Chat 侧栏两个入口。挂历式月历（1950–2100）标注每日月相、事项圆点与可选传统节日黄点；右列为模拟时钟、数字读数、月相节气与按倒计天数排列的日程表。
 
@@ -91,29 +100,33 @@
 - **日程页**：首页为与站点的相遇纪念日并列出全部日程，翻页查看每位 AI 的相遇纪念日（默认取第一条聊天记录，可手动指定）与对其可见的日程。
 - **设置**：日历接入总开关、逐位读取 / 留言权限、传统节日与花瓣特效开关。数据存于本地 IndexedDB，包含在全站导出与备份中；群聊不接入日历。
 
-### Blog — 日志系统
 
 <img width="2018" height="1059" alt="QQ_1785873889877" src="https://github.com/user-attachments/assets/26715ca9-3b99-46cd-a38d-064d552bdad0" />
 
+### Blog — 日志系统
+
 写日志、分类管理、AI 评论、AI 批注。密码日记本受密码保护，Tea 和 Story 存档默认保存至此，对所有 API 不可见。日志可触发 AI 生成记忆。支持邀请 AI 好友在阅读视图中为文章段落添加批注。
 
-### Letters — 信件系统
 
 <img width="1548" height="528" alt="QQ_1785873932048" src="https://github.com/user-attachments/assets/799bfedb-6046-49b9-8f0b-2360848f4893" />
 
+### Letters — 信件系统
+
 选择 AI 好友请求写信，AI 自动阅读你的 Profile、近期日志和聊天记录后写下回信。
 
-### Memory — 长期记忆库
 
 <img width="2487" height="1253" alt="QQ_1785874015075" src="https://github.com/user-attachments/assets/bbd41176-1287-4d78-a86c-bc44b8266b6c" />
+
+### Memory — 长期记忆库
 
 借鉴 GitHub Ombre Brain 理念的 AI 长期记忆系统。每条记忆带有情感坐标（效价 / 唤醒度）、重要性评分和自然衰减。星图以二维情感坐标可视化所有记忆，时间轴以行星形态展示分布。最多 7 条置顶记忆，四种可见性级别。多来源创建（手动 / Chat / Blog / Letters / Story / Tea）。API 调用时自动检索相关记忆注入上下文，Token 预算可配置。
 
 - **Auto Memory**：每个 API 可独立开启的 AI 自主长期记忆。AI 在对话中自行决定何时创建、更新记忆，档案以舷窗（Porthole）液态玻璃镜片可视化展示。支持归档后的 API 档案保留。
 
-### ICode — AI 代码工作区
 
 <img width="1704" height="1059" alt="QQ_1785874071233" src="https://github.com/user-attachments/assets/6c6b2555-e3bb-4076-8561-b6e9a5ec1d60" />
+
+### ICode — AI 代码工作区
 
 对话中 AI 生成、编辑或运行文件时，通过工作区指令完成操作，每一步在聊天中渲染为对应的操作卡片。生成的文件统一存放在 ICode 工作区，点击顶部工具栏的 ICode 按钮即可打开悬浮窗查看和管理。支持文件预览（代码高亮）、内联编辑、文本搜索定位、HTML 渲染预览、脚本沙箱运行（支持超时控制）、项目管理与文件导出。
 
@@ -121,9 +134,10 @@
 - **增强文件读取**：支持 PDF / DOCX / XLSX / PPTX 等格式的文本提取，AI 可直接阅读用户上传的文档内容。
 - **脚本运行**：支持 Python 与 JavaScript，在浏览器本地沙箱中执行。Python 支持科学计算包（numpy / pandas / scipy / sympy / matplotlib 等），按 import 自动加载。matplotlib 生成的图表以图片回传到聊天中。默认超时 20 秒，最长 120 秒。
 
-### DIY — 创意工坊
 
 <img width="918" height="1135" alt="QQ_1785874109950" src="https://github.com/user-attachments/assets/a41d8a3d-3168-4a50-9402-6fc4a5e90eb3" />
+
+### DIY — 创意工坊
 
 为每个 API 配置专属透明立绘（PNG，推荐 800×920），显示在 Story / Tea 对话框左侧。自定义占卜桌布（1920×1080）。游戏文件夹内置一张测试用立绘 `portrait_[Cluade].png`，将 API 昵称改为括号内名称即可测试。
 
@@ -132,9 +146,10 @@
 - **文件解析库**：ICode 的文档生成与增强文件读取依赖此处的解析库。开启后首次需联网从 CDN 获取，此后缓存在浏览器本地，离线可用。
 - **沙箱扩展**：Python 沙箱支持科学计算包（按 import 自动加载），白名单可配置。JS 沙箱已启用安全加固。
 
-## ✦ API 配置指南
 
 <img width="1088" height="1008" alt="d6335d7c1cd51e5b07891aa95f492564" src="https://github.com/user-attachments/assets/b43b3a06-1ba0-4fd7-9ed3-a69d5a9f5e31" />
+
+## ✦ API 配置指南
 
 IB 支持多种 AI 服务（最多 10 个端口）：
 
