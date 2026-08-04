@@ -42,15 +42,13 @@
 ## ✦ 主题系统
 
 <img width="1431" height="714" alt="QQ_1785873557359" src="https://github.com/user-attachments/assets/c0ab7e92-3d74-4ae4-a522-02f8bf68e3cc" />
-<img width="2539" height="1301" alt="QQ_1785874243226" src="https://github.com/user-attachments/assets/5d126524-7226-4060-8041-f523e60ec2d0" />
-
 
 点击导航栏水滴按钮切换：
 
 - **Internal** — 明亮模式。Room 中呈现白天场景（棱镜彩虹光影、天气效果与浮动光斑）。
 - **Infernal** — 暗色模式。Room 中呈现夜晚场景（月光、烛火与柔和暖光效果）。
 
-两种模式都叫 "IB"。改变的只是方向——向内，或向深处。两个方向都通往 **边界之外** 。
+两种模式都叫 "IB"。改变的只是方向——向内，或向深处。两个方向都通往**边界之外**。
 
 背景图片以交叉溶解过渡，首页标题淡出重写，雨效果和界面色调同步变化。
 
@@ -88,8 +86,6 @@
 
 
 <img width="959" height="574" alt="QQ_1785874438803" src="https://github.com/user-attachments/assets/62e4113c-8061-4ca8-946f-d05f80d6808c" />
-<img width="938" height="565" alt="QQ_1785874452422" src="https://github.com/user-attachments/assets/c847f075-cfdd-4e56-b50f-41f0ac3d5220" />
-
 
 ### Calendar — AI 日历
 
