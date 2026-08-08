@@ -9,7 +9,7 @@
 const GAME_W = 1672, GAME_H = 941;
 const SPRITE_SIZE = 147;           // walk/idle frame size
 const LIE_FW = 205, LIE_FH = 151; // lie frame (614/3 ≈ 205)
-const CHAR_SPEED = 3.2;           // px per frame at 60fps
+const CHAR_SPEED = 9;           // v49i：语义改为"每 16.7ms 走多少像素"（时间归一化后与帧率无关；想更快就调大这个数）
 const WALK_FPS = 6;               // walk animation speed
 const IDLE_INTERVAL = 3500;       // ms between idle blinks
 const TYPE_SPEED = 35;            // ms per character (typewriter)
@@ -3583,7 +3583,10 @@ function updateWalk(dt){
       return;
     }
   }
-  const speed=CHAR_SPEED;
+  /* v49i 核心修复：原实现是"每帧固定走 CHAR_SPEED 像素"——帧率一掉（显示器刷新率变化、
+     省电压帧、页面渲染负载）角色就按比例变慢。现按真实帧间隔归一化：任何刷新率下速度一致。
+     dt 钳到 34ms（约两帧）防止切后台回来瞬移；步长钳到剩余距离防止越过路径点来回抖。 */
+  const speed=Math.min(CHAR_SPEED*Math.min(dt||16.7,34)/16.7, dist);
   const vx=(dx/dist)*speed, vy=(dy/dist)*speed;
   const nx=G.charX+vx, ny=G.charY+vy;
   if(isWalkable(nx,ny)){
