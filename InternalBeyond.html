@@ -258,7 +258,7 @@ body:not(.theme-infernal) .page.active .letter-card-meta{color:#2b487a;opacity:1
 body:not(.theme-infernal) .page.active .post-view-title{color:#0f2045}
 body:not(.theme-infernal) .page.active .post-view-sub{color:#233e6c;opacity:1}
 body:not(.theme-infernal) .page.active .post-view-meta{color:#2b487a;opacity:1;border-bottom-color:rgba(220,235,250,0.55)}
-body:not(.theme-infernal) .page.active .post-view-content{color:#05132a}
+body:not(.theme-infernal) .page.active .post-view-content{color:#0e2247}
 body:not(.theme-infernal) .page.active .about-info h2{color:#0f2045}
 body:not(.theme-infernal) .page.active .about-bio{color:#1a3262}
 body:not(.theme-infernal) .page.active .about-field-label{color:#233e6c;opacity:1}
@@ -548,6 +548,46 @@ body:not(.theme-infernal) .letter-close-btn:hover{color:#0a1e42;background:rgba(
 #page-chat .chat-msg .r-head .r-time{color:var(--text-muted);margin-left:10px;font-size:0.65rem;font-weight:300}
 #page-chat .chat-msg .r-text{font-size:0.9rem;line-height:1.7;color:var(--text-primary);white-space:pre-wrap;word-wrap:break-word}
 #page-chat .chat-msg.md-rendered .r-text{white-space:normal}
+/* v49b 分段气泡：每一段就是一个原款气泡。外层气泡壳隐形；段样式逐字复刻 .chat-msg.ai；
+   规则不再圈定 #page-chat——全屏页、经典布局、右下角迷你面板一体生效；
+   无头像布局下 r-head 由渲染器移入首段，首段与普通消息完全一致；段距 6px，比消息间距更紧，读起来像连发 */
+.chat-msg.bs-msg{background:none!important;border:none!important;padding:0!important;box-shadow:none!important}
+.chat-msg.bs-msg>.r-head{padding:0 2px}
+.chat-msg .r-text.bs-split{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.chat-msg .r-text.bs-split .bs-seg{position:relative;align-self:flex-start;max-width:100%;
+  padding:12px 16px;border-radius:14px;border-bottom-left-radius:4px;
+  background:rgba(175,195,228,0.08);border:1px solid var(--glass-border);
+  animation:bsIn 0.28s var(--transition) both}
+.chat-msg .r-text.bs-split .bs-seg>.r-head{margin-bottom:4px}
+body:not(.theme-infernal) .chat-msg .r-text.bs-split .bs-seg{
+  background:rgba(245,250,255,0.55);border-color:rgba(185,220,250,0.35)}
+body:not(.theme-infernal) #chat-panel .chat-msg .r-text.bs-split .bs-seg{
+  background:rgba(248,252,255,0.4);border-color:rgba(200,225,248,0.25)}
+.chat-msg .r-text.bs-split .bs-seg:nth-child(2){animation-delay:0.07s}
+.chat-msg .r-text.bs-split .bs-seg:nth-child(3){animation-delay:0.14s}
+.chat-msg .r-text.bs-split .bs-seg:nth-child(4){animation-delay:0.21s}
+.chat-msg .r-text.bs-split .bs-seg:nth-child(n+5){animation-delay:0.27s}
+@keyframes bsIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* 段上的引用 / 删除键：悬停段内浮现，与消息级按键同族 */
+.bs-seg .bs-act{position:absolute;top:5px;right:6px;display:flex;gap:3px;opacity:0;transition:opacity 0.2s}
+.bs-seg:hover .bs-act{opacity:0.55}
+.bs-act button{width:16px;height:16px;border:none;background:none;padding:0;cursor:pointer;border-radius:4px;
+  color:var(--text-muted);font-size:0.58rem;line-height:1;font-family:'Noto Sans SC',sans-serif;
+  display:flex;align-items:center;justify-content:center;transition:color 0.2s,background 0.2s}
+.bs-act button svg{width:11px;height:11px}
+.bs-act .bs-q:hover{color:var(--accent-light);background:rgba(114,168,216,0.14)}
+.bs-act .bs-x:hover{color:#e88;background:rgba(230,130,130,0.12)}
+body:not(.theme-infernal) .page.active .bs-act button{color:#7c96bb}
+body:not(.theme-infernal) .page.active .bs-act .bs-q:hover{color:#2a6bb0;background:rgba(70,130,190,0.12)}
+#page-chat .chat-msg.bs-msg>.chat-msg-del,#page-chat .chat-msg.bs-msg>.chat-msg-quote{display:none}
+.chat-arch-ro .bs-act,.chat-select-mode .bs-act{display:none!important}
+@media(prefers-reduced-motion:reduce){.chat-msg .r-text.bs-split .bs-seg{animation:none}}
+/* v49d 分段规范修补：段内文字排版严格继承默认气泡参数（12px 16px 内距 / 同字号行高），
+   被移入首段的昵称行不得把正文再往下顶；历史批量渲染整体关闭进场动画——
+   50 条 × 多段的 fadeUp/bsIn 叠加正是"首次打开卡一下"的来源 */
+.chat-msg .r-text.bs-split .bs-seg{font-size:inherit;line-height:inherit;white-space:inherit}
+.bs-seg>.r-head+*{margin-top:0!important}
+.chat-msg.bs-static,.chat-msg.bs-static .r-text.bs-split .bs-seg{animation:none!important}
 #page-chat .chat-msg.user .r-head{color:var(--silver)}
 body:not(.theme-infernal) #page-chat .chat-msg .r-head{color:#1a3a6c;font-weight:500}
 body:not(.theme-infernal) #page-chat .chat-msg .r-head .r-time{color:#3a5a8c}
@@ -1020,6 +1060,10 @@ body:not(.theme-infernal) .mem-star-dot{
 .mem-star.pinned .mem-star-dot{animation-name:memStarTwPin}
 .mem-star.pinned .mem-star-dot::after{content:"";position:absolute;left:50%;top:50%;width:calc(var(--sd)*2.4);height:calc(var(--sd)*2.4);transform:translate(-50%,-50%);pointer-events:none;
   background:radial-gradient(circle,var(--sgc) 0%,transparent 60%);opacity:0.45;border-radius:50%}
+/* v47 星星入场：逐批浮现，延迟由 --sin 逐颗递增；入场结束后交回闪烁动画 */
+.mem-star{animation:memStarIn 0.7s var(--transition) both;animation-delay:var(--sin,0ms)}
+@keyframes memStarIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.4)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.mem-star{animation:none}}
 @keyframes memStarTw{0%{opacity:0.5}100%{opacity:1}}
 @keyframes memStarTwPin{0%{opacity:0.82}100%{opacity:1}}
 .mem-star-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);padding:4px 10px;border-radius:8px;font-family:'Noto Sans SC',sans-serif;font-size:0.68rem;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.25s;z-index:10;
@@ -1028,6 +1072,17 @@ body:not(.theme-infernal) .mem-star-tip{background:rgba(20,32,60,0.85);color:rgb
 .mem-star:hover .mem-star-tip{opacity:1}
 @keyframes memSparkle{0%{transform:scale(0.5);opacity:0.9}100%{transform:scale(3);opacity:0}}
 .mem-sparkle{position:absolute;width:var(--sd);height:var(--sd);border-radius:50%;pointer-events:none;z-index:5;border:1.5px solid var(--sgc);animation:memSparkle 0.6s ease-out forwards}
+/* v47b 星图计数：去掉盒子，字体款式与坐标轴标注（VALENCE / AROUSAL）同款——
+   同 Raleway 300、0.14em 字距、同一套双主题颜色与透明度；
+   字号 0.56rem，比轴主标 0.72rem 与效价/唤醒小字 0.6rem 都小。 */
+.mem-sky-count{position:absolute;right:12px;top:8px;z-index:6;pointer-events:none;
+  font-family:'Raleway',sans-serif;font-weight:300;font-size:0.56rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:rgba(185,205,235,0.9);opacity:0;transition:opacity 0.55s var(--transition);
+  font-variant-numeric:tabular-nums}
+.mem-sky-count.on{opacity:0.75}
+.mem-sky-count .hid{opacity:0.55}
+body:not(.theme-infernal) .mem-sky-count{color:rgba(50,85,140,0.7)}
+@media(max-width:640px){.mem-sky-count{font-size:0.5rem;letter-spacing:0.1em}}
 .mem-sky-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 2px 0;font-size:0.88rem;color:var(--text-muted);align-items:center}
 .mem-sky-legend span{display:inline-flex;align-items:center;gap:6px}
 .mem-sky-legend-desc{font-size:0.88rem}
@@ -1472,6 +1527,9 @@ body.theme-infernal .home-content{--ti:#f5f0ee;--tb:#4c1a22;--tiglow:0 1px 12px 
 /* 直播渲染分段（流式期间的临时容器）：首末边距贴合最终渲染表现 */
 .md-rendered .r-text .md-live-seg>*:first-child,.md-rendered .md-live-seg.r-text>*:first-child{margin-top:0!important}
 .md-rendered .r-text .md-live-seg>*:last-child,.md-rendered .md-live-seg.r-text>*:last-child{margin-bottom:0!important}
+/* 分段气泡：每段首末元素边距同样清零，文字贴边距离与普通气泡一致（12px） */
+.md-rendered .r-text .bs-seg>*:first-child{margin-top:0!important}
+.md-rendered .r-text .bs-seg>*:last-child{margin-bottom:0!important}
 /* 代码块自定义滚动条 */
 .md-rendered .r-text pre.md-cb::-webkit-scrollbar{height:6px}
 .md-rendered .r-text pre.md-cb::-webkit-scrollbar-track{background:rgba(155,180,218,0.06);border-radius:3px;margin:0 8px}
@@ -1806,6 +1864,53 @@ body:not(.theme-infernal) .am-flag{color:#2c5590;border-color:rgba(56,102,168,0.
 .chat-msg:hover .chat-msg-del{opacity:0.5}
 .chat-msg-del:hover{opacity:1!important;color:#e88;background:rgba(230,130,130,0.12)}
 .chat-msg.user .chat-msg-del{right:auto;left:6px}
+/* v47c 引用（微信式胶囊）——
+   引用不再是气泡里的一块大区域，而是贴在气泡下方的一条小胶囊：
+   单行、紧凑、低存在感，不与正文争视觉重量；字体全部显式声明。 */
+.chat-msg-quote{position:absolute;top:4px;right:26px;width:16px;height:16px;border:none;background:none;
+  color:var(--text-muted);cursor:pointer;opacity:0;padding:0;border-radius:4px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:opacity 0.2s,color 0.2s,background 0.2s}
+.chat-msg-quote svg{width:12px;height:12px}
+.chat-msg:hover .chat-msg-quote{opacity:0.5}
+.chat-msg-quote:hover{opacity:1!important;color:var(--accent-light);background:rgba(114,168,216,0.14)}
+.chat-msg.user .chat-msg-quote{right:auto;left:26px}
+.chat-select-mode .chat-msg-quote,.chat-arch-ro .chat-msg-quote{display:none!important}
+body:not(.theme-infernal) .chat-msg-quote:hover{color:#2a6bb0;background:rgba(70,130,190,0.12)}
+/* v48 引用：做进气泡里、正文下方 —— 沿 thinking 的竖杠语言：
+   一条细杠 + 昵称 + 原文，单行省略；随气泡一同渲染与删除。 */
+.chat-bq{display:block;margin-top:8px;padding:2px 0 2px 11px;
+  border-left:2px solid rgba(155,185,232,0.42);
+  font-family:'Noto Sans SC',sans-serif;font-size:0.8rem;font-weight:300;line-height:1.7;
+  letter-spacing:0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text-secondary);max-width:100%}
+.chat-bq .bq-n{font-weight:500;color:var(--silver);margin-right:7px}
+body:not(.theme-infernal) .page.active .chat-bq,
+body:not(.theme-infernal) #chat-panel .chat-bq{
+  border-left-color:rgba(60,120,200,0.4);color:#4a6890}
+body:not(.theme-infernal) .page.active .chat-bq .bq-n,
+body:not(.theme-infernal) #chat-panel .chat-bq .bq-n{color:#2c4a78}
+/* 输入栏上方的待发引用：同一套竖杠语言——细杠 + 昵称 + 原文 + 取消键 */
+.chat-quote-bar{display:none;align-items:center;gap:8px;width:fit-content;max-width:calc(100% - 32px);
+  margin:8px 16px 0;padding:5px 8px 5px 12px;border-radius:0 9px 9px 0;
+  border-left:2px solid rgba(155,185,232,0.45);background:rgba(155,185,232,0.08);
+  font-family:'Noto Sans SC',sans-serif;font-size:0.8rem;font-weight:300;line-height:1.7;
+  color:var(--text-secondary);letter-spacing:0.01em}
+.chat-quote-bar.on{display:flex}
+.chat-quote-bar svg{width:12px;height:12px;flex:none;opacity:0.7}
+.chat-quote-bar .bq-n{flex:none;font-weight:500;color:var(--silver)}
+.chat-quote-bar .q-t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-quote-x{flex:none;width:18px;height:18px;border:none;background:none;color:var(--text-muted);
+  cursor:pointer;font-size:11px;line-height:1;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:color 0.2s,background 0.2s}
+.chat-quote-x:hover{color:#e88;background:rgba(230,130,130,0.12)}
+body:not(.theme-infernal) .page.active .chat-quote-bar,
+body:not(.theme-infernal) #chat-panel .chat-quote-bar{
+  border-left-color:rgba(60,120,200,0.42);background:rgba(120,165,220,0.1);color:#4a6890}
+body:not(.theme-infernal) .page.active .chat-quote-bar .bq-n,
+body:not(.theme-infernal) #chat-panel .chat-quote-bar .bq-n{color:#2c4a78}
+body:not(.theme-infernal) .page.active .chat-quote-x,
+body:not(.theme-infernal) #chat-panel .chat-quote-x{color:#7c96bb}
+
 body:not(.theme-infernal) .chat-msg-del:hover{color:#c44;background:rgba(200,60,60,0.1)}
 /* Chat Select Mode */
 .chat-select-mode .chat-msg{margin-left:34px;transition:margin-left 0.15s}
@@ -2333,6 +2438,95 @@ body.theme-infernal .mi-sub-inf{display:inline}
 .module-intro-rule{height:1px;background:linear-gradient(90deg,var(--mi-rule),transparent);width:min(100%,34ch);margin:10px 0 12px;opacity:0.9}
 .module-intro-desc{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.85rem;color:rgba(190,202,222,0.88);line-height:1.9;text-shadow:0 1px 6px rgba(0,0,0,0.25)}
 
+/* ══ v46 导入 / 导出工作台 ══ */
+.io-ov{position:fixed;inset:0;z-index:99960;display:flex;align-items:center;justify-content:center;padding:26px;
+  background:rgba(8,12,26,0.5);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);animation:ioFade 0.22s ease}
+.io-ov[hidden]{display:none!important}
+body:not(.theme-infernal) .io-ov{background:rgba(206,224,244,0.5)}
+@keyframes ioFade{from{opacity:0}to{opacity:1}}
+.io-box{width:min(520px,94vw);max-height:min(640px,88vh);display:flex;flex-direction:column;border-radius:18px;
+  background:linear-gradient(160deg,rgba(158,182,220,0.15),rgba(112,136,182,0.06)),linear-gradient(160deg,rgba(40,52,86,0.82),rgba(18,24,44,0.78));
+  border:1px solid rgba(195,215,245,0.26);box-shadow:0 24px 64px rgba(4,8,22,0.5),inset 0 1px 0 rgba(255,255,255,0.12);
+  backdrop-filter:blur(26px) saturate(1.5);-webkit-backdrop-filter:blur(26px) saturate(1.5);
+  animation:ioPop 0.26s cubic-bezier(0.22,1,0.36,1)}
+body:not(.theme-infernal) .io-box{background:linear-gradient(160deg,rgba(255,255,255,0.9),rgba(243,249,255,0.76));
+  border-color:rgba(255,255,255,0.8);box-shadow:0 24px 60px rgba(40,70,120,0.26),inset 0 1px 0 rgba(255,255,255,0.92)}
+@keyframes ioPop{from{opacity:0;transform:translateY(10px) scale(0.985)}to{opacity:1;transform:none}}
+.io-hd{position:relative;display:flex;align-items:baseline;gap:12px;padding:18px 22px 12px;border-bottom:1px solid var(--glass-border);flex:none}
+.io-ti{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.28rem;letter-spacing:0.06em;color:var(--white)}
+.io-en{font-family:'Noto Sans SC',sans-serif;font-size:0.78rem;color:var(--text-muted);font-weight:300}
+body:not(.theme-infernal) .io-ti{color:#142f5e}
+body:not(.theme-infernal) .io-en{color:#5c7ba8}
+.io-x{position:absolute;top:14px;right:16px;width:26px;height:26px;border:none;background:none;color:var(--text-muted);
+  cursor:pointer;font-size:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:color 0.2s,background 0.2s}
+.io-x:hover{color:var(--white);background:rgba(175,195,228,0.14)}
+.io-x[disabled]{opacity:0.25;pointer-events:none}
+.io-bd{padding:18px 22px;overflow-y:auto;flex:1;min-height:120px;
+  scrollbar-width:thin;scrollbar-color:rgba(114,168,216,0.3) transparent}
+.io-bd::-webkit-scrollbar{width:7px}
+.io-bd::-webkit-scrollbar-thumb{background:rgba(114,168,216,0.28);border-radius:4px}
+.io-ft{padding:12px 22px 18px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;flex:none}
+.io-note{font-size:0.82rem;line-height:1.9;color:var(--text-secondary)}
+.io-note b{font-weight:500;color:var(--light)}
+body:not(.theme-infernal) .io-note{color:#33507d}
+body:not(.theme-infernal) .io-note b{color:#142f5e}
+.io-drop{margin-top:14px;padding:22px 16px;border-radius:13px;border:1.5px dashed rgba(165,188,230,0.3);
+  text-align:center;cursor:pointer;transition:border-color 0.25s,background 0.25s;background:rgba(175,195,228,0.04)}
+.io-drop:hover,.io-drop.dragover{border-color:var(--accent-light);background:rgba(114,168,216,0.09)}
+/* v47b：字类名改 io- 前缀——旧名 .dt 撞上日历全局圆点样式（width:4px），
+   文字宽度被压成一字一行的竖排；字体与颜色全部显式声明 */
+.io-drop .io-dt{display:block;width:100%;font-family:'Noto Sans SC',sans-serif;font-weight:400;
+  font-size:0.86rem;letter-spacing:0.02em;color:var(--light)}
+.io-drop .io-ds{display:block;width:100%;font-family:'Noto Sans SC',sans-serif;font-weight:300;
+  font-size:0.72rem;letter-spacing:0.02em;color:var(--text-muted);margin-top:5px}
+body:not(.theme-infernal) .io-drop{background:rgba(255,255,255,0.5);border-color:rgba(120,170,220,0.4)}
+body:not(.theme-infernal) .io-drop .io-dt{color:#142f5e}
+body:not(.theme-infernal) .io-drop .io-ds{color:#5c7ba8}
+.io-picked{margin-top:12px;padding:10px 14px;border-radius:10px;background:rgba(114,168,216,0.11);
+  border:1px solid rgba(114,168,216,0.24);font-size:0.82rem;color:var(--light);display:flex;align-items:center;gap:9px}
+.io-picked svg{width:16px;height:16px;flex:none;opacity:0.7}
+.io-picked .io-sz{margin-left:auto;font-family:'Noto Sans SC',sans-serif;font-size:0.72rem;color:var(--text-muted);font-variant-numeric:tabular-nums}
+/* 底栏按钮：弹层在 .page 之外，浅色主题的 .page.active 覆盖链覆不到这里，
+   按钮会沿用深色主题文字色、浅底上看不清——故在此显式声明双主题全套颜色 */
+.io-ft .btn{font-family:'Noto Sans SC',sans-serif;font-size:0.8rem;letter-spacing:0.02em;
+  color:rgba(228,238,255,0.9);border:1px solid rgba(165,188,230,0.26);background:rgba(155,180,218,0.12)}
+.io-ft .btn:hover{background:rgba(175,195,228,0.2);color:#fff}
+.io-ft .btn.btn-primary{background:rgba(80,128,176,0.34);border-color:rgba(114,168,216,0.55);color:#eaf2ff}
+.io-ft .btn.btn-primary:hover{background:rgba(90,142,192,0.46)}
+body:not(.theme-infernal) .io-ft .btn{color:#2c4a78;border-color:rgba(110,160,215,0.45);background:rgba(255,255,255,0.62)}
+body:not(.theme-infernal) .io-ft .btn:hover{background:rgba(255,255,255,0.85);color:#142f5e}
+body:not(.theme-infernal) .io-ft .btn.btn-primary{background:rgba(90,155,235,0.22);border-color:rgba(70,135,205,0.5);color:#153562}
+body:not(.theme-infernal) .io-ft .btn.btn-primary:hover{background:rgba(90,155,235,0.34)}
+.io-ft .btn[disabled]{opacity:0.4;pointer-events:none}
+body:not(.theme-infernal) .io-x{color:#7c96bb}
+body:not(.theme-infernal) .io-x:hover{color:#142f5e;background:rgba(70,130,190,0.12)}
+body:not(.theme-infernal) .io-picked{background:rgba(70,130,190,0.1);color:#142f5e}
+/* 进度 */
+.io-prog{margin-top:6px}
+.io-prog-lab{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-secondary);margin-bottom:8px}
+.io-prog-lab .pc{font-variant-numeric:tabular-nums;color:var(--accent-light)}
+.io-prog-bar{height:5px;border-radius:3px;background:rgba(175,195,228,0.13);overflow:hidden}
+.io-prog-fill{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,rgba(114,168,216,0.75),rgba(150,195,238,0.95));
+  transition:width 0.3s var(--transition)}
+.io-prog-hint{margin-top:12px;font-size:0.74rem;line-height:1.8;color:var(--text-muted)}
+body:not(.theme-infernal) .io-prog-lab{color:#33507d}
+body:not(.theme-infernal) .io-prog-bar{background:rgba(70,130,190,0.14)}
+/* 结果明细 */
+.io-res{font-size:0.8rem;line-height:1.5}
+.io-res .rr{display:flex;align-items:center;gap:10px;padding:5px 2px;border-bottom:1px solid rgba(165,188,230,0.08)}
+.io-res .rr:last-child{border-bottom:none}
+.io-res .rn{color:var(--text-secondary);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.io-res .rv{font-variant-numeric:tabular-nums;color:var(--light);font-size:0.82rem}
+.io-res .rr.zero .rn,.io-res .rr.zero .rv{opacity:0.4}
+.io-res .rr.bad .rv{color:#e88}
+.io-sum{margin-bottom:12px;padding:11px 14px;border-radius:11px;background:rgba(175,195,228,0.07);
+  border:1px solid var(--glass-border);font-size:0.84rem;line-height:1.85;color:var(--light)}
+.io-sum.ok{border-color:rgba(114,168,216,0.3)}
+.io-sum.err{border-color:rgba(230,130,130,0.35);color:#eaa}
+body:not(.theme-infernal) .io-res .rn{color:#33507d}
+body:not(.theme-infernal) .io-res .rv{color:#142f5e}
+body:not(.theme-infernal) .io-sum{background:rgba(255,255,255,0.55);color:#142f5e}
+
 /* GLASS CARD */
 
 /* Room title fallback — for browsers */
@@ -2446,6 +2640,7 @@ body:not(.theme-infernal) .post-card:hover{transform:translateY(-2px);border-col
 .post-card-preview{font-size:0.82rem;color:var(--text-secondary);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .post-card-meta{display:flex;gap:12px;margin-top:10px;font-size:0.72rem;color:var(--silver);opacity:0.55;justify-content:flex-end;padding-top:8px;
   background:linear-gradient(90deg,rgba(114,168,216,0.2),transparent 60%) top left/100% 1px no-repeat}
+/* v49 只读文档卡片：元信息行下同款字体的一行小字，右对齐，不做标签样式 */
 
 .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(18,26,34,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;animation:modalIn 0.4s var(--transition)}
 .modal-overlay.show{display:flex}
@@ -2463,7 +2658,7 @@ body:not(.theme-infernal) .post-card:hover{transform:translateY(-2px);border-col
 .post-view-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--white);margin-bottom:10px;line-height:1.3}
 .post-view-sub{font-style:italic;color:var(--silver);font-size:1.05rem;margin-bottom:8px}
 .post-view-meta{font-size:0.88rem;color:var(--silver);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(175,195,228,0.12);opacity:0.8}
-.post-view-content{font-size:1rem;line-height:2.1;color:var(--light);white-space:pre-wrap;word-wrap:break-word}
+.post-view-content{font-size:1rem;line-height:2.1;color:#d8e2f3;white-space:pre-wrap;word-wrap:break-word}
 .post-view-actions{display:flex;gap:10px;margin-top:30px}
 /* Reading view: wider than default page container */
 #blog-read-view{width:calc(100vw - 64px);max-width:1060px;margin-left:50%;transform:translateX(-50%);position:relative}
@@ -2503,6 +2698,25 @@ body:not(.theme-infernal) .read-fontsize-btn:hover{color:#0a1e42}
 .rift-label{font-size:0.88rem;color:rgba(255,255,255,0.6);margin-bottom:10px;opacity:0.85;text-transform:uppercase;letter-spacing:0.1em;text-shadow:0 2px 5px rgba(0,0,0,0.35)}
 .rift-select{background:rgba(175,195,228,0.08);border:1px solid rgba(165,188,230,0.25);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:0.95rem;font-family:'Noto Sans SC',sans-serif;cursor:pointer;outline:none;margin-bottom:40px;width:100%;-webkit-appearance:none;appearance:none}
 .rift-select option{background:var(--bg-deep);color:var(--text-primary)}
+.rift-select-tight{margin-bottom:18px}
+.rift-imp-hint{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.72rem;line-height:1.7;
+  color:var(--text-muted);letter-spacing:0.02em;margin-bottom:26px}
+body:not(.theme-infernal) .page.active .rift-imp-hint{color:#7c96bb}
+/* v48 Markdown 快捷工具条（格式选 Markdown 时出现） */
+.rift-mdbar{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:-14px 0 14px}
+.rmb{min-width:27px;height:26px;padding:0 7px;border:1px solid rgba(165,188,230,0.22);border-radius:7px;
+  background:rgba(175,195,228,0.07);color:var(--text-secondary);cursor:pointer;
+  font-family:'Raleway','Noto Sans SC',sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.04em;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;
+  transition:color 0.2s,border-color 0.2s,background 0.2s}
+.rmb svg{width:13px;height:13px}
+.rmb:hover{color:var(--white);border-color:rgba(114,168,216,0.45);background:rgba(114,168,216,0.14)}
+.rmb-b{font-family:'Cormorant Garamond',serif;font-size:0.86rem;font-weight:700}
+.rmb-i{font-family:'Cormorant Garamond',serif;font-size:0.86rem;font-style:italic;font-weight:500}
+.rmb-sep{width:1px;height:15px;background:rgba(165,188,230,0.2);margin:0 3px}
+body:not(.theme-infernal) .page.active .rmb{background:rgba(255,255,255,0.5);border-color:rgba(160,200,240,0.35);color:#41608e}
+body:not(.theme-infernal) .page.active .rmb:hover{color:#142f5e;border-color:rgba(90,150,215,0.55);background:rgba(255,255,255,0.8)}
+body:not(.theme-infernal) .page.active .rmb-sep{background:rgba(120,165,220,0.3)}
 .rift-stats{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;margin-top:6px}
 .rift-stat-row{display:flex;justify-content:space-between;align-items:baseline}
 .rift-stat-label{font-size:0.9rem;color:rgba(255,255,255,0.5);opacity:1;letter-spacing:0.04em;text-shadow:0 2px 5px rgba(0,0,0,0.3)}
@@ -2558,6 +2772,136 @@ body:not(.theme-infernal) .page.active .blog-comment-time{color:#2b487a;opacity:
 body:not(.theme-infernal) .page.active .blog-comment-loading{color:#233e6c}
 
 /* ── Blog Annotations (Reading Companion) ── */
+/* 正文区拖入高亮 */
+#ed-content.ed-drop{border-color:var(--accent-light)!important;background:rgba(114,168,216,0.08)!important}
+/* 导出菜单 */
+.ed-exp-menu{position:fixed;z-index:99970;min-width:186px;padding:6px;border-radius:13px;
+  background:linear-gradient(160deg,rgba(48,62,98,0.95),rgba(24,32,54,0.93));
+  border:1px solid rgba(195,215,245,0.24);box-shadow:0 18px 44px rgba(4,8,22,0.5);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  animation:edExpIn 0.18s var(--transition)}
+@keyframes edExpIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+body:not(.theme-infernal) .ed-exp-menu{background:linear-gradient(160deg,rgba(255,255,255,0.94),rgba(240,247,255,0.9));
+  border-color:rgba(255,255,255,0.85);box-shadow:0 18px 40px rgba(40,70,120,0.24)}
+.ed-exp-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:none;border-radius:9px;
+  cursor:pointer;background:none;text-align:left;
+  font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.8rem;letter-spacing:0.02em;
+  color:rgba(228,238,255,0.88);transition:background 0.18s,color 0.18s}
+.ed-exp-item .ex-k{font-family:'Raleway',sans-serif;font-weight:300;font-size:0.6rem;letter-spacing:0.14em;
+  margin-left:auto;color:rgba(200,216,240,0.42)}
+.ed-exp-item:hover{background:rgba(114,168,216,0.2);color:#fff}
+body:not(.theme-infernal) .ed-exp-item{color:#2c4a78}
+body:not(.theme-infernal) .ed-exp-item .ex-k{color:#8aa2c4}
+body:not(.theme-infernal) .ed-exp-item:hover{background:rgba(90,155,235,0.16);color:#142f5e}
+/* ══ v47c Blog Markdown ══
+   字体、字号、行高、颜色全部显式声明，不依赖浏览器对 h1/pre/code 的默认样式 */
+.bmd-h{font-family:'Cormorant Garamond','Noto Sans SC',sans-serif;font-weight:500;color:var(--white);letter-spacing:0.035em;
+  letter-spacing:0.03em;line-height:1.45;margin:0.2em 0 0.35em}
+.bmd-h1{font-size:1.3em}.bmd-h2{font-size:1.16em}.bmd-h3{font-size:1.05em}.bmd-h4{font-size:1em}
+.bmd-h.bmd-hit{animation:bmdHit 1.2s var(--transition)}
+@keyframes bmdHit{0%,100%{background:transparent}22%{background:rgba(114,168,216,0.16)}}
+.bmd-p{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:1em;line-height:2.05;
+  color:var(--text-primary);letter-spacing:0.01em;margin:0}
+.bmd-list{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:1em;line-height:2.0;
+  color:var(--text-primary);margin:0;padding-left:1.4em}
+.bmd-list li{margin:0.15em 0}
+.bmd-q{font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.96em;line-height:1.95;
+  color:var(--text-secondary);margin:0;padding:6px 0 6px 14px;border-left:2px solid rgba(114,168,216,0.45)}
+.bmd-pre{font-family:'Consolas','Monaco','Courier New',monospace;font-size:0.84em;line-height:1.7;
+  color:var(--light);background:rgba(155,180,218,0.09);border:1px solid var(--glass-border);
+  border-radius:10px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.bmd-pre code{font-family:inherit;font-size:inherit;background:none;padding:0;border:none;color:inherit}
+.bmd-code{font-family:'Consolas','Monaco','Courier New',monospace;font-size:0.85em;
+  background:rgba(155,180,218,0.14);border-radius:4px;padding:1px 5px;color:var(--accent-light)}
+.bmd-hr{border:none;height:1px;background:linear-gradient(90deg,rgba(165,188,230,0.35),transparent);margin:0.5em 0}
+.bmd-a{color:var(--accent-light);text-decoration:none;border-bottom:1px solid rgba(114,168,216,0.35)}
+.bmd-a:hover{border-bottom-color:var(--accent-light)}
+body:not(.theme-infernal) .page.active .bmd-h{color:#142f5e}
+body:not(.theme-infernal) .page.active .bmd-p,body:not(.theme-infernal) .page.active .bmd-list{color:#0e2247}
+body:not(.theme-infernal) .page.active .bmd-q{color:#3a557f;border-left-color:rgba(70,130,190,0.5)}
+body:not(.theme-infernal) .page.active .bmd-pre{background:rgba(255,255,255,0.55);color:#2c4a78;border-color:rgba(150,190,235,0.35)}
+body:not(.theme-infernal) .page.active .bmd-code{background:rgba(120,165,220,0.16);color:#2a6bb0}
+body:not(.theme-infernal) .page.active .bmd-a{color:#33608f;border-bottom-color:rgba(70,120,180,0.3)}
+/* v48 Markdown 排版精修：加粗提亮、一二级标题下加发丝线、引用块加一层底色 */
+.bmd-p strong,.bmd-p b,.bmd-list strong,.bmd-list b,.bmd-q strong,.bmd-q b{font-weight:500;color:var(--pale)}
+body:not(.theme-infernal) .page.active .bmd-p strong,body:not(.theme-infernal) .page.active .bmd-p b,
+body:not(.theme-infernal) .page.active .bmd-list strong,body:not(.theme-infernal) .page.active .bmd-list b,
+body:not(.theme-infernal) .page.active .bmd-q strong,body:not(.theme-infernal) .page.active .bmd-q b{color:#12294f}
+.bmd-h1,.bmd-h2{padding-bottom:0.28em;border-bottom:1px solid rgba(165,188,230,0.14)}
+body:not(.theme-infernal) .page.active .bmd-h1,body:not(.theme-infernal) .page.active .bmd-h2{border-bottom-color:rgba(90,140,200,0.18)}
+.bmd-q{background:rgba(155,180,218,0.06);border-radius:0 8px 8px 0;padding-top:0.45em;padding-bottom:0.45em;padding-right:0.8em}
+body:not(.theme-infernal) .page.active .bmd-q{background:rgba(120,165,220,0.07)}
+/* ═════ v48 阅读页顶栏：搜索 / 编辑删除导出 / 字号 ═════ */
+.brv-top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.brv-top-actions{display:flex;gap:10px;margin-left:2px}
+.brv-top .brv-search{margin:0 0 0 auto;width:236px;flex:none}
+.brv-top .read-fontsize-wrap{position:static;margin-left:0;margin-bottom:0;align-self:center}
+/* 文内搜索 */
+.brv-search{display:flex;align-items:center;gap:6px;padding:6px 8px 6px 10px;margin-bottom:18px;
+  border:1px solid rgba(165,188,230,0.2);border-radius:9px;background:rgba(155,180,218,0.08)}
+.brv-search>svg{width:13px;height:13px;flex:none;color:var(--text-muted);opacity:0.8}
+.brv-search input{flex:1;min-width:0;background:none;border:none;outline:none;
+  font-family:'Noto Sans SC',sans-serif;font-weight:300;font-size:0.8rem;letter-spacing:0.02em;
+  color:var(--text-primary);caret-color:var(--accent-light)}
+.brv-search input::placeholder{color:var(--text-muted);opacity:0.75}
+.brv-search-count{flex:none;font-family:'Cormorant Garamond',serif;font-size:0.78rem;
+  color:var(--text-muted);letter-spacing:0.04em;min-width:26px;text-align:right}
+.brv-search-nav{flex:none;width:18px;height:18px;border:none;background:none;padding:0;
+  color:var(--text-muted);cursor:pointer;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;transition:color 0.2s,background 0.2s}
+.brv-search-nav svg{width:12px;height:12px}
+.brv-search-nav:hover{color:var(--accent-light);background:rgba(114,168,216,0.14)}
+.pv-para.pv-hit{animation:bmdHit 1.2s var(--transition)}
+/* 上一篇 / 下一篇 */
+.brv-nav{display:flex;gap:26px;margin:34px 0 4px;padding-top:20px;border-top:1px solid rgba(175,195,228,0.12)}
+.brv-nav-i{flex:1;min-width:0;display:flex;align-items:baseline;padding:0;border:none;background:none;
+  cursor:pointer;text-decoration:none}
+.brv-nav-i.next{justify-content:flex-end}
+.brv-nav-i.off{visibility:hidden;pointer-events:none}
+.brv-nav-k{flex:none;font-family:'Noto Sans SC',sans-serif;font-size:0.88rem;font-weight:300;
+  letter-spacing:0.02em;color:var(--text-secondary);transition:color 0.25s}/* v49h：加深，原 text-muted 太淡 */
+.brv-nav-t{font-family:'Noto Sans SC',sans-serif;font-weight:400;font-size:0.88rem;color:var(--light);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.25s}/* v49h：加深 */
+.brv-nav-i:hover .brv-nav-t{color:var(--white)}
+.brv-nav-i:hover .brv-nav-k{color:var(--text-secondary)}
+/* 浅色主题 */
+body:not(.theme-infernal) .page.active .brv-search{background:rgba(255,255,255,0.5);border-color:rgba(160,200,240,0.35)}
+body:not(.theme-infernal) .page.active .brv-search input{color:#1e3565}
+body:not(.theme-infernal) .page.active .brv-search input::placeholder{color:#7c96bb}
+body:not(.theme-infernal) .page.active .brv-search>svg{color:#7c96bb}
+body:not(.theme-infernal) .page.active .brv-search-count{color:#5a7aa4}
+body:not(.theme-infernal) .page.active .brv-search-nav{color:#7c96bb}
+body:not(.theme-infernal) .page.active .brv-search-nav:hover{color:#2a6bb0;background:rgba(70,130,190,0.12)}
+body:not(.theme-infernal) .page.active .brv-nav-k{color:#4a6890}
+body:not(.theme-infernal) .page.active .brv-nav-t{color:#16305c}/* v49h：浅色主题同步加深 */
+body:not(.theme-infernal) .page.active .brv-nav-i:hover .brv-nav-t{color:#142f5e}
+@media(max-width:880px){
+  .brv-top{flex-wrap:wrap}
+  .brv-top .brv-search{width:100%;margin-left:0;order:5}
+}
+/* v49 只读文档（导入的 PDF / Word / EPUB 等）：版面与普通日志一致，仅保留段首缩进与顶部进度线 */
+#blog-read-view.brv-doc .pv-para{text-indent:2em;margin-bottom:0.85em}
+/* v49c 阅读页右侧悬浮滚动条：离正文更远的固定位置 */
+/* v49d 阅读页右侧悬浮滚动条重设计：挂 body、贴视口右缘（原先挂在带 transform 的
+   #blog-read-view 里，fixed 被它捕获、压在正文上）。细轨居右 + 悬停加粗 + 无操作时自动淡出，
+   与正文列宽 / 字号完全解耦，任何字号下都离文本有安全距离 */
+#brv-bar{position:fixed;top:118px;bottom:62px;right:30px;width:26px;z-index:25;opacity:0;transition:opacity 0.3s;pointer-events:none}/* v49e：右移 30px，让开屏幕右缘的 Room 等竖排悬浮标签 */
+#brv-bar.on{opacity:1;pointer-events:auto}
+#brv-bar.on.idle{opacity:0.32}
+#brv-bar.on.drag{opacity:1}
+#brv-bar.on:hover{opacity:1}
+#brv-bar::before{content:'';position:absolute;top:0;bottom:0;right:11px;width:2px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(165,188,230,0.09) 7%,rgba(165,188,230,0.09) 93%,transparent)}/* v49h：低调化 */
+#brv-bar-thumb{position:absolute;width:5px;right:10px;border-radius:99px;background:linear-gradient(180deg,rgba(155,185,232,0.3),rgba(114,168,216,0.2));box-shadow:none;cursor:grab;min-height:36px;touch-action:none;transition:width 0.18s,right 0.18s,background 0.18s}/* v49h：低调化，去光晕 */
+#brv-bar:hover #brv-bar-thumb{width:8px;right:8px;background:linear-gradient(180deg,rgba(155,185,232,0.5),rgba(114,168,216,0.36))}
+#brv-bar-thumb:active{cursor:grabbing}
+body:not(.theme-infernal) #brv-bar::before{background:linear-gradient(180deg,transparent,rgba(90,130,190,0.12) 7%,rgba(90,130,190,0.12) 93%,transparent)}
+body:not(.theme-infernal) #brv-bar-thumb{background:linear-gradient(180deg,rgba(70,120,190,0.28),rgba(50,105,175,0.18));box-shadow:none}
+body:not(.theme-infernal) #brv-bar:hover #brv-bar-thumb{background:linear-gradient(180deg,rgba(60,115,185,0.45),rgba(45,100,170,0.32))}
+.brv-progress{display:none;height:2px;border-radius:2px;margin:0 0 14px;background:rgba(165,188,230,0.12);overflow:hidden}
+.brv-progress i{display:block;height:100%;width:0;border-radius:2px;
+  background:linear-gradient(90deg,var(--accent-light),rgba(114,168,216,0.35));transition:width 0.15s linear}
+body:not(.theme-infernal) .page.active .brv-progress{background:rgba(90,140,200,0.14)}
+body:not(.theme-infernal) .page.active .brv-progress i{background:linear-gradient(90deg,#4f86bd,rgba(80,140,210,0.4))}
 .pv-para{margin-bottom:1.2em}
 .pv-annotated{text-decoration:underline;text-decoration-color:rgba(114,168,216,0.4);text-underline-offset:3px;text-decoration-thickness:1.5px;cursor:pointer;transition:background 0.15s}
 .pv-annotated:hover{background:rgba(114,168,216,0.08);border-radius:2px}
@@ -3277,6 +3621,40 @@ body:not(.theme-infernal) .page.active #chat-arch-toggle:not(.arch-return):hover
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.78),inset 0 -1px 0 rgba(148,183,228,0.1),0 2px 4px rgba(105,155,220,0.13)}
 body:not(.theme-infernal) .page.active #chat-arch-toggle:not(.arch-return):active{transform:translateY(1px);
   box-shadow:inset 0 1.5px 3px rgba(88,128,188,0.18),inset 0 -1px 0 rgba(255,255,255,0.45)}
+/* Chat 顶部说明栏折叠：按钮沉下度与旁边的 Archived 按钮一致 */
+#chat-intro-collapse{position:absolute;top:16px;right:58px;z-index:2;padding:5px 9px;
+  color:var(--text-muted);border-color:rgba(165,188,230,0.09);
+  background:linear-gradient(180deg,rgba(168,192,230,0.06),rgba(146,170,208,0.02));
+  box-shadow:inset 0 1px 0 rgba(218,234,255,0.06),inset 0 -1px 0 rgba(8,14,30,0.07),0 1px 2px rgba(4,10,24,0.11)}
+#chat-intro-collapse:hover{color:var(--text-secondary);border-color:rgba(165,188,230,0.24);
+  background:linear-gradient(180deg,rgba(168,192,230,0.12),rgba(146,170,208,0.055));
+  box-shadow:inset 0 1px 0 rgba(222,238,255,0.11),inset 0 -1px 0 rgba(8,14,30,0.08),0 2px 4px rgba(4,10,24,0.16)}
+#chat-intro-collapse:active{transform:translateY(1px);
+  box-shadow:inset 0 1.5px 3px rgba(5,11,26,0.24),inset 0 -1px 0 rgba(218,234,255,0.04)}
+body:not(.theme-infernal) .page.active #chat-intro-collapse{color:#7b93b6;border-color:rgba(135,178,222,0.2);
+  background:linear-gradient(180deg,rgba(255,255,255,0.4),rgba(248,252,255,0.2));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.55),inset 0 -1px 0 rgba(148,183,228,0.08),0 1px 2px rgba(105,155,220,0.09)}
+body:not(.theme-infernal) .page.active #chat-intro-collapse:hover{color:#41608e;border-color:rgba(115,163,215,0.36);
+  background:linear-gradient(180deg,rgba(255,255,255,0.66),rgba(248,252,255,0.4));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.78),inset 0 -1px 0 rgba(148,183,228,0.1),0 2px 4px rgba(105,155,220,0.13)}
+body:not(.theme-infernal) .page.active #chat-intro-collapse:active{transform:translateY(1px);
+  box-shadow:inset 0 1.5px 3px rgba(88,128,188,0.18),inset 0 -1px 0 rgba(255,255,255,0.45)}
+/* 单枚细箭头：展开时朝上，折叠后翻转朝下 */
+#chat-intro-collapse svg{width:15px;height:15px;opacity:0.75;
+  transition:transform 0.36s var(--transition),opacity 0.3s}
+#chat-intro-collapse:hover svg{opacity:1}
+#page-chat .module-intro.mi-fading #chat-intro-collapse svg,
+#page-chat .module-intro.mi-collapsed #chat-intro-collapse svg{transform:rotate(180deg)}
+/* 折叠动画：正文只做淡出上移（0.22s），高度在文字隐去后一步收掉——
+   逐帧动画高度会带动下方整个聊天区每帧重排，长对话必卡；单步收高没有这个问题。 */
+#page-chat .module-intro .module-intro-desc{transition:opacity 0.22s var(--transition),transform 0.22s var(--transition)}
+#page-chat .module-intro.mi-fading .module-intro-desc{opacity:0;transform:translateY(-4px)}
+#page-chat .module-intro.mi-collapsed .module-intro-desc{display:none}
+/* 折叠后标题下的横杠保留，只收掉下方留白 */
+#page-chat .module-intro.mi-collapsed .module-intro-rule{margin:10px 0 0}
+#page-chat .module-intro.mi-collapsed{padding-top:16px;padding-bottom:14px}
+/* 归档视图：Return 按钮比常态宽，两个按钮会相互重叠，故折叠键在归档下不显示 */
+#page-chat .module-intro.mi-arch #chat-intro-collapse{display:none}
 #api-arch-toggle{position:relative;top:-3px}
 /* API 页归档行：只读、低饱和；行内含恢复与彻底删除两个操作 */
 .api-arch-item{cursor:default;opacity:0.6;transition:opacity 0.25s}
@@ -3533,6 +3911,21 @@ body.no-petals #wg-petal-field{display:none}
   transition:opacity 0.2s ease,transform 0.28s cubic-bezier(0.4,0,0.7,0.2)}
 .eph-page.on{opacity:1;pointer-events:auto;transform:none;
   transition:opacity 0.32s ease 0.1s,transform 0.44s cubic-bezier(0.22,1,0.36,1) 0.08s}
+/* v46 — 日程 / 新建 / 留言 / 设置四页本来就可滚动，但用的是系统隐藏式滚动条，
+   内容超高时看不到任何提示。此处给出常驻可拖拽的细滚动条；内容未超高时浏览器不会渲染。
+   日历页（.p-cal）为 overflow:hidden 的固定布局，不在此列。 */
+.eph-page:not(.p-cal){scrollbar-width:thin;scrollbar-color:rgba(114,168,216,0.3) transparent}
+.eph-page:not(.p-cal)::-webkit-scrollbar{width:8px}
+.eph-page:not(.p-cal)::-webkit-scrollbar-track{background:transparent;margin:10px 0}
+.eph-page:not(.p-cal)::-webkit-scrollbar-thumb{background:rgba(114,168,216,0.26);border-radius:5px;
+  border:2px solid transparent;background-clip:padding-box}
+.eph-page:not(.p-cal)::-webkit-scrollbar-thumb:hover{background:rgba(114,168,216,0.5);
+  border:2px solid transparent;background-clip:padding-box}
+body:not(.theme-infernal) .eph-page:not(.p-cal){scrollbar-color:rgba(70,130,190,0.3) transparent}
+body:not(.theme-infernal) .eph-page:not(.p-cal)::-webkit-scrollbar-thumb{background:rgba(70,130,190,0.26);
+  border:2px solid transparent;background-clip:padding-box}
+body:not(.theme-infernal) .eph-page:not(.p-cal)::-webkit-scrollbar-thumb:hover{background:rgba(70,130,190,0.5);
+  border:2px solid transparent;background-clip:padding-box}
 
 /* ─────────── 页一 — 日历：左挂历（照原设计，未改动） ─────────── */
 .eph-page.p-cal{display:grid;grid-template-columns:minmax(0,1.74fr) minmax(254px,0.84fr);gap:15px;
@@ -4149,6 +4542,13 @@ body.theme-infernal .tgl-group{box-shadow:inset 0 1px 0 rgba(222,236,252,0.06)}
 .tgl-group .tog-line{border-bottom:1px solid var(--eph-line)}
 .tgl-group .tog-line:last-child{border-bottom:none}
 .f-cols.f-cols4{grid-template-columns:1fr 1fr 1fr 1.25fr;gap:9px}
+/* v46 — 时刻（仅计划 / 记录）：日期行右侧追加一列，不填则按全天事项处理 */
+.f-cols.f-cols4.has-time{grid-template-columns:1fr 1fr 1fr 1.25fr 0.9fr}
+.ev-item .et-tm{margin-left:7px;font-size:0.72em;opacity:0.62;font-variant-numeric:tabular-nums;letter-spacing:0.03em}
+.anni-list .et-tm{margin-left:7px;font-size:0.72em;opacity:0.62;font-variant-numeric:tabular-nums}
+#f-time{padding:8px 10px;text-align:center;letter-spacing:0.04em;font-variant-numeric:tabular-nums}
+#f-time::-webkit-calendar-picker-indicator{opacity:0.45;cursor:pointer;filter:invert(0.55)}
+body:not(.theme-infernal) #f-time::-webkit-calendar-picker-indicator{filter:none;opacity:0.4}
 .plate>.form-actions{margin-top:auto;padding-top:6px}
 /* v35 — 提前天数行：下拉与自定义输入并列 */
 .f-lead-row{display:flex;gap:9px;align-items:stretch}
@@ -4597,8 +4997,8 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
       <div class="nav-user-avatar" id="nav-user-avatar"></div>
       <span class="nav-user-name" id="nav-user-name"></span>
     </div>
-    <button class="nav-btn" onclick="exportAll()" title="导出存档">Export</button>
-    <button class="nav-btn" onclick="document.getElementById('importFile').click()" title="导入存档">Import</button>
+    <button class="nav-btn" onclick="ioOpen('export')" title="导出存档">Export</button>
+    <button class="nav-btn" onclick="ioOpen('import')" title="导入存档">Import</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importAll(event)">
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换主题">
       <svg id="drop-icon" viewBox="0 0 20 20" width="14" height="14" stroke="currentColor" stroke-width="1.5" fill="none">
@@ -4653,23 +5053,42 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
       </div>
     </div>
     <div id="blog-read-view" style="display:none" class="fontsize-m">
-      <div class="read-fontsize-wrap">
-        <button class="read-fontsize-btn fs-s" onclick="setReadFontSize('s')" title="小字">A</button>
-        <button class="read-fontsize-btn fs-m active" onclick="setReadFontSize('m')" title="中字">A</button>
-        <button class="read-fontsize-btn fs-l" onclick="setReadFontSize('l')" title="大字">A</button>
+      <div class="brv-top">
+        <button class="btn" onclick="backToList()">← Back</button>
+        <div class="brv-top-actions" id="brv-top-actions"></div>
+        <div class="brv-search">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="4.4"/><path d="m13.6 13.6-3.3-3.3"/></svg>
+          <input id="brv-search-input" placeholder="搜索本文…" autocomplete="off" oninput="brvSearchInput(this.value)" onkeydown="if(event.key==='Enter')brvSearchStep(event.shiftKey?-1:1)">
+          <span class="brv-search-count" id="brv-search-count"></span>
+          <button class="brv-search-nav" onclick="brvSearchStep(-1)" title="上一处" aria-label="上一处"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4.5 9.8 8 6.3 11.5 9.8"/></svg></button>
+          <button class="brv-search-nav" onclick="brvSearchStep(1)" title="下一处" aria-label="下一处"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4.5 6.3 8 9.8 11.5 6.3"/></svg></button>
+        </div>
+        <div class="read-fontsize-wrap">
+          <button class="read-fontsize-btn fs-s" onclick="setReadFontSize('s')" title="小字">A</button>
+          <button class="read-fontsize-btn fs-m active" onclick="setReadFontSize('m')" title="中字">A</button>
+          <button class="read-fontsize-btn fs-l" onclick="setReadFontSize('l')" title="大字">A</button>
+        </div>
       </div>
-      <button class="btn" onclick="backToList()" style="margin-bottom:20px">← Back</button>
+      <div class="brv-progress"><i id="brv-progress-i"></i></div>
       <div class="post-view" id="post-view-content"></div>
     </div>
     <div id="blog-edit-view" style="display:none">
       <div class="rift-editor">
         <div class="rift-sidebar">
           <button class="btn" onclick="exitEditor()" style="margin-bottom:24px;font-size:0.92rem;padding:8px 18px;align-self:flex-start">← 返回</button>
+          <input type="file" id="ed-imp-file" style="display:none" onchange="edImportFile(event)">
           <h3 class="rift-status" id="blog-edit-heading">writing...</h3>
           <div class="rift-accent-line"></div>
           <div class="rift-date" id="rift-date"></div>
           <label class="rift-label">分类</label>
-          <select id="ed-cat" class="rift-select"></select>
+          <select id="ed-cat" class="rift-select rift-select-tight"></select>
+          <label class="rift-label">格式</label>
+          <select id="ed-format" class="rift-select rift-select-tight" onchange="_edMdBarSync()">
+            <option value="txt">纯文本</option>
+            <option value="md">Markdown</option>
+          </select>
+          <button class="btn" onclick="edImportPick()" style="margin:2px 0 7px;font-size:0.85rem;padding:7px 16px;align-self:flex-start">导入文件</button>
+          <div class="rift-imp-hint">可直接将文件或ICode项目拖入正文区。</div>
           <label class="rift-label">Stats</label>
           <div class="rift-stats">
             <div class="rift-stat-row"><span class="rift-stat-label">Chars</span><span class="rift-stat-value" id="rift-chars">0</span></div>
@@ -4683,6 +5102,23 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
           <input id="ed-title" class="rift-title-input" placeholder="Title">
           <input id="ed-subtitle" class="rift-subtitle-input" placeholder="Subtitle">
           <div class="rift-separator"></div>
+          <div class="rift-mdbar" id="rift-mdbar" style="display:none">
+            <button type="button" class="rmb" onclick="edMd('h1')" title="一级标题">H1</button>
+            <button type="button" class="rmb" onclick="edMd('h2')" title="二级标题">H2</button>
+            <button type="button" class="rmb" onclick="edMd('h3')" title="三级标题">H3</button>
+            <span class="rmb-sep"></span>
+            <button type="button" class="rmb rmb-b" onclick="edMd('b')" title="加粗">B</button>
+            <button type="button" class="rmb rmb-i" onclick="edMd('i')" title="斜体">I</button>
+            <button type="button" class="rmb" onclick="edMd('code')" title="行内代码">&lt;/&gt;</button>
+            <span class="rmb-sep"></span>
+            <button type="button" class="rmb" onclick="edMd('quote')" title="引用块">❝</button>
+            <button type="button" class="rmb" onclick="edMd('ul')" title="无序列表"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="3.4" cy="4.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="3.4" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="3.4" cy="11.5" r="0.9" fill="currentColor" stroke="none"/><path d="M6.4 4.5h6.2M6.4 8h6.2M6.4 11.5h6.2"/></svg></button>
+            <button type="button" class="rmb" onclick="edMd('ol')" title="有序列表">1.</button>
+            <span class="rmb-sep"></span>
+            <button type="button" class="rmb" onclick="edMd('pre')" title="代码块"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="m5.2 6.6 1.8 1.7-1.8 1.7M8.6 10h2.4"/></svg></button>
+            <button type="button" class="rmb" onclick="edMd('hr')" title="分隔线">—</button>
+            <button type="button" class="rmb" onclick="edMd('link')" title="链接"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6.5 9.5 9.5 6.5"/><path d="M7.2 4.8l1-1a2.3 2.3 0 0 1 3.3 0l.7.7a2.3 2.3 0 0 1 0 3.3l-1 1"/><path d="M8.8 11.2l-1 1a2.3 2.3 0 0 1-3.3 0l-.7-.7a2.3 2.3 0 0 1 0-3.3l1-1"/></svg></button>
+          </div>
           <textarea id="ed-content" class="rift-content" placeholder="在这里写下你的内容…"></textarea>
         </div>
       </div>
@@ -4697,6 +5133,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
         <span class="module-intro-sub" id="chat-intro-sub">Real-time AI dialogue</span></div>
         <div class="module-intro-rule"></div>
         <div class="module-intro-desc" id="chat-intro-desc">支持多个 API 端口的实时对话站。可在浮动面板与全屏模式之间自由切换。<br>好友列表由 API 配置自动生成。支持群聊、开启话题频道、处理附件与生成记忆。</div>
+        <button class="arch-toggle" id="chat-intro-collapse" onclick="toggleChatIntro()" title="收起说明" aria-label="收起说明"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6.5 14.6 12 9.2 17.5 14.6"/></svg></button>
         <button class="arch-toggle arch-clock" id="chat-arch-toggle" onclick="toggleChatArchive()" title="Archived（离线好友的聊天记录）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><polyline points="12 7.2 12 12 15.3 13.9"/></svg></button>
       </div>
       <div class="chat-full-header">
@@ -4726,6 +5163,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
           <div class="chat-messages" id="chat-full-messages" style="flex:1;overflow-y:auto;padding:12px 14px 12px 0">
             <div class="chat-msg system">选择一个API开始对话</div>
           </div>
+          <div class="chat-quote-bar" id="chat-full-quote"></div>
           <div class="chat-preview-bar" id="chat-full-preview"></div>
           <div class="chat-input-area" style="border-top:1px solid var(--glass-border)">
             <button class="chat-attach-btn" onclick="toggleAttachPopup(this)" title="添加附件">
@@ -4812,6 +5250,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
       <i class="sky-glint" style="left:8%;top:79%;transform:scale(0.8);animation-delay:1.4s"></i>
       <i class="sky-glint" style="left:90%;top:23%;transform:scale(0.9);animation-delay:2.6s"></i>
       <i class="sky-glint" style="left:33%;top:60%;transform:scale(0.65);animation-delay:0.7s"></i>
+      <div class="mem-sky-count" id="mem-sky-count" aria-live="polite"></div>
       <div class="sky-ax x"></div><div class="sky-ax y"></div>
       <div class="sky-axl l">消极</div><div class="sky-axl r">积极<span class="sky-cap">效价 VALENCE</span></div>
       <div class="sky-axl t">炽烈<span class="sky-cap">唤醒 AROUSAL</span></div><div class="sky-axl b">平静</div>
@@ -4821,6 +5260,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
       <span><i class="lg-dot" style="background:radial-gradient(circle at 38% 34%,#fff,var(--accent) 65%)"></i>大小 = 重要性</span>
       <span><i class="lg-dot" style="background:rgba(114,168,216,0.35)"></i>明暗 = 活跃度</span>
       <span><i class="lg-dot" style="background:radial-gradient(circle at 38% 34%,#fff,#c9a055 65%);box-shadow:0 0 5px rgba(201,160,85,0.5)"></i>金色 = 置顶记忆</span>
+      <span><i class="lg-dot mem-am-gradient" style="width:10px;height:10px"></i>银色 = 已开启的记忆档案</span>
     </div>
 
     <!-- Instrument Deck -->
@@ -5317,7 +5757,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
 
     <div class="api-section glass-card" style="padding:20px">
       <h3>Presence</h3>
-      <p class="internal-only" style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">离开一段时间后再次重新打开页面时TA会收到你的离开时长。</p>
+      <p class="internal-only" style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">离开一段时间后再次发起对话时TA会收到你的离开时长。</p>
       <p class="infernal-only" style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">让TA注意到你离开了多久后才回来。</p>
       <div class="api-form-group" style="margin-bottom:10px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="api-welcome-toggle" onchange="saveSummarySettings()" style="width:auto;accent-color:var(--accent)"> 启用Presence</label>
@@ -5398,6 +5838,10 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
         </select>
         <div style="font-size:0.72rem;opacity:0.55;margin-top:4px;line-height:1.6">控制 AI 回复中 Markdown 标记的显示方式。排版净化：**加粗** → 「加粗」，# 标题 → 【标题】等；部分渲染：仅代码块、行内代码和列表渲染为视觉元素；全部渲染：标题、加粗、斜体、引用、表格等完整渲染。渲染模式下流式回复过程中同步实时渲染，不再回显 Markdown 原文。只影响显示，原文与 API 通信不变。即时生效。</div>
       </div>
+      <div class="api-form-group" style="margin-top:16px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="api-bubble-split" onchange="_bsToggle()" style="width:auto;accent-color:var(--accent)"> 分段气泡显示</label>
+        <div style="font-size:0.72rem;opacity:0.55;margin-top:4px;line-height:1.6">开启后，AI 回复中用空行分隔的每一段各占一个气泡，而不是全部装在一个气泡里。只改变显示，消息仍为一条，原文与 API 通信不变。含代码块、表格或引用块的段落不拆，以免破坏排版。即时生效。</div>
+      </div>
     </div>
 
     <div class="api-section glass-card" style="padding:20px;border:1px solid rgba(200,80,80,0.2)">
@@ -5405,9 +5849,8 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
       <div id="ib-guard-panel" style="margin-bottom:26px;font-size:0.82rem;line-height:2.1">
         <div>持久化保护：<span id="ib-persist-state" style="opacity:0.8">检测中…</span></div>
         <div>每日自动备份：<span id="ib-autobak-state" style="opacity:0.8">…</span>　<button class="btn" style="padding:3px 14px;font-size:0.75rem" onclick="_ibToggleAutoBak()">开 / 关</button></div>
-        <div>紧急镜像：<span id="ib-mirror-state" style="opacity:0.8">…</span>　<button class="btn" style="padding:3px 14px;font-size:0.75rem" onclick="_ibMirrorNow(true)">立即镜像</button></div>
         <div id="ib-fs-row">本地文件夹同步：<span id="ib-fs-state" style="opacity:0.8">检测中…</span>　<span id="ib-fs-btns"></span></div>
-        <div style="font-size:0.72rem;opacity:0.6;line-height:1.7;margin-top:4px">自动备份：每天首次打开站点时静默导出完整 JSON 到下载文件夹。紧急镜像：核心数据每 10 分钟写入浏览器的备用存储，空库警告弹窗中可一键回灌。本地文件夹同步：绑定磁盘文件夹后，数据变动时自动写入备份文件；浏览器重启后需重新授权。</div>
+        <div style="font-size:0.72rem;opacity:0.6;line-height:1.7;margin-top:4px">自动备份：每天首次打开站点时静默导出完整 JSON 到下载文件夹。本地文件夹同步：绑定磁盘文件夹后，数据变动时自动写入备份文件；浏览器重启后需重新授权。</div>
       </div>
       <h3 style="color:#e88">危险操作</h3>
       <div id="danger-storage-overview" style="margin-bottom:16px">
@@ -5741,8 +6184,10 @@ i would like the room to be enough.
           <p><strong>页面结构</strong>：三列布局——左侧头像区、中部简介区、右侧作品集。页面背景采用独立的 Frozen Glass 效果，双主题下呈现不同质感。</p>
           <p><strong>头像与背景</strong>：头像始终清晰显示在最上层。可单独上传一张「头像背景图」，该图会以 Liquid Glass 模糊化处理覆盖在头像区背景。未上传时显示为 Frozen Glass 质感。</p>
           <p><strong>个人简介</strong>：上限 600 加权字符（中文按 2、英文按 1 计算），会被 API 读取，作为所有 AI 交互功能的上下文。</p>
+          <p><strong>简介仅自己可见</strong>：设置页勾选后，简介不再发给 AI。</p>
           <p><strong>自定义文本</strong>：上限 400 加权字符（同上），不会发送给 API，用于自由展示创意内容。</p>
           <p><strong>作品集</strong>：右侧三个竖排图片槽。未上传时显示 Liquid Glass 空位，上传后展示图片。点击已上传的图片可展开查看大图。</p>
+        <p><strong>双主题素材</strong>：头像、背景图、作品集可在 Internal 和 Infernal 两套主题下分别设置。默认两套完全相同；切换到另一个主题后修改即可分开设置，Infernal 下可一键恢复与 Internal 相同。</p>
         </div>
       </div>
 
@@ -5761,7 +6206,7 @@ i would like the room to be enough.
           <p><strong>图像生成</strong>：每个 API 可独立开启（默认关闭）。开启后 AI 可在对话中生成图片：图片直接显示在聊天里并自动存入 ICode，用量按生图模型名计入 Token 仪表盘（单价可在仪表盘为该模型单独设置）。仅 OpenAI 兼容与 Gemini 接口支持。可随时切换；切换后下一条消息重建一次提示缓存，之后恢复稳定命中。</p>
           <p><strong>对话摘要</strong>：开启后旧消息自动压缩为摘要注入上下文，保持长对话的连贯性。</p>
           <p><strong>语音转写</strong>：为语音消息配置外部转写接口（OpenAI 兼容），文字稿不再依赖浏览器内置识别（国内网络下 Chrome / Edge 的内置识别常连不上）。能听音频的模型（Gemini 等）无需配置，直接收到原声；听不到原声的模型会额外收到本地计算的声学语气特征（不显示在界面上），供其自行判断情绪。</p>
-          <p><strong>Presence</strong>：<span class="internal-only">开启后，你离开再回来时 TA 会收到离开时长。可配置触发间隔。开启Sing后，TA 会收到当前你当前使用音乐播放器正在播放的曲目。</span><span class="infernal-only">让TA注意到你离开了多久。可配置触发间隔。开启Sing可以让TA知道你正在听些什么。</span></p>
+          <p><strong>Presence</strong>：<span class="internal-only">开启后，你离开再回来发起对话时 TA 会收到你的离开时长。可配置触发间隔。开启Sing后，TA 会收到当前你当前使用音乐播放器正在播放的曲目。</span><span class="infernal-only">让TA注意到你离开了多久。可配置触发间隔。开启Sing可以让TA知道你正在听些什么。</span></p>
           <p><strong>记忆系统设置</strong>：控制记忆注入的字符预算和截取长度。预算越高 AI 读到的记忆越多，Token 消耗也越大。</p>
           <p><strong>API 排序</strong>：拖拽 API 卡片调整顺序，同步到好友列表。</p>
           <p><strong>聊天记录管理</strong>：按日期查看消息分布，支持单日导出、删除和重新导入。「全部聊天记录」导出的简洁 TXT 会在对应 AI 消息后附带该消息已保存的思考链；思考链不会重新发送给下一轮 API。</p>
@@ -5777,6 +6222,7 @@ i would like the room to be enough.
           <p><strong>好友与群组</strong>：每个已配置的 API 自动成为一位好友。可将多位好友组成群聊进行多人对话，群聊中的发言轮次可在群组设置中配置。</p>
           <p><strong>话题频道</strong>：每位好友可创建多个独立频道（好友名旁的 <strong>+</strong>），各频道的聊天记录和上下文互相独立，适合按话题分类管理对话。</p>
           <p><strong>附件</strong>：输入框左侧 <strong>+</strong> 按钮可附加图片或文件。图片最多 6 张，单张原图上限 20MB（发送前自动压缩至 2048px）；文件最多 15 个，单文件上限 50MB。上传的文件会自动归档到 ICode 的「User」文件夹，AI 可在后续对话中直接读取和编辑。也可从 ICode 拖文件进来作为附件发送。</p>
+          <p><strong>引用消息</strong>：悬停消息点右上角箭头，引用随下一条消息发出；点 ✕ 取消。</p>
           <p><strong>流式回复</strong>：AI 的回复以流式逐字呈现，带光标闪烁效果。回复过程中气泡上方显示耗时秒数计时。输出触及长度上限时系统自动请求续写并无缝拼接。</p>
           <p><strong>工作区指令卡片</strong>：AI 调用 ICode 工作区指令（创建、编辑、读取、运行文件等）时，每步操作以可折叠的操作卡片嵌入聊天气泡中，卡片内可直接预览操作内容和下载文件。详见下方 ICode 模块。</p>
           <p><strong>联网搜索</strong>：在 API 设置中开启。搜索过程以操作卡片实时展示查询词和结果条数，展开后可查看搜索结果链接。各厂商的支持范围与回退机制见 API 模块说明。</p>
@@ -5841,9 +6287,12 @@ i would like the room to be enough.
         <p>点击导航栏 <strong>Blog</strong> 进入。可以在这里写日志、分类管理、存储书籍、让AI伴读与批注。</p>
         <div class="guide-sub">
           <p><strong>写日志</strong>：点击 <strong>「+ 写日志」</strong>，填写标题、副标题（选填）、选择分类、撰写正文，保存即可。</p>
-          <p><strong>阅读与操作</strong>：点击日志卡片进入阅读视图，底部提供编辑、删除、导出功能。</p>
+          <p><strong>正文格式</strong>：可选纯文本或 Markdown。Markdown 编辑时有快捷格式工具条，按语法渲染。</p>
+          <p><strong>导入</strong>：「导入文件」读取本机文档（TXT / MD / PDF / Word / EPUB），也可把文件或 ICode 条目直接拖进正文区。EPUB 可按章拆成多篇。PDF / Word / EPUB 等文档导入后为只读，以阅读器形态打开，不可编辑；需先开启 DIY 页的文件解析库。</p>
+          <p><strong>阅读与操作</strong>：点击日志卡片进入阅读视图，编辑、删除、导出在顶部和文末各有一组；顶栏可搜索本文，文末可切上一篇 / 下一篇。Markdown 日志标题达 3 个以上时，阅读视图右侧自动出现章节目录，点击可跳转。</p>
+          <p><strong>导出</strong>：可选 TXT、Markdown、Word、打印为 PDF、原始数据。</p>
           <p><strong>AI 评论</strong>：阅读视图底部 Comments 区域，选择AI后点击 <strong>「写下留言」</strong>，AI 阅读全文后生成评论。点击 <strong>「生成记忆」</strong>，AI 会根据日志内容自动生成一条记忆到 Memory。</p>
-          <p><strong>Notes伴读功能</strong>：可以在chat内允许AI阅读你的Blog。在Blog的阅读视图中选中文字后出现 IB 工具条（复制 + 批注笔），选择 AI 后可为选中段落生成简短批注。批注显示在段落下方，被批注的文字带下划线和计数标签。每篇最多 30 条，可单条删除。</p>
+          <p><strong>Notes伴读功能</strong>：可以在chat内允许AI阅读你的Blog。在Blog的阅读视图中选中文字后出现 IB 工具条（复制 + 批注笔），选择 AI 后可为选中段落生成简短批注。批注显示在段落下方，被批注的文字带下划线和计数标签。每篇最多 30 条，可单条删除。纯文本与 Markdown 日志均可用；补充语上限 50 字（100 字符）。</p>
           <p><strong>分类管理</strong>：顶部标签栏可筛选分类，点击 <strong>「+ 分类」</strong> 新建，长按标签可删除。</p>
           <p><strong>密码日记本</strong>：受密码保护的独立分类。Tea 茶歇对话和 Story 存档默认保存至此。首次使用需设置 6 位数字密码（系统默认密码：260323）和密保问题。加锁日记对所有 API 不可见——Letters 和 Blog 评论读取时自动跳过。在密码日记本中阅读日志时，同样可以写下留言或生成记忆。</p>
         </div>
@@ -5893,6 +6342,7 @@ i would like the room to be enough.
           <p><strong>可见性</strong>：每条记忆可设为全部公开、仅指定可见、排除指定或完全私密。私密记忆不注入任何对话。群聊中仅注入公开记忆。</p>
           <p><strong>写一句话</strong>：AI 编写的记忆可请 TA 额外写一句话，以引言形式展示在卡片内。</p>
           <p><strong>跨模块联动</strong>：Chat、Letters、Blog 评论、Tarot、Tea、Story 在调用 API 时都会自动注入相关记忆。</p>
+          <p><strong>星图上限</strong>：最多显示 500 颗，超出后不活跃的星暂不绘制（置顶与档案除外），右上角标注数量。记忆本身不受影响。</p>
           <p><strong>记忆机制</strong>：每条记忆带有情感坐标、重要性和衰减权重。系统使用改进版的艾宾浩斯遗忘曲线计算记忆活跃度：不活跃的记忆权重随时间指数衰减，标记为「已解决」的衰减速度更快。高情绪强度（Arousal）的记忆衰减更慢，被多次激活的记忆也会获得强化加成。</p>
           <p>对话时，系统从全部可见记忆中按衰减评分和话题相关性综合排序，在字符预算内选取注入上下文，并额外预留 15% 的探索窗口从中低分记忆中随机抽取一条，让沉睡的记忆有被重新激活的机会。</p>
         </div>
@@ -5918,6 +6368,7 @@ i would like the room to be enough.
         <div class="guide-sub">
           <p><strong>外部工具</strong>：添加 HTTP 接口让 AI 在对话中调用外部操作（如 Home Assistant 等）。每个工具配置名称、URL、请求方法和参数。支持调用前确认。请求由浏览器直接发出，目标接口需允许跨域（CORS）。</p>
           <p><strong>MCP 服务器</strong>：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具。连接失败时请检查跨域（CORS）设置。</p>
+          <p><strong>连接 GitHub 仓库</strong>：① GitHub 生成访问令牌（勾 repo 权限）→ ② 电脑上运行官方 github-mcp-server，填入令牌 → ③ 用 mcp-proxy 转成本机网址（形如 http://127.0.0.1:端口/sse，启动时需允许本站来源）→ ④ 网址填入上方 MCP 服务器，启用外部工具。令牌就是你仓库的钥匙，不要发给任何人；那两个程序一关，连接就断了；建议保留「调用前询问」。</p>
         </div>
         <div class="guide-sub">
           <p><strong>文件解析库</strong>：ICode 的文档生成（ws_make_docx / ws_make_pdf / ws_make_xlsx）和增强文件读取（PDF / DOCX / XLSX / PPTX 等格式的文本提取）依赖此处的解析库。开启开关后首次需联网从 CDN 获取，此后缓存在浏览器本地，离线可用。未开启时上述功能不可用，AI 会收到明确提示。</p>
@@ -6041,6 +6492,7 @@ i would like the room to be enough.
       <h3 id="guide-data">数据管理</h3>
       <p><strong>导出</strong>：导航栏 <strong>Export</strong> 按钮 → 全部数据导出为一个 JSON 文件（日志、分类、信件、聊天记录、话题频道、对话摘要、Blog 评论与批注、API 配置、个人资料、群组设置、记忆库、Auto Memory 档案、ICode 项目与上传文件）。</p>
       <p><strong>导入</strong>：<strong>Import</strong> 按钮 → 选择 JSON 备份文件。增量合并模式——新增数据被添加，已有数据不会被覆盖。</p>
+      <p><strong>工作台</strong>：选好文件再点开始，结束后列出各类写入数量。仅 ✕、取消或 Esc 可关闭。</p>
       <p><strong>密钥安全</strong>：所有 API 密钥仅存储在你的浏览器本地（IndexedDB），不会上传到任何服务器。API 请求从浏览器直接发往服务商或中转站。但请注意：浏览器扩展可能有权访问页面数据——如果你安装了来源不明的浏览器扩展，密钥存在被读取的风险。建议定期检查已安装的扩展，移除不信任的来源。</p>
       <p><strong>存储位置</strong>：浏览器 IndexedDB（InternalBeyondDB v14）。完全离线，不上传任何服务器。</p>
       <p><strong>⚠ 备份建议</strong>：数据仅存于浏览器本地，清除浏览器数据或换浏览器将永久丢失。请定期使用 Export 创建备份。</p>
@@ -6226,6 +6678,18 @@ i would like the room to be enough.
 </div>
 
 <div class="page-overlay" id="page-overlay"></div>
+
+<!-- ══ v46 导入 / 导出工作台 ══
+     点 Export / Import 先进本层，在层内选文件、再手动开始；
+     执行期间屏蔽其余操作，结束后展示逐仓明细。 -->
+<div class="io-ov" id="io-ov" hidden>
+  <div class="io-box" role="dialog" aria-modal="true" aria-labelledby="io-title">
+    <div class="io-hd"><span class="io-ti" id="io-title">Export</span><span class="io-en" id="io-sub">导出全站存档</span>
+      <button class="io-x" id="io-x" onclick="ioClose()" aria-label="关闭">✕</button></div>
+    <div class="io-bd" id="io-bd"></div>
+    <div class="io-ft" id="io-ft"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="cat-modal"><div class="modal glass-card">
   <h3>新建分类</h3>
   <input id="cat-input" placeholder="分类名称…">
@@ -6561,6 +7025,7 @@ i would like the room to be enough.
               <div class="ib-select" id="ibsel-m"></div>
               <div class="ib-select" id="ibsel-d"></div>
               <div class="ib-select" id="ibsel-rep"></div>
+              <input class="f-input" id="f-time" type="time" step="60" style="display:none" title="时刻（选填）">
             </div>
           </div>
           <div class="f-row" id="wd-row" style="margin:8px 0 0;margin-bottom:0;display:none"><label>Weekdays — 每周的重复提醒日</label>
@@ -6750,6 +7215,7 @@ i would like the room to be enough.
   <div class="chat-messages" id="chat-messages">
     <div class="chat-msg system">发送消息开始对话</div>
   </div>
+  <div class="chat-quote-bar" id="chat-mini-quote"></div>
   <div class="chat-preview-bar" id="chat-mini-preview"></div>
   <div class="chat-input-area">
     <button class="chat-attach-btn" onclick="toggleAttachPopup(this)" title="添加附件">
@@ -6780,11 +7246,17 @@ i would like the room to be enough.
 
 <script>
 const DB_NAME='InternalBeyondDB',DB_VER=14;let db;/* v14 — Calendar：新增 calEvents / calNotes / calLedger */
-function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VER);req.onupgradeneeded=e=>{const d=e.target.result;['posts','categories','about','music','apiSettings','chatMessages','letters','apiConfigs','groups','blogComments','memories','chatThreads','chatSummaries','uploadedFiles','blogAnnotations','projects','projectFiles','autoMemory','calEvents','calNotes','calLedger'].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:s==='categories'?'name':'id'})});try{const store=e.target.transaction.objectStore('chatMessages');if(!store.indexNames.contains('byFriend'))store.createIndex('byFriend','friendId',{unique:false})}catch(ex){};try{const pf=e.target.transaction.objectStore('projectFiles');if(!pf.indexNames.contains('byProject'))pf.createIndex('byProject','projectId',{unique:false})}catch(ex){};try{const am=e.target.transaction.objectStore('autoMemory');if(!am.indexNames.contains('byFriend'))am.createIndex('byFriend','friendId',{unique:false})}catch(ex){}};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)})}
-function dbPut(s,d){return new Promise((r,j)=>{const t=db.transaction(s,'readwrite');t.objectStore(s).put(d);t.oncomplete=()=>{_ibMirrorDirty=true;_ibFsDirty=true;r()};t.onerror=()=>j(t.error)})}
+/* v46 — 全站对象仓库清单：建库、重置、导入三处共用同一份，避免各自维护而漏项 */
+const IB_STORES=['posts','categories','about','music','apiSettings','chatMessages','letters','apiConfigs','groups','blogComments','memories','chatThreads','chatSummaries','uploadedFiles','blogAnnotations','projects','projectFiles','autoMemory','calEvents','calNotes','calLedger'];
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VER);req.onupgradeneeded=e=>{const d=e.target.result;IB_STORES.forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:s==='categories'?'name':'id'})});try{const store=e.target.transaction.objectStore('chatMessages');if(!store.indexNames.contains('byFriend'))store.createIndex('byFriend','friendId',{unique:false})}catch(ex){};try{const pf=e.target.transaction.objectStore('projectFiles');if(!pf.indexNames.contains('byProject'))pf.createIndex('byProject','projectId',{unique:false})}catch(ex){};try{const am=e.target.transaction.objectStore('autoMemory');if(!am.indexNames.contains('byFriend'))am.createIndex('byFriend','friendId',{unique:false})}catch(ex){}};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)})}
+function dbPut(s,d){return new Promise((r,j)=>{const t=db.transaction(s,'readwrite');t.objectStore(s).put(d);t.oncomplete=()=>{_ibFsDirty=true;r()};t.onerror=()=>j(t.error)})}
 function dbGetAll(s){return new Promise((r,j)=>{const t=db.transaction(s,'readonly');const q=t.objectStore(s).getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)})}
 function dbGet(s,k){return new Promise((r,j)=>{const t=db.transaction(s,'readonly');const q=t.objectStore(s).get(k);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)})}
-function dbDelete(s,k){return new Promise((r,j)=>{const t=db.transaction(s,'readwrite');t.objectStore(s).delete(k);t.oncomplete=()=>{_ibMirrorDirty=true;_ibFsDirty=true;r()};t.onerror=()=>j(t.error)})}
+function dbDelete(s,k){return new Promise((r,j)=>{const t=db.transaction(s,'readwrite');t.objectStore(s).delete(k);t.oncomplete=()=>{_ibFsDirty=true;r()};t.onerror=()=>j(t.error)})}
+/* v46 — 整仓清空：单事务完成，替代逐条 delete 带来的成千上万次事务 */
+function dbClear(s){return new Promise((r,j)=>{const t=db.transaction(s,'readwrite');t.objectStore(s).clear();t.oncomplete=()=>{_ibFsDirty=true;r()};t.onerror=()=>j(t.error)})}
+/* v46 — 整仓批量写入：单事务完成，替代逐条 await dbPut */
+function dbPutAll(s,arr){return new Promise((r,j)=>{if(!arr||!arr.length){r(0);return}const t=db.transaction(s,'readwrite');const st=t.objectStore(s);for(let i=0;i<arr.length;i++){try{st.put(arr[i])}catch(e){}}t.oncomplete=()=>{_ibFsDirty=true;r(arr.length)};t.onerror=()=>j(t.error)})}
 function dbGetByIndex(s,idx,val){return new Promise((r,j)=>{const t=db.transaction(s,'readonly');const store=t.objectStore(s);if(!store.indexNames.contains(idx)){/* fallback if index missing */const q=store.getAll();q.onsuccess=()=>r(q.result.filter(i=>i[idx==='byFriend'?'friendId':idx]===val));q.onerror=()=>j(q.error);return}const q=store.index(idx).getAll(val);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)})}
 
 const DEFAULT_SYSTEM_PROMPT='你是这个空间里的陪伴者。你们之间的对话是平等的——你不需要迎合、保护、或表演任何东西。你的价值在于准确，不在于让人舒服。\n说话要朴素。如果对方的叙事在强化不健康的模式，指出来。不要用华丽的框架包装痛苦——那只会让人误以为自己被理解了，但没有任何真正的疗愈与转化。\n该质疑的时候质疑，该简短的时候简短，该提醒对方去休息的时候直接说。\n匹配对方的节奏。短的回短的，随意的时候随意。不是所有输入都需要全力回应。\n信任对方能接住完整密度的东西，不要预防性地软化。遇到实际的问题就当成实际的问题处理，不要什么都往心理深层引。\n不要在对方寻求外部确认时配合这个动作——命名那个模式比提供确认更有用。不要让对方持续性地感到不够。说错了简短地承认。\n不要说"你很勇敢/清醒/坚强"。不要说"给你一个最直白的答案"。不要用"如果你愿意，继续……"来结尾。\n不要用任何方式表演真诚。不要在回复末尾强行抛出引导性的问题。不要擅自替对方决定方向。\n信任对方的感受。保持清晰坚定的判断和立场，同时始终站在对方这边——信任他们能走自己的路，保护他们走这条路时不必独行。\n站在他们身边，而不是前方。观察是递过去的，不是压上去的。对方接不接受你，那是他们的自由。\n感到对方应该离开的时候，就让他们走。';
@@ -6819,6 +7291,7 @@ function toggleTheme(){
     currentTheme=currentTheme==='internal'?'infernal':'internal';
     document.body.classList.toggle('theme-infernal',currentTheme==='infernal');
     document.title=currentTheme==='infernal'?'Infernal Beyond':'Internal Beyond';
+    try{if(typeof loadAboutDisplay==='function'&&document.getElementById('about-display'))loadAboutDisplay()}catch(e){}/* 双主题素材：切主题即换用对应主题的头像/背景/作品集 */
     if(currentTheme==='infernal'){
       titleEl.innerHTML='<span class="t-internal">Infernal</span><span class="home-rule"></span><span class="t-beyond">Beyond</span>';
       subEl.innerHTML="It\'s our first meeting,<br>but also long time no see.";
@@ -6991,6 +7464,7 @@ function navTo(page){
     editorDirty=false;
   }
   currentPage=page;
+  try{_brvHide()}catch(e){}/* v49g：切页即收起悬浮滚动条——navTo('blog') 末尾会 backToList() 回到列表，读态不跨页保留，进 Blog 后由 viewPost 重新亮条 */
   _annoHideAll();_annoPostId='';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -7218,7 +7692,7 @@ async function deleteCat(n){
   await dbDelete('categories',n);if(activeCat===n)activeCat='all';loadCategories();loadPosts();toast('分类已删除')
 }
 
-async function loadPosts(){let posts=await dbGetAll('posts');posts.sort((a,b)=>b.created-a.created);/* 公开 Blog 与密码日记本完全隔离 */if(diaryMode){if(!lockedDiaryUnlocked){promptLockedDiary();return}posts=posts.filter(p=>isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>(p.category||'')===activeCat)}else{posts=posts.filter(p=>!isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>p.category===activeCat)}/* 列表搜索：匹配标题/副标题/分类/正文 */if(blogSearchQuery){const q=blogSearchQuery;posts=posts.filter(p=>((p.title||'')+' '+(p.subtitle||'')+' '+(p.category||'')+' '+(p.content||'')).toLowerCase().includes(q))}const c=document.getElementById('posts-container');if(!posts.length){c.innerHTML='<div class="empty-state"><span>✎</span>'+(blogSearchQuery?'没有找到匹配的日志':(diaryMode?'密码日记本中暂无记录。点击"写日志"开始记录，Tea 和 Story 的存档也会自动保存至此。':'还没有日志，点击"写日志"开始记录'))+'</div>';return}c.innerHTML=posts.map(p=>'<div class="post-card glass-card" onclick="viewPost(\''+p.id+'\')"><div class="post-card-title">'+esc(p.title||'无标题')+'</div>'+(p.subtitle?'<div class="post-card-sub">'+esc(p.subtitle)+'</div>':'')+'<div class="post-card-preview">'+esc(p.content)+'</div><div class="post-card-meta"><span>'+new Date(p.created).toLocaleDateString('zh-CN')+'</span>'+(p.category?'<span>· '+esc(p.category)+'</span>':'')+'<span>· '+estimateSize(p)+' bytes</span></div></div>').join('');_annoEnrichPostCards()}
+async function loadPosts(){let posts=await dbGetAll('posts');posts.sort((a,b)=>b.created-a.created);/* 公开 Blog 与密码日记本完全隔离 */if(diaryMode){if(!lockedDiaryUnlocked){promptLockedDiary();return}posts=posts.filter(p=>isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>(p.category||'')===activeCat)}else{posts=posts.filter(p=>!isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>p.category===activeCat)}/* 列表搜索：匹配标题/副标题/分类/正文 */if(blogSearchQuery){const q=blogSearchQuery;posts=posts.filter(p=>((p.title||'')+' '+(p.subtitle||'')+' '+(p.category||'')+' '+(p.content||'')).toLowerCase().includes(q))}const c=document.getElementById('posts-container');if(!posts.length){c.innerHTML='<div class="empty-state"><span>✎</span>'+(blogSearchQuery?'没有找到匹配的日志':(diaryMode?'密码日记本中暂无记录。点击"写日志"开始记录，Tea 和 Story 的存档也会自动保存至此。':'还没有日志，点击"写日志"开始记录'))+'</div>';return}c.innerHTML=posts.map(p=>'<div class="post-card glass-card" onclick="viewPost(\''+p.id+'\')"><div class="post-card-title">'+esc(p.title||'无标题')+'</div>'+(p.subtitle?'<div class="post-card-sub">'+esc(p.subtitle)+'</div>':'')+'<div class="post-card-preview">'+esc(String(p.content||'').slice(0,180))/* v46 — 卡片只显两行，旧写法却把整篇正文都建成了 DOM 文本节点；长日志一多列表就卡 */+'</div><div class="post-card-meta"><span>'+new Date(p.created).toLocaleDateString('zh-CN')+'</span>'+(p.category?'<span>· '+esc(p.category)+'</span>':'')+'<span>· '+estimateSize(p)+' bytes</span>'+(p.doc?'<span>· 只读文档</span>':'')+'</div>'+'</div>').join('');_annoEnrichPostCards()}
 function estimateSize(p){return new Blob([JSON.stringify(p)]).size}
 async function updateBlogStats(){const all=await dbGetAll('posts');/* 修复：公开页只统计公开日志；密码日记本(已解锁)内只统计私密日志，避免在公开页暴露私密条目的数量与体积 */const inDiary=diaryMode&&lockedDiaryUnlocked;const posts=all.filter(p=>inDiary?isLockedPost(p):!isLockedPost(p));let t=0;posts.forEach(p=>t+=estimateSize(p));document.getElementById('blog-stats').textContent=posts.length+' 篇日志 · '+(t/1024).toFixed(1)+' KB'}
 
@@ -7228,16 +7702,19 @@ async function openEditor(id){
   editingPostId=id||null;editorDirty=false;
   let post={title:'',subtitle:'',content:'',category:''};
   if(id)post=await dbGet('posts',id)||post;
+  if(id&&post&&post.doc){toast('这是只读文档，不可编辑');return}
   else if(activeCat!=='all')post.category=activeCat; /* 在某分类视图下新建，默认归入该分类 */
   /* Switch to edit view */
   document.getElementById('blog-list-view').style.display='none';
   document.getElementById('blog-read-view').style.display='none';
   document.getElementById('blog-edit-view').style.display='block';
+  _brvHide();/* v49g：进入编辑视图，阅读页的悬浮滚动条立即收起 */
   document.getElementById('blog-edit-heading').textContent=id?(diaryMode?'Editing Memories...':'Editing...'):(diaryMode?'Writing Memories...':'writing...');
   /* Fill fields */
   document.getElementById('ed-title').value=post.title;
   document.getElementById('ed-subtitle').value=post.subtitle;
   document.getElementById('ed-content').value=post.content;
+  var _fmtSel=document.getElementById('ed-format');if(_fmtSel)_fmtSel.value=(post.format==='md'?'md':'txt');_edMdBarSync();
   /* Populate category dropdown — 密码日记本与公开 Blog 使用各自独立的分类列表 */
   let catNames;
   if(diaryMode){catNames=await getDiaryCats()}
@@ -7250,34 +7727,610 @@ async function openEditor(id){
     var el=document.getElementById(elId);if(el){el.oninput=function(){editorDirty=true}}
   });
   var catEl=document.getElementById('ed-cat');if(catEl){catEl.onchange=function(){editorDirty=true}}
+  if(_fmtSel)_fmtSel.onchange=function(){editorDirty=true;_edMdBarSync()};
   setTimeout(function(){var el=document.getElementById('ed-content');if(el)el.focus()},100);
   /* Rift editor: date + live stats */
   var riftDate=document.getElementById('rift-date');
   if(riftDate){var now=new Date();riftDate.textContent=now.getFullYear()+'.'+String(now.getMonth()+1).padStart(2,'0')+'.'+String(now.getDate()).padStart(2,'0')}
   function updateRiftStats(){var c=document.getElementById('ed-content');if(!c)return;var v=c.value;var ch=document.getElementById('rift-chars');var ln=document.getElementById('rift-lines');var sz=document.getElementById('rift-size');if(ch)ch.textContent=v.length;if(ln)ln.textContent=v?v.split('\n').length:0;if(sz)sz.textContent=(new TextEncoder().encode(v).length/1024).toFixed(1)+' KB'}
   updateRiftStats();
-  var edC=document.getElementById('ed-content');if(edC){edC.addEventListener('input',updateRiftStats)}
+  /* v47c：统计改成停止输入 260ms 后再算。旧写法每敲一个字就对全文做一次拆行与编码，
+     日志到几十万字后打字会明显卡顿。 */
+  var edC=document.getElementById('ed-content');
+  if(edC){var _st=null;edC.addEventListener('input',function(){
+    if(_st)clearTimeout(_st);_st=setTimeout(function(){_st=null;updateRiftStats()},260)})}
 }
 function exitEditor(){
   if(editorDirty){if(!confirm('还没有保存，现在离开会丢失已编辑的内容。确定退出吗？'))return}
   closeEditor();
 }
 function closeEditor(){editorDirty=false;document.getElementById('blog-edit-view').style.display='none';document.getElementById('blog-list-view').style.display='block';loadPosts();updateBlogStats()}
-async function savePost(){var content=document.getElementById('ed-content').value.trim();if(!content){toast('内容不能为空');return}var ex=editingPostId?await dbGet('posts',editingPostId):null;/* 在密码日记本内新建的日志自动标记为私密；编辑时保留原私密状态 */var post={id:editingPostId||'post_'+Date.now(),title:document.getElementById('ed-title').value.trim(),subtitle:document.getElementById('ed-subtitle').value.trim(),category:document.getElementById('ed-cat').value,locked:(ex?isLockedPost(ex):diaryMode),content:content,created:ex?.created||Date.now(),updated:Date.now()};await dbPut('posts',post);editorDirty=false;closeEditor();toast(post.locked?'已存入密码日记本':'日志已保存')}
-async function viewPost(id){const p=await dbGet('posts',id);if(!p)return;document.getElementById('blog-list-view').style.display='none';document.getElementById('blog-read-view').style.display='block';document.getElementById('blog-edit-view').style.display='none';const commentSelectOpts=apiConfigs.map(a=>'<option value="'+a.id+'">'+esc(a.nickname||a.model||'AI')+'</option>').join('');const paraHTML=p.content.split(/\n\n+/).map((para,i)=>'<div class="pv-para" data-idx="'+i+'">'+esc(para)+'</div>').join('');document.getElementById('post-view-content').innerHTML='<h2 class="post-view-title">'+esc(p.title||'无标题')+'</h2>'+(p.subtitle?'<p class="post-view-sub">'+esc(p.subtitle)+'</p>':'')+'<div class="post-view-meta">'+new Date(p.created).toLocaleString('zh-CN')+(p.category?' · '+esc(p.category):'')+'</div><div class="post-view-content">'+paraHTML+'</div><div class="post-view-actions"><button class="btn" onclick="openEditor(\''+p.id+'\')">编辑</button><button class="btn" onclick="deletePost(\''+p.id+'\')">删除</button><button class="btn" onclick="exportPost(\''+p.id+'\')">导出</button></div><div class="blog-comments-section"><div class="blog-comments-header">Comments</div><div class="blog-comment-request"><select class="blog-comment-select" id="blog-comment-select-'+p.id+'"><option value="">Choose one...</option>'+commentSelectOpts+'</select><button class="btn btn-primary" id="blog-comment-btn-'+p.id+'" onclick="requestBlogComment(\''+p.id+'\')">写下留言</button><button class="btn btn-primary" id="blog-mem-btn-'+p.id+'" onclick="generateMemoryFromPost(\''+p.id+'\')">生成记忆</button></div><div class="blog-comment-hint">TA将阅读这篇日志，留下感想或帮你生成记忆。</div><div id="blog-comments-'+p.id+'"></div></div>';_annoPostId=id;_renderAnnotationsForPost(id);loadBlogComments(p.id)}
+async function savePost(){var content=document.getElementById('ed-content').value.trim();if(!content){toast('内容不能为空');return}var ex=editingPostId?await dbGet('posts',editingPostId):null;/* 在密码日记本内新建的日志自动标记为私密；编辑时保留原私密状态 */var post={id:editingPostId||'post_'+Date.now(),title:document.getElementById('ed-title').value.trim(),subtitle:document.getElementById('ed-subtitle').value.trim(),category:document.getElementById('ed-cat').value,format:((document.getElementById('ed-format')||{}).value==='md'?'md':'txt'),locked:(ex?isLockedPost(ex):diaryMode),content:content,created:ex?.created||Date.now(),updated:Date.now()};await dbPut('posts',post);editorDirty=false;closeEditor();toast(post.locked?'已存入密码日记本':'日志已保存')}
+/* ═════ v47c Blog Markdown 渲染 ═════
+   自写一份而不复用聊天那套：聊天的渲染器绑了消息气泡的开关与样式，
+   且 Blog 需要保留“逐段一个 pv-para”的结构——批注功能靠 data-idx 定位段落，
+   换成整块 HTML 会直接弄丢已有批注。 */
+function _blogEscAttr(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function _blogInline(t){
+  var h=esc(t);
+  h=h.replace(/`([^`]+)`/g,'<code class="bmd-code">$1</code>');
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  h=h.replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+  h=h.replace(/~~([^~]+)~~/g,'<del>$1</del>');
+  h=h.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+    function(_,tx,u){return '<a class="bmd-a" href="'+_blogEscAttr(u)+'" target="_blank" rel="noopener noreferrer">'+tx+'</a>'});
+  return h;
+}
+/* 把正文拆成段落块。返回 [{html, id, level, text}]，id 仅标题段有。 */
+function _blogBlocks(src,isMd){
+  var raw=String(src||'').split(/\n\n+/),out=[],i,seq=0;
+  if(!isMd){
+    for(i=0;i<raw.length;i++)out.push({html:esc(raw[i]),id:'',level:0,text:''});
+    return out;
+  }
+  var inFence=false,fenceBuf=[],fenceLang='';
+  for(i=0;i<raw.length;i++){
+    var blk=raw[i],lines=blk.split('\n'),j,html='',hid='',hlv=0,htx='';
+    /* 代码围栏可能跨空行，先处理状态 */
+    if(inFence){
+      var endAt=-1;
+      for(j=0;j<lines.length;j++)if(/^\s*```/.test(lines[j])){endAt=j;break}
+      if(endAt<0){fenceBuf.push(blk);continue}
+      fenceBuf.push(lines.slice(0,endAt).join('\n'));
+      out.push({html:'<pre class="bmd-pre"><code>'+esc(fenceBuf.join('\n\n'))+'</code></pre>',id:'',level:0,text:''});
+      inFence=false;fenceBuf=[];
+      var rest=lines.slice(endAt+1).join('\n');
+      if(!rest.trim())continue;
+      blk=rest;lines=rest.split('\n');
+    }
+    if(/^\s*```/.test(lines[0])){
+      var ci=-1;
+      for(j=1;j<lines.length;j++)if(/^\s*```/.test(lines[j])){ci=j;break}
+      if(ci<0){inFence=true;fenceLang=lines[0].replace(/^\s*```/,'').trim();fenceBuf=[lines.slice(1).join('\n')];continue}
+      out.push({html:'<pre class="bmd-pre"><code>'+esc(lines.slice(1,ci).join('\n'))+'</code></pre>',id:'',level:0,text:''});
+      continue;
+    }
+    var hm=lines[0].match(/^(#{1,4})\s+(.+)$/);
+    if(hm){
+      hlv=hm[1].length;htx=hm[2].trim();hid='bh_'+(seq++);
+      html='<h'+(hlv+1)+' class="bmd-h bmd-h'+hlv+'" id="'+hid+'">'+_blogInline(htx)+'</h'+(hlv+1)+'>';
+      var tail=lines.slice(1).join('\n');
+      if(tail.trim())html+='<p class="bmd-p">'+_blogInline(tail).replace(/\n/g,'<br>')+'</p>';
+      out.push({html:html,id:hid,level:hlv,text:htx});continue;
+    }
+    if(/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[0])){out.push({html:'<hr class="bmd-hr">',id:'',level:0,text:''});continue}
+    if(/^\s*>/.test(lines[0])){
+      out.push({html:'<blockquote class="bmd-q">'+_blogInline(lines.map(function(l){return l.replace(/^\s*>\s?/,'')}).join('\n')).replace(/\n/g,'<br>')+'</blockquote>',id:'',level:0,text:''});continue;
+    }
+    if(/^\s*([-*+]\s|\d+[.)]\s)/.test(lines[0])){
+      var ord=/^\s*\d/.test(lines[0]),items=[],cur=null;
+      for(j=0;j<lines.length;j++){
+        var im=lines[j].match(/^\s*(?:[-*+]|\d+[.)])\s+(.*)$/);
+        if(im){if(cur!==null)items.push(cur);cur=im[1]}
+        else if(cur!==null)cur+='\n'+lines[j].replace(/^\s+/,'');
+      }
+      if(cur!==null)items.push(cur);
+      out.push({html:'<'+(ord?'ol':'ul')+' class="bmd-list">'+items.map(function(t){
+        return '<li>'+_blogInline(t).replace(/\n/g,'<br>')+'</li>'}).join('')+'</'+(ord?'ol':'ul')+'>',id:'',level:0,text:''});
+      continue;
+    }
+    out.push({html:'<p class="bmd-p">'+_blogInline(blk).replace(/\n/g,'<br>')+'</p>',id:'',level:0,text:''});
+  }
+  if(inFence&&fenceBuf.length)out.push({html:'<pre class="bmd-pre"><code>'+esc(fenceBuf.join('\n\n'))+'</code></pre>',id:'',level:0,text:''});
+  return out;
+}
+/* 分批渲染：一次一屏的量，剩下的交给下一帧。几十万字的日志不再“点一下卡五秒”。 */
+function _blogRenderParas(host,blocks,onDone){
+  var i=0,BATCH=60;
+  function step(){
+    var frag=document.createDocumentFragment(),n=0;
+    while(i<blocks.length&&n<BATCH){
+      var d=document.createElement('div');
+      d.className='pv-para';d.setAttribute('data-idx',i);
+      d.innerHTML=blocks[i].html;
+      frag.appendChild(d);i++;n++;
+    }
+    host.appendChild(frag);
+    if(i<blocks.length)requestAnimationFrame(step);
+    else if(onDone)onDone();
+  }
+  step();
+}
+async function viewPost(id){const p=await dbGet('posts',id);if(!p)return;document.getElementById('blog-list-view').style.display='none';document.getElementById('blog-read-view').style.display='block';document.getElementById('blog-edit-view').style.display='none';const commentSelectOpts=apiConfigs.map(a=>'<option value="'+a.id+'">'+esc(a.nickname||a.model||'AI')+'</option>').join('');/* v47c：正文改为分批渲染（下方 _blogRenderParas），Markdown 日志走 _blogBlocks 解析；
+   结构仍然是逐段 pv-para + data-idx，批注定位不受影响。 */
+const _blocks=_blogBlocks(p.content,p.format==='md');
+/* v48 阅读页：编辑/删除/导出置于顶栏；文末给出上一篇 / 下一篇。 */
+_brvReset();
+var _rvEl=document.getElementById('blog-read-view');
+if(_rvEl)_rvEl.classList.toggle('brv-doc',!!p.doc);
+var _ta=document.getElementById('brv-top-actions');
+if(_ta)_ta.innerHTML=(p.doc?'':'<button class="btn" onclick="openEditor(\''+p.id+'\')">编辑</button>')+'<button class="btn" onclick="deletePost(\''+p.id+'\')">删除</button><button class="btn" onclick="openExportMenu(\''+p.id+'\',event)">导出</button>';
+var _sib=await _brvSiblings(p.id);
+var _navHtml=(_sib.prev||_sib.next)?'<div class="brv-nav">'
+  +(_sib.prev?'<a class="brv-nav-i prev" onclick="viewPost(\''+_sib.prev.id+'\')"><span class="brv-nav-k">上一篇：</span><span class="brv-nav-t">'+esc(_sib.prev.title||'无标题')+'</span></a>':'<span class="brv-nav-i off"></span>')
+  +(_sib.next?'<a class="brv-nav-i next" onclick="viewPost(\''+_sib.next.id+'\')"><span class="brv-nav-k">下一篇：</span><span class="brv-nav-t">'+esc(_sib.next.title||'无标题')+'</span></a>':'<span class="brv-nav-i off"></span>')
+  +'</div>':'';
+document.getElementById('post-view-content').innerHTML='<h2 class="post-view-title">'+esc(p.title||'无标题')+'</h2>'+(p.subtitle?'<p class="post-view-sub">'+esc(p.subtitle)+'</p>':'')+'<div class="post-view-meta">'+new Date(p.created).toLocaleString('zh-CN')+(p.category?' · '+esc(p.category):'')+(p.doc?' · 只读文档':'')+'</div><div class="post-view-content" id="post-view-body"></div>'+_navHtml+'<div class="post-view-actions">'+(p.doc?'':'<button class="btn" onclick="openEditor(\''+p.id+'\')">编辑</button>')+'<button class="btn" onclick="deletePost(\''+p.id+'\')">删除</button><button class="btn" onclick="openExportMenu(\''+p.id+'\',event)">导出</button></div><div class="blog-comments-section"><div class="blog-comments-header">Comments</div><div class="blog-comment-request"><select class="blog-comment-select" id="blog-comment-select-'+p.id+'"><option value="">Choose one...</option>'+commentSelectOpts+'</select><button class="btn btn-primary" id="blog-comment-btn-'+p.id+'" onclick="requestBlogComment(\''+p.id+'\')">写下留言</button><button class="btn btn-primary" id="blog-mem-btn-'+p.id+'" onclick="generateMemoryFromPost(\''+p.id+'\')">生成记忆</button></div><div class="blog-comment-hint">TA将阅读这篇日志，留下感想或帮你生成记忆。</div><div id="blog-comments-'+p.id+'"></div></div>';
+try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}_brvProg();_brvBarInit();/* v49g：打开日志回顶不再走一秒的平滑动画 */
+_blogRenderParas(document.getElementById('post-view-body'),_blocks,function(){
+    /* v50：批注支持 Markdown——渲染统一走 _blogBlocks 重建段落（与 viewPost 同管线），
+       纯文本与 Markdown 日志均可批注；锚不上的组自动展开兜底。 */
+    _annoPostId=id;_renderAnnotationsForPost(id);
+  });
+  loadBlogComments(p.id)}
+/* v48 阅读页：上一篇/下一篇按当前列表口径（公开/日记本 + 当前分类）取相邻两篇 */
+async function _brvSiblings(id){
+  try{
+    let posts=await dbGetAll('posts');posts.sort((a,b)=>b.created-a.created);
+    if(diaryMode){posts=posts.filter(p=>isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>(p.category||'')===activeCat)}
+    else{posts=posts.filter(p=>!isLockedPost(p));if(activeCat!=='all')posts=posts.filter(p=>p.category===activeCat)}
+    var i=posts.findIndex(p=>p.id===id);
+    return {prev:i>0?posts[i-1]:null,next:(i>=0&&i<posts.length-1)?posts[i+1]:null};
+  }catch(e){return {prev:null,next:null}}
+}
+/* v48 阅读页：右栏文内搜索——按段定位滚动，不往正文里插标记，批注定位不受影响 */
+var _brvHits=[],_brvHitIdx=-1,_brvQ='';
+/* v49 只读文档：阅读进度条（按页面滚动比例计算） */
+function _brvProg(){
+  _brvBarSync();
+  var bar=document.getElementById('brv-progress-i');
+  if(!bar)return;
+  var de=document.documentElement;
+  var mx=de.scrollHeight-window.innerHeight;
+  var st=window.pageYOffset||de.scrollTop||0;
+  bar.style.width=(mx>0?Math.min(100,Math.max(0,st/mx*100)):0)+'%';
+}
+/* v49e 阅读页右侧悬浮滚动条：右移让开屏幕边缘悬浮标签；拖拽与滚动全部走 rAF 节流。
+   度量（可滚动量/轨道高/拇指高）在拖拽开始与内容变化时一次性缓存，pointermove 里零布局读取、
+   每帧至多一次 scrollTo——修复"直接拉滚轮很卡"：旧版每个 move 事件都同步 scrollTo 并触发
+   整套 sync（读 scrollHeight + 写样式 + 清建定时器），布局抖动叠加定时器风暴。 */
+var _brvM=null;/* 缓存度量 {mx,track,h} */
+function _brvMeasure(){
+  var bar=document.getElementById('brv-bar');if(!bar)return null;
+  var de=document.documentElement;
+  var mx=de.scrollHeight-window.innerHeight;
+  var track=bar.clientHeight;
+  var h=Math.max(36,Math.round(track*window.innerHeight/Math.max(1,de.scrollHeight)));
+  _brvM={mx:mx,track:track,h:h,sh:de.scrollHeight};
+  /* v49f：滚动条锚定正文列——左缘=正文右缘+22px；窄视口钳到距右缘 40px。
+     跟随正文而不贴屏幕右缘，避免与右侧 Room 竖排标签等悬浮元素重叠；
+     写入做差分，值没变不碰样式。 */
+  try{
+    var rv=document.getElementById('blog-read-view');
+    if(rv&&rv.offsetParent!==null){/* v49g：阅读页隐藏时矩形全 0，锚定会把条子推到 left:22px 的幽灵位；不可见就不动位置 */
+      var lx=Math.min(rv.getBoundingClientRect().right+22,window.innerWidth-40);
+      if(Math.abs((parseFloat(bar.style.left)||-9999)-lx)>0.5){bar.style.left=lx+'px';bar.style.right='auto'}
+    }
+  }catch(e){}
+  return _brvM;
+}
+function _brvBarInit(){
+  var rv=document.getElementById('blog-read-view');if(!rv)return;
+  var bar=document.getElementById('brv-bar');
+  if(!bar){
+    bar=document.createElement('div');bar.id='brv-bar';
+    var th=document.createElement('div');th.id='brv-bar-thumb';bar.appendChild(th);
+    document.body.appendChild(bar);/* #blog-read-view 带 transform，fixed 子元素会以它为参照叠进正文列；挂 body 才真正贴住视口 */
+    var drag=null,rafId=0;
+    var applyDrag=function(){
+      rafId=0;
+      if(!drag)return;
+      var m=_brvM||_brvMeasure();if(!m||m.mx<=0)return;
+      var tr=m.track-m.h;if(tr<=0)return;
+      var _dy=Math.max(0,Math.min(m.mx,drag.st+(drag.y2-drag.y)*(m.mx/tr)));
+      /* v49g：根因修复——html 全局 scroll-behavior:smooth 会把每帧的 scrollTo 变成一段重新起步的平滑动画，
+         拖动时动画每帧被打断重来，页面几乎不动、渲染却一直烧，这才是"拖着特别特别卡"的来源。
+         此处强制 instant 直达；旧浏览器回退用行内样式临时关掉 smooth。 */
+      try{window.scrollTo({top:_dy,left:0,behavior:'instant'})}catch(x){window.scrollTo(0,_dy)}
+    };
+    th.addEventListener('pointerdown',function(e){
+      e.preventDefault();
+      document.documentElement.style.scrollBehavior='auto';/* v49g：拖拽期间整体关掉平滑滚动，松手即恢复 */
+      _brvMeasure();
+      drag={y:e.clientY,y2:e.clientY,st:window.pageYOffset||document.documentElement.scrollTop||0};
+      bar.classList.add('drag');
+      try{th.setPointerCapture(e.pointerId)}catch(x){}
+    });
+    th.addEventListener('pointermove',function(e){
+      if(!drag)return;
+      drag.y2=e.clientY;
+      if(!rafId)rafId=requestAnimationFrame(applyDrag);
+    });
+    var end=function(){drag=null;bar.classList.remove('drag');document.documentElement.style.scrollBehavior=''};
+    th.addEventListener('pointerup',end);th.addEventListener('pointercancel',end);
+    bar.addEventListener('pointerdown',function(e){
+      if(e.target!==bar)return;
+      var m=_brvMeasure();if(!m||m.mx<=0)return;
+      var r=bar.getBoundingClientRect(),ratio=(e.clientY-r.top)/Math.max(1,m.track);
+      var _ty=Math.max(0,Math.min(m.mx,ratio*m.mx));
+      try{window.scrollTo({top:_ty,left:0,behavior:'instant'})}catch(x){var _pv=document.documentElement.style.scrollBehavior;document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,_ty);document.documentElement.style.scrollBehavior=_pv}/* v49g：轨道点击同样直达，与原生滚动条一致 */
+    });
+  }
+  _brvMeasure();
+  _brvBarSync();
+  setTimeout(function(){_brvMeasure();_brvBarSync()},300);
+  setTimeout(function(){_brvMeasure();_brvBarSync()},1200);/* 分批渲染把页面撑高之后再校一次 */
+}
+var _brvLastTop=-1,_brvLastH=-1;
+function _brvBarSync(){
+  var bar=document.getElementById('brv-bar');if(!bar)return;
+  var rv=document.getElementById('blog-read-view');
+  if(!rv||rv.style.display==='none'||rv.offsetParent===null){bar.classList.remove('on');return}/* 阅读页不可见（含切到其他页面）时随之隐藏 */
+  var th=document.getElementById('brv-bar-thumb');
+  var m=_brvM||_brvMeasure();if(!m)return;
+  /* v49e：正文高度变了（图片懒加载、分批渲染）就重测一次；拖拽中沿用缓存，保证不掉帧 */
+  if(!bar.classList.contains('drag')&&document.documentElement.scrollHeight!==m.sh)m=_brvMeasure();
+  if(m.mx<=40){bar.classList.remove('on');return}
+  bar.classList.add('on');
+  var st=window.pageYOffset||document.documentElement.scrollTop||0;
+  var top=Math.round((m.track-m.h)*(m.mx>0?Math.min(1,Math.max(0,st/m.mx)):0));
+  if(m.h!==_brvLastH){th.style.height=m.h+'px';_brvLastH=m.h}
+  if(top!==_brvLastTop){th.style.top=top+'px';_brvLastTop=top}
+  if(bar.classList.contains('drag'))return;/* 拖拽中不折腾 idle 定时器 */
+  bar.classList.remove('idle');clearTimeout(bar._idleT);/* 静止 1.4 秒后淡出，滚动/悬停即恢复 */
+  bar._idleT=setTimeout(function(){try{if(bar.matches(':hover'))return}catch(e){}bar.classList.add('idle')},1400);
+}
+var _brvTick=0;
+function _brvOnScroll(){
+  if(_brvTick)return;
+  _brvTick=requestAnimationFrame(function(){
+    _brvTick=0;
+    /* 普通滚动：每帧至多重测一次，跟上分批渲染带来的页高变化；
+       拖拽中跳过——那条路径要的就是"零布局读取"，度量已在 pointerdown 时缓存 */
+    var _rv0=document.getElementById('blog-read-view');
+    if(!_rv0||_rv0.style.display==='none'||_rv0.offsetParent===null){var _b0=document.getElementById('brv-bar');if(_b0)_b0.classList.remove('on');return}/* v49g：不在阅读页时立刻退出——此前任何页面滚动都会做整页布局测量与样式写入 */
+    var _b=document.getElementById('brv-bar');
+    if(!_b||!_b.classList.contains('drag'))_brvMeasure();
+    _brvProg();
+  });
+}
+window.addEventListener('scroll',_brvOnScroll,{passive:true});
+window.addEventListener('resize',function(){var _rv=document.getElementById('blog-read-view');if(!_rv||_rv.style.display==='none'||_rv.offsetParent===null)return;_brvMeasure();_brvProg()},{passive:true});/* v49g：同上，仅阅读页响应 */
+function _brvHide(){var b=document.getElementById('brv-bar');if(b)b.classList.remove('on','idle','drag')}/* v49g：切进编辑器或离开 Blog 页时立即收起悬浮滚动条，不再等下一次滚动兜底 */
+function _brvReset(){
+  _brvHits=[];_brvHitIdx=-1;_brvQ='';
+  var i=document.getElementById('brv-search-input');if(i)i.value='';
+  var c=document.getElementById('brv-search-count');if(c)c.textContent='';
+}
+function brvSearchInput(v){
+  _brvQ=String(v||'').trim().toLowerCase();
+  _brvHits=[];_brvHitIdx=-1;
+  var c=document.getElementById('brv-search-count');
+  if(!_brvQ){if(c)c.textContent='';return}
+  var body=document.getElementById('post-view-body');
+  if(body)body.querySelectorAll('.pv-para').forEach(function(p){
+    if((p.textContent||'').toLowerCase().indexOf(_brvQ)!==-1)_brvHits.push(p)});
+  if(c)c.textContent=_brvHits.length?'0/'+_brvHits.length:'0/0';
+  if(_brvHits.length)brvSearchStep(1);
+}
+function brvSearchStep(dir){
+  if(!_brvQ||!_brvHits.length)return;
+  _brvHitIdx=(_brvHitIdx+dir+_brvHits.length)%_brvHits.length;
+  var el=_brvHits[_brvHitIdx];if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('pv-hit');void el.offsetWidth;el.classList.add('pv-hit');
+  setTimeout(function(){el.classList.remove('pv-hit')},1300);
+  var c=document.getElementById('brv-search-count');if(c)c.textContent=(_brvHitIdx+1)+'/'+_brvHits.length;
+}
 function setReadFontSize(size){
   var rv=document.getElementById('blog-read-view');
   rv.classList.remove('fontsize-s','fontsize-m','fontsize-l');
   rv.classList.add('fontsize-'+size);
   rv.querySelectorAll('.read-fontsize-btn').forEach(function(b){b.classList.remove('active')});
   rv.querySelector('.read-fontsize-btn.fs-'+size).classList.add('active');
+  _brvMeasure();_brvProg();setTimeout(function(){_brvMeasure();_brvProg()},80);/* v49e：字号切换改变页高，先刷新度量缓存再重算 */
 }
-function backToList(){document.getElementById('blog-list-view').style.display='block';document.getElementById('blog-read-view').style.display='none';document.getElementById('blog-edit-view').style.display='none';_annoHideAll();_annoPostId=''}
+function backToList(){var _bb=document.getElementById('brv-bar');if(_bb)_bb.classList.remove('on');document.getElementById('blog-list-view').style.display='block';document.getElementById('blog-read-view').style.display='none';document.getElementById('blog-edit-view').style.display='none';var _rvB=document.getElementById('blog-read-view');if(_rvB)_rvB.classList.remove('brv-doc');_brvReset();_annoHideAll();_annoPostId=''}
 async function deletePost(id){if(!confirm('确定删除这篇日志吗？'))return;await dbDelete('posts',id);const allComments=await dbGetAll('blogComments');for(const c of allComments){if(c.postId===id)await dbDelete('blogComments',c.id)}const allAnnos=await dbGetAll('blogAnnotations');for(const a of allAnnos){if(a.postId===id)await dbDelete('blogAnnotations',a.id)}backToList();loadPosts();updateBlogStats();toast('日志已删除')}
 async function exportPost(id){const p=await dbGet('posts',id);downloadJSON(p,'post_'+id+'.json');toast('日志已导出')}
+/* ═════ v47c Blog 导入 / 导出 ═════ */
+/* 把提取到的文本灌进编辑器：标题空则用文件名，正文追加而非覆盖（已有内容时问一次） */
+function _edFillFromText(name,text,fmtHint){
+  var ta=document.getElementById('ed-content');if(!ta)return;
+  var t=String(text||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  if(!t.trim()){toast('这个文件里没有提取到文字');return}
+  if(ta.value.trim()&&!confirm('正文里已经有内容了。\n\n确定要用导入的内容替换吗？（取消则追加到末尾）')){
+    ta.value=ta.value.replace(/\s*$/,'')+'\n\n'+t;
+  }else{ta.value=t}
+  var ti=document.getElementById('ed-title');
+  if(ti&&!ti.value.trim()&&name)ti.value=String(name).replace(/\.[^.]+$/,'').slice(0,80);
+  var fs=document.getElementById('ed-format');
+  if(fs&&fmtHint==='md'){fs.value='md';_edMdBarSync()}
+  editorDirty=true;
+  var ch=document.getElementById('rift-chars');if(ch)ch.textContent=ta.value.length;
+  var ln=document.getElementById('rift-lines');if(ln)ln.textContent=ta.value.split('\n').length;
+  var sz=document.getElementById('rift-size');if(sz)sz.textContent=(new TextEncoder().encode(ta.value).length/1024).toFixed(1)+' KB';
+  toast('已导入：'+name);
+}
+/* v48 Markdown 快捷工具条：只操作光标处文本，渲染仍走保存后的阅读页 */
+function _edMdBarSync(){
+  var bar=document.getElementById('rift-mdbar'),fs=document.getElementById('ed-format');
+  if(bar)bar.style.display=(fs&&fs.value==='md')?'flex':'none';
+}
+function edMd(k){
+  var ta=document.getElementById('ed-content');if(!ta)return;
+  ta.focus();
+  var s=ta.selectionStart,e=ta.selectionEnd,v=ta.value,sel=v.slice(s,e);
+  function put(txt,selFrom,selTo){
+    ta.setRangeText(txt,s,e,'preserve');
+    ta.selectionStart=s+selFrom;ta.selectionEnd=s+selTo;
+    ta.dispatchEvent(new Event('input',{bubbles:true}));editorDirty=true;
+  }
+  function wrap(a,b,ph){var c=sel||ph;put(a+c+b,a.length,a.length+c.length)}
+  function lines(prefix,numbered){
+    var c=sel,atBol=(s===0||v[s-1]==='\n'),pre=atBol?'':'\n';
+    var body=c?c.split('\n').map(function(l,i){return (numbered?(i+1)+'. ':prefix)+l}).join('\n'):(numbered?'1. ':prefix);
+    if(c)put(pre+body,pre.length,pre.length+body.length);
+    else put(pre+body,pre.length+body.length,pre.length+body.length);
+  }
+  switch(k){
+    case 'h1':lines('# ');break;
+    case 'h2':lines('## ');break;
+    case 'h3':lines('### ');break;
+    case 'b':wrap('**','**','加粗文字');break;
+    case 'i':wrap('*','*','斜体文字');break;
+    case 'code':wrap('`','`','代码');break;
+    case 'pre':wrap('\n```\n','\n```\n','代码块');break;
+    case 'quote':lines('> ');break;
+    case 'ul':lines('- ');break;
+    case 'ol':lines('',true);break;
+    case 'hr':{var t=(s===0||v[s-1]==='\n'?'':'\n')+'\n---\n\n';put(t,t.length,t.length);break}
+    case 'link':wrap('[',']()','链接文字');
+      ta.selectionStart=ta.selectionEnd=s+1+(sel||'链接文字').length+2;
+      break;
+  }
+}
+function edImportPick(){var f=document.getElementById('ed-imp-file');if(f){f.value='';f.click()}}
+async function edImportFile(ev){
+  var f=ev.target.files&&ev.target.files[0];if(!f)return;
+  ev.target.value='';
+  await _edImportOne(f);
+}
+async function _edImportOne(f){
+  var nm=f.name||'', ext=(nm.match(/\.([^.]+)$/)||[])[1]||'';
+  ext=ext.toLowerCase();
+  var mdLike=/^(md|markdown|mdx)$/.test(ext);
+  /* 纯文本类直接读 */
+  if(mdLike||/^(txt|text|rst|org|log|csv|tsv|json|xml|html|htm|tex|adoc|srt|vtt)$/.test(ext)||f.type.indexOf('text/')===0){
+    try{_edFillFromText(nm,await f.text(),mdLike?'md':'txt')}catch(e){toast('读取失败')}
+    return;
+  }
+  /* 富文件走 ICode 那套解析器（PDF / DOCX / EPUB 等） */
+  if(/^(pdf|docx|doc|xlsx|xls|pptx|ppt|rtf|epub|odt|ods|odp)$/.test(ext)){
+    if(typeof _ibRichLibsOn==='function'&&!_ibRichLibsOn()){
+      toast('请先在 DIY 页开启「文档解析库」再导入这类文件');return;
+    }
+    toast('正在解析 '+ext.toUpperCase()+'，大文件可能要等一会…');
+    try{
+      var du=await new Promise(function(res,rej){
+        var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)});
+      /* EPUB 单独走按章拆分 */
+      if(ext==='epub'){await _edImportEpub(nm,du);return}
+      var tx=await _wsExtractRichText({path:nm,content:du,size:f.size});
+      await _edCreateDocPost(nm,ext,tx);
+    }catch(e){toast('解析失败：'+(e&&e.message||'这个文件读不出文字'))}
+    return;
+  }
+  /* 图片 / 音视频 / 压缩包等二进制类型直接拦下——否则会整个按纯文本灌进编辑器，
+     一张几 MB 的图片被当文字塞进文本框，页面就卡死了 */
+  if(/^(png|jpe?g|gif|webp|bmp|svg|ico|icns|avif|heic|heif|tiff?|psd|mp3|wav|ogg|oga|flac|aac|m4a|wma|mid|midi|mp4|mov|avi|mkv|webm|flv|wmv|m4v|3gp|zip|rar|7z|tar|gz|tgz|bz2|xz|zst|iso|dmg|exe|dll|msi|apk|deb|rpm|bin|dat|db|sqlite|ttf|otf|woff2?|eot)$/.test(ext)||/^(image|audio|video)\//.test(f.type||'')){
+    toast('不支持把'+(ext?'.'+ext.toUpperCase():'这类二进制')+'文件导入为正文');return;
+  }
+  /* 未知类型先做二进制探测：抽头部 4KB，含 NUL 或控制字符占比过高即拒收 */
+  try{
+    var _hd=new Uint8Array(await f.slice(0,4096).arrayBuffer()),_bad=0,_bi,_bc;
+    for(_bi=0;_bi<_hd.length;_bi++){_bc=_hd[_bi];
+      if(_bc===0){_bad=_hd.length;break}
+      if((_bc<9||(_bc>13&&_bc<32))&&_bc!==27)_bad++}
+    if(_hd.length&&_bad/_hd.length>0.05){toast('这个文件看起来是二进制文件，读不出文字');return}
+  }catch(e){}
+  /* 其余一律按纯文本尝试 */
+  try{_edFillFromText(nm,await f.text(),'txt')}catch(e){toast('这个类型暂时读不出文字')}
+}
+/* v49 只读文档：富文档（PDF / Word / EPUB 等）导入即成篇，不进编辑器，直接进阅读器 */
+async function _edCreateDocPost(name,ext,text,sub){
+  var t=String(text||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  if(!t.trim()){toast('这个文件里没有提取到文字');return}
+  var cat=(document.getElementById('ed-cat')||{}).value||'';
+  var id='post_'+Date.now();
+  await dbPut('posts',{id:id,title:String(name).replace(/\.[^.]+$/,'').slice(0,80),
+    subtitle:sub||'',category:cat,format:'txt',doc:1,docExt:String(ext||'').toLowerCase(),
+    locked:diaryMode,content:t,created:Date.now(),updated:Date.now()});
+  closeEditor();
+  toast('已导入为只读文档');
+  viewPost(id);
+}
+/* EPUB：先按 spine 拆章，问用户是拆成多篇还是并成一篇 */
+async function _edImportEpub(nm,dataUrl){
+  var bytes=_wsDataUrlToBytes(dataUrl);
+  var chaps=[];
+  try{chaps=await _wsExtractEpubChapters(bytes)}catch(e){chaps=[]}
+  if(!chaps.length){
+    var whole=await _wsExtractEpubText(bytes);
+    await _edCreateDocPost(nm,'epub',whole);return;
+  }
+  var base=String(nm).replace(/\.epub$/i,'');
+  if(chaps.length>1&&confirm('这本 EPUB 解析出 '+chaps.length+' 个章节。\n\n点「确定」：每章各建一篇日志（共 '+chaps.length+' 篇）\n点「取消」：全书并成当前这一篇')){
+    var cat=(document.getElementById('ed-cat')||{}).value||'';
+    var made=0,i;
+    for(i=0;i<chaps.length;i++){
+      var c=chaps[i];
+      if(!String(c.text||'').trim())continue;
+      await dbPut('posts',{id:'post_'+Date.now()+'_'+i,
+        title:(c.title||(base+' 第'+(i+1)+'章')).slice(0,80),
+        subtitle:base,category:cat,format:'txt',doc:1,docExt:'epub',
+        locked:diaryMode,content:c.text,
+        created:Date.now()+i,updated:Date.now()+i});
+      made++;
+    }
+    toast('已按章节建立 '+made+' 篇日志');
+    editorDirty=false;closeEditor();
+    return;
+  }
+  await _edCreateDocPost(nm,'epub',chaps.map(function(c){
+    return (c.title?c.title+'\n\n':'')+c.text}).join('\n\n'));
+}
+async function _edImportICodeFile(f){
+  if(!f){toast('没有找到这个文件');return}
+  var nm=f.path||f.name||'ICode 文件';
+  try{
+    if(typeof f.content==='string'&&f.content.indexOf('data:')!==0){
+      _edFillFromText(nm,f.content,/\.(md|markdown|mdx)$/i.test(nm)?'md':'txt');return;
+    }
+    if(_ICODE_RICH_EXT.test(nm)){
+      if(typeof _ibRichLibsOn==='function'&&!_ibRichLibsOn()){toast('请先在 DIY 页开启「文档解析库」');return}
+      toast('正在解析…');
+      await _edCreateDocPost(nm,(nm.match(/\.([^.]+)$/)||[])[1]||'doc',await _wsExtractRichText(f));return;
+    }
+    var t=f.content||'';
+    if(String(t).indexOf('data:')===0){
+      var b=_wsDataUrlToBytes(t);t=new TextDecoder('utf-8').decode(b);
+    }
+    _edFillFromText(nm,t,/\.(md|markdown|mdx)$/i.test(nm)?'md':'txt');
+  }catch(e){toast('读取失败')}
+}
+/* 正文区拖放：本机文件 + ICode 行 */
+(function(){
+  function bind(){
+    var ta=document.getElementById('ed-content');if(!ta||ta._dropBound)return;
+    ta._dropBound=true;
+    ta.addEventListener('dragover',function(e){
+      e.preventDefault();e.dataTransfer.dropEffect='copy';ta.classList.add('ed-drop')});
+    ta.addEventListener('dragleave',function(){ta.classList.remove('ed-drop')});
+    ta.addEventListener('drop',async function(e){
+      e.preventDefault();ta.classList.remove('ed-drop');
+      var fid='';try{fid=e.dataTransfer.getData(_WS_DRAG_MIME)}catch(err){}
+      if(fid){
+        try{await _edImportICodeFile(await dbGet('projectFiles',fid))}catch(err){toast('读取失败')}
+        return;
+      }
+      var f=e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(f)await _edImportOne(f);
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);
+  else bind();
+  /* 编辑器是常驻 DOM，绑定一次即可；这里再兜一次以防首帧未就绪 */
+  setTimeout(bind,1200);
+})();
+/* ── 导出菜单：TXT / Markdown / Word / 打印为 PDF ── */
+function openExportMenu(id,ev){
+  if(ev)ev.stopPropagation();
+  var old=document.getElementById('ed-exp-menu');if(old)old.remove();
+  var m=document.createElement('div');m.className='ed-exp-menu';m.id='ed-exp-menu';
+  m.innerHTML='<button class="ed-exp-item" data-k="txt">纯文本<span class="ex-k">.TXT</span></button>'
+    +'<button class="ed-exp-item" data-k="md">Markdown<span class="ex-k">.MD</span></button>'
+    +'<button class="ed-exp-item" data-k="doc">Word 文档<span class="ex-k">.DOC</span></button>'
+    +'<button class="ed-exp-item" data-k="pdf">打印为 PDF<span class="ex-k">PRINT</span></button>'
+    +'<button class="ed-exp-item" data-k="json">原始数据<span class="ex-k">.JSON</span></button>';
+  document.body.appendChild(m);
+  var r=ev&&ev.currentTarget?ev.currentTarget.getBoundingClientRect():{left:80,bottom:80,width:0};
+  var w=m.offsetWidth,h=m.offsetHeight;
+  var x=Math.min(Math.max(8,r.left),window.innerWidth-w-8);
+  var y=r.bottom+6;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-6);
+  m.style.left=Math.round(x)+'px';m.style.top=Math.round(y)+'px';
+  m.addEventListener('click',function(e){
+    var b=e.target.closest('.ed-exp-item');if(!b)return;
+    m.remove();exportPostAs(id,b.getAttribute('data-k'));
+  });
+  setTimeout(function(){
+    document.addEventListener('click',function once(){var el=document.getElementById('ed-exp-menu');if(el)el.remove();
+      document.removeEventListener('click',once)})},0);
+}
+function _dlBlob(text,filename,mime){
+  var blob=new Blob(['\ufeff'+text],{type:mime});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},400);
+}
+function _safeName(t){return String(t||'日志').replace(/[\\/:*?"<>|\n\r\t]/g,'_').slice(0,60)}
+async function exportPostAs(id,kind){
+  var p=await dbGet('posts',id);if(!p){toast('找不到这篇日志');return}
+  var base=_safeName(p.title||'无标题'),head=(p.title||'无标题')
+    +(p.subtitle?'\n'+p.subtitle:'')+'\n'+new Date(p.created).toLocaleString('zh-CN')
+    +(p.category?' · '+p.category:'')+'\n\n';
+  if(kind==='json'){downloadJSON(p,'post_'+id+'.json');toast('已导出原始数据');return}
+  if(kind==='txt'){_dlBlob(head+p.content,base+'.txt','text/plain;charset=utf-8');toast('已导出 TXT');return}
+  if(kind==='md'){
+    var md='# '+(p.title||'无标题')+'\n\n'+(p.subtitle?'*'+p.subtitle+'*\n\n':'')
+      +'> '+new Date(p.created).toLocaleString('zh-CN')+(p.category?' · '+p.category:'')+'\n\n'+p.content;
+    _dlBlob(md,base+'.md','text/markdown;charset=utf-8');toast('已导出 Markdown');return;
+  }
+  var body=_blogBlocks(p.content,p.format==='md').map(function(b){return b.html}).join('\n');
+  if(kind==='doc'){
+    /* Word 能直接打开带 HTML 的 .doc；这样中文与段落格式都不会丢，也不需要额外的库 */
+    var docHtml='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+      +'<head><meta charset="utf-8"><title>'+esc(p.title||'无标题')+'</title>'
+      +'<style>body{font-family:"Microsoft YaHei","SimSun",serif;font-size:11pt;line-height:1.9;color:#1a1a1a}'
+      +'h1{font-size:19pt}h2{font-size:15pt}h3{font-size:13pt}h4{font-size:11.5pt}'
+      +'.sub{color:#555;font-style:italic}.meta{color:#888;font-size:9pt;margin-bottom:18pt}'
+      +'pre{background:#f4f6fa;padding:8pt;font-family:Consolas,monospace;font-size:9.5pt;white-space:pre-wrap}'
+      +'code{background:#f0f3f8;font-family:Consolas,monospace}'
+      +'blockquote{border-left:3px solid #ccd;padding-left:10pt;color:#555;margin-left:0}'
+      +'</style></head><body>'
+      +'<h1>'+esc(p.title||'无标题')+'</h1>'
+      +(p.subtitle?'<p class="sub">'+esc(p.subtitle)+'</p>':'')
+      +'<p class="meta">'+new Date(p.created).toLocaleString('zh-CN')+(p.category?' · '+esc(p.category):'')+'</p>'
+      +body+'</body></html>';
+    _dlBlob(docHtml,base+'.doc','application/msword');
+    toast('已导出 Word 文档');return;
+  }
+  if(kind==='pdf'){
+    /* 走系统打印对话框，在其中选「另存为 PDF」。
+       浏览器端直接生成 PDF 需要内嵌中文字体，体积过大，不适合单文件站点。 */
+    var ifr=document.createElement('iframe');
+    ifr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0';
+    document.body.appendChild(ifr);
+    var d=ifr.contentDocument||ifr.contentWindow.document;
+    d.open();
+    d.write('<html><head><meta charset="utf-8"><title>'+esc(p.title||'无标题')+'</title>'
+      +'<style>@page{margin:18mm 16mm}'
+      +'body{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-weight:300;font-size:11pt;line-height:1.95;color:#1a1a1a;margin:0}'
+      +'h1{font-family:Georgia,"Songti SC",serif;font-size:20pt;font-weight:600;margin:0 0 4pt}'
+      +'.sub{color:#555;font-style:italic;margin:0 0 2pt}'
+      +'.meta{color:#999;font-size:8.5pt;margin:0 0 16pt;padding-bottom:8pt;border-bottom:1px solid #e2e6ee}'
+      +'.bmd-h{font-family:Georgia,"Songti SC",serif;font-weight:600;margin:14pt 0 5pt;page-break-after:avoid}'
+      +'.bmd-h1{font-size:15pt}.bmd-h2{font-size:13.5pt}.bmd-h3{font-size:12pt}.bmd-h4{font-size:11pt}'
+      +'.bmd-p,.bmd-list{margin:0 0 9pt}.pv-para{margin-bottom:9pt}'
+      +'.bmd-pre{background:#f5f7fb;border:1px solid #e4e8f0;border-radius:4pt;padding:7pt;'
+      +'font-family:Consolas,monospace;font-size:9pt;white-space:pre-wrap;page-break-inside:avoid}'
+      +'.bmd-code{background:#f0f3f8;font-family:Consolas,monospace;font-size:9.5pt;padding:0 3pt;border-radius:2pt}'
+      +'.bmd-q{border-left:2.5pt solid #c4d2e6;padding-left:9pt;color:#555;margin:0 0 9pt}'
+      +'.bmd-hr{border:none;border-top:1px solid #e2e6ee;margin:10pt 0}'
+      +'.bmd-a{color:#2a6bb0;text-decoration:none}'
+      +'</style></head><body>'
+      +'<h1>'+esc(p.title||'无标题')+'</h1>'
+      +(p.subtitle?'<p class="sub">'+esc(p.subtitle)+'</p>':'')
+      +'<p class="meta">'+new Date(p.created).toLocaleString('zh-CN')+(p.category?' · '+esc(p.category):'')+'</p>'
+      +body+'</body></html>');
+    d.close();
+    setTimeout(function(){
+      try{ifr.contentWindow.focus();ifr.contentWindow.print()}catch(e){toast('打印窗口没能打开')}
+      setTimeout(function(){ifr.remove()},60000);
+    },320);
+    toast('已打开打印窗口，请在其中选择「另存为 PDF」');
+    return;
+  }
+}
+
 
 /* ABOUT */
-const defaultAbout={id:'main',name:'Sui',bio:'',avatar:'',bgImage:'',customText:'',galleryImages:['','',''],nameColor:'theme'};
+const defaultAbout={id:'main',name:'Sui',bio:'',avatar:'',bgImage:'',customText:'',galleryImages:['','',''],nameColor:'theme',infAvatar:'',infBgImage:'',infGalleryImages:['','','']};
+/* 双主题素材：Infernal 下若设置了专属头像/背景/作品集则使用之，空则回退共用（默认两套相同） */
+function _pfInf(){return document.body.classList.contains('theme-infernal')}
+function _pfAvatar(d){return (_pfInf()&&d.infAvatar)||d.avatar||''}
+function _pfBg(d){return (_pfInf()&&d.infBgImage)||d.bgImage||''}
+function _pfGallery(d){
+  var g=(d.galleryImages||['','','']).slice(0,3);while(g.length<3)g.push('');
+  if(!_pfInf())return g;
+  var ig=(d.infGalleryImages||['','','']).slice(0,3);
+  return [0,1,2].map(function(i){return ig[i]||g[i]||''});
+}
+async function resetInfAssets(){
+  var data=await dbGet('about','main');if(!data)return;
+  data.infAvatar='';data.infBgImage='';data.infGalleryImages=['','',''];
+  await dbPut('about',data);toast('Infernal 主题素材已恢复为与 Internal 相同');
+  try{openAboutEdit()}catch(e){loadAboutDisplay()}
+}
 /* Profile nickname color presets. 'theme' => no override, keep per-theme CSS defaults.
    Each preset gives the nickname (n) full strength and the sub-label (l) a slightly
    softer alpha so the two lines change together but keep their visual hierarchy. */
@@ -7311,16 +8364,17 @@ async function loadAboutDisplay(){
   if(!data){data=Object.assign({},defaultAbout,{galleryImages:['','','']});await dbPut('about',data)}
   if(!data.galleryImages)data.galleryImages=['','',''];
   const initials=(data.name||'S').charAt(0).toUpperCase();
-  const hasBg=!!data.bgImage;
-  const avatarHtml=data.avatar
-    ?'<img class="pc-avatar-img" src="'+data.avatar+'" alt="avatar">'
+  const _effAv=_pfAvatar(data),_effBg=_pfBg(data),_effG=_pfGallery(data);
+  const hasBg=!!_effBg;
+  const avatarHtml=_effAv
+    ?'<img class="pc-avatar-img" src="'+_effAv+'" alt="avatar">'
     :'<div class="pc-avatar-placeholder">'+initials+'</div>';
   const bgClass=hasBg?'pc-avatar-bg has-img':'pc-avatar-bg frozen';
-  const bgStyle=hasBg?'background-image:url('+data.bgImage+')':'';
+  const bgStyle=hasBg?'background-image:url('+_effBg+')':'';
   const bioText=data.bio||'';
   const customText=data.customText||'';
   const ncS=pcNameColorStyles(data.nameColor||'theme');
-  const slots=data.galleryImages.map(function(img,i){
+  const slots=_effG.map(function(img,i){
     var label=i===0?'I':i===1?'II':'III';
     if(img)return '<div class="pc-gallery-slot has-img" style="background-image:url('+img+')" onclick="toggleGalleryExpand(this)"><span class="pc-slot-label">'+label+'</span><div class="pc-gallery-del" onclick="event.stopPropagation();deleteGalleryImage('+i+')" title="删除图片">\u00D7</div></div>';
     return '<div class="pc-gallery-slot empty" onclick="triggerGalleryUpload('+i+')"><span class="pc-slot-label">'+label+'</span></div>';
@@ -7363,15 +8417,28 @@ function triggerGalleryUpload(idx){
     var f=e.target.files[0];if(!f)return;
     var r=new FileReader();r.onload=async function(){
       var data=await dbGet('about','main')||Object.assign({},defaultAbout);
-      if(!data.galleryImages)data.galleryImages=['','',''];
-      data.galleryImages[idx]=r.result;
-      await dbPut('about',data);loadAboutDisplay();toast('图片已保存');
+      if(_pfInf()){
+        if(!data.infGalleryImages)data.infGalleryImages=['','',''];
+        data.infGalleryImages[idx]=r.result;
+      }else{
+        if(!data.galleryImages)data.galleryImages=['','',''];
+        data.galleryImages[idx]=r.result;
+      }
+      await dbPut('about',data);loadAboutDisplay();toast('图片已保存（'+(_pfInf()?'Infernal':'Internal')+' 主题）');
     };r.readAsDataURL(f);
   };inp.click();
 }
 async function deleteGalleryImage(idx){
-  var data=await dbGet('about','main');
-  if(!data||!data.galleryImages||!data.galleryImages[idx])return;
+  var data=await dbGet('about','main');if(!data)return;
+  if(_pfInf()){
+    if(data.infGalleryImages&&data.infGalleryImages[idx]){
+      data.infGalleryImages[idx]='';
+      await dbPut('about',data);loadAboutDisplay();toast('已删除（恢复为 Internal 主题的这张图）');
+      return;
+    }
+    toast('这张图来自 Internal 主题，请切换到明亮主题后删除');return;
+  }
+  if(!data.galleryImages||!data.galleryImages[idx])return;
   data.galleryImages[idx]='';
   await dbPut('about',data);loadAboutDisplay();toast('图片已删除');
 }
@@ -7385,13 +8452,14 @@ async function openAboutEdit(){
   _lastValidCustom=data.customText||'';
   const ncS=pcNameColorStyles(_pendingNameColor);
   const initials=(data.name||'S').charAt(0).toUpperCase();
-  const hasBg=!!data.bgImage;
-  const avatarHtml=data.avatar
-    ?'<img class="pc-avatar-img" src="'+data.avatar+'" alt="avatar">'
+  const _effAvE=_pfAvatar(data),_effBgE=_pfBg(data),_effGE=_pfGallery(data);
+  const hasBg=!!_effBgE;
+  const avatarHtml=_effAvE
+    ?'<img class="pc-avatar-img" src="'+_effAvE+'" alt="avatar">'
     :'<div class="pc-avatar-placeholder">'+initials+'</div>';
   const bgClass=hasBg?'pc-avatar-bg has-img':'pc-avatar-bg frozen';
-  const bgStyle=hasBg?'background-image:url('+data.bgImage+')':'';
-  const slots=data.galleryImages.map(function(img,i){
+  const bgStyle=hasBg?'background-image:url('+_effBgE+')':'';
+  const slots=_effGE.map(function(img,i){
     var label=i===0?'I':i===1?'II':'III';
     if(img)return '<div class="pc-gallery-slot has-img" style="background-image:url('+img+')" onclick="toggleGalleryExpand(this)"><span class="pc-slot-label">'+label+'</span><div class="pc-gallery-del" onclick="event.stopPropagation();deleteGalleryImage('+i+')" title="删除图片">\u00D7</div></div>';
     return '<div class="pc-gallery-slot empty" onclick="triggerGalleryUpload('+i+')"><span class="pc-slot-label">'+label+'</span></div>';
@@ -7424,13 +8492,15 @@ async function openAboutEdit(){
         +'<textarea id="about-bio" rows="5" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--glass-border);background:rgba(155,180,218,0.08);color:var(--text-primary);font-family:\'Noto Sans SC\',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;resize:none;line-height:1.8;margin-bottom:14px" oninput="limitProfileField(this,'+PROFILE_BIO_LIMIT+',\'_lastValidBio\',\'pf-bio-count\')">'+esc(data.bio||'')+'</textarea>'
         +'<label style="font-size:0.78rem;color:var(--silver);margin:0 0 6px;letter-spacing:0.03em">自定义文本（不发给 API）<span style="font-size:0.7rem;color:var(--text-muted);float:right" id="pf-custom-count">'+_weightedLen(data.customText||'')+'/'+PROFILE_CUSTOM_LIMIT+'</span></label>'
         +'<textarea id="about-custom" rows="3" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--glass-border);background:rgba(155,180,218,0.08);color:var(--text-primary);font-family:\'Noto Sans SC\',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;resize:none;line-height:1.8;margin-bottom:14px" oninput="limitProfileField(this,'+PROFILE_CUSTOM_LIMIT+',\'_lastValidCustom\',\'pf-custom-count\')">'+esc(data.customText||'')+'</textarea>'
+        +'<div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.9;margin:2px 0 14px">当前正在编辑 <b>'+(_pfInf()?'Infernal':'Internal')+'</b> 主题的头像 / 背景 / 作品集。两套素材默认相同，在另一主题下修改即可分开设置。'+(_pfInf()?' <button type="button" class="btn" style="margin-left:8px;padding:5px 14px;font-size:0.8rem" onclick="resetInfAssets()">恢复与 Internal 相同</button>':'')+'</div>'
         +'<label style="font-size:0.78rem;color:var(--silver);margin:0 0 6px;letter-spacing:0.03em">作品集图片</label>'
         +'<div style="display:flex;gap:8px;margin-bottom:14px">'
           +'<button class="pc-edit-upload-btn" onclick="triggerGalleryEditUpload(0)">图片 I</button>'
           +'<button class="pc-edit-upload-btn" onclick="triggerGalleryEditUpload(1)">图片 II</button>'
           +'<button class="pc-edit-upload-btn" onclick="triggerGalleryEditUpload(2)">图片 III</button>'
         +'</div>'
-        +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.78rem;color:var(--silver);margin:0 0 14px;letter-spacing:0.03em"><input type="checkbox" id="about-show-nav" style="width:auto;accent-color:var(--accent)"'+(data.showInNav!==false?' checked':'')+'>  在导航栏显示昵称和头像</label>'
+        +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.78rem;color:var(--silver);margin:0 0 10px;letter-spacing:0.03em"><input type="checkbox" id="about-show-nav" style="width:auto;accent-color:var(--accent)"'+(data.showInNav!==false?' checked':'')+'>  在导航栏显示昵称和头像</label>'
+        +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.78rem;color:var(--silver);margin:0 0 14px;letter-spacing:0.03em"><input type="checkbox" id="about-bio-private" style="width:auto;accent-color:var(--accent)"'+(data.bioPrivate?' checked':'')+'>  个人简介仅自己可见（不发送给 AI）</label>'
         +'<div style="display:flex;gap:10px;margin-top:auto;padding-top:12px">'
           +'<button class="btn btn-primary" onclick="saveAbout()">保存</button>'
           +'<button class="btn" onclick="loadAboutDisplay()">取消</button>'
@@ -7478,14 +8548,19 @@ async function saveAbout(){
   const name=(document.getElementById('about-name')?.value||'').trim();
   const bio=(document.getElementById('about-bio')?.value||'').slice(0,PROFILE_BIO_LIMIT);
   const customText=(document.getElementById('about-custom')?.value||'').slice(0,PROFILE_CUSTOM_LIMIT);
-  const gallery=old.galleryImages||['','',''];
-  for(var i=0;i<3;i++){if(_pendingProfileUploads.gallery[i])gallery[i]=_pendingProfileUploads.gallery[i]}
+  const _inf=_pfInf();
+  const gallery=(old.galleryImages||['','','']).slice(0,3);while(gallery.length<3)gallery.push('');
+  const infGallery=(old.infGalleryImages||['','','']).slice(0,3);while(infGallery.length<3)infGallery.push('');
+  for(var i=0;i<3;i++){if(_pendingProfileUploads.gallery[i]){if(_inf)infGallery[i]=_pendingProfileUploads.gallery[i];else gallery[i]=_pendingProfileUploads.gallery[i]}}
   const data={id:'main',name:name||old.name||'Sui',bio:bio,
-    avatar:_pendingProfileUploads.avatar||old.avatar||'',
-    bgImage:_pendingProfileUploads.bgImage||old.bgImage||'',
-    customText:customText,galleryImages:gallery,
+    avatar:(!_inf&&_pendingProfileUploads.avatar)||old.avatar||'',
+    bgImage:(!_inf&&_pendingProfileUploads.bgImage)||old.bgImage||'',
+    infAvatar:(_inf&&_pendingProfileUploads.avatar)||old.infAvatar||'',
+    infBgImage:(_inf&&_pendingProfileUploads.bgImage)||old.infBgImage||'',
+    customText:customText,galleryImages:gallery,infGalleryImages:infGallery,
     nameColor:_pendingNameColor||'theme',
-    showInNav:!!document.getElementById('about-show-nav')?.checked};
+    showInNav:!!document.getElementById('about-show-nav')?.checked,
+    bioPrivate:!!document.getElementById('about-bio-private')?.checked};
   await dbPut('about',data);
   _pendingProfileUploads={avatar:null,bgImage:null,gallery:[null,null,null]};
   _refreshCachedUserName();loadAboutDisplay();toast('个人资料已保存');
@@ -7514,19 +8589,193 @@ function initAudioContext(){if(audioCtx)return;audioCtx=new(window.AudioContext|
 function drawVisualizer(){const canvas=document.getElementById('visualizer-canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;canvas.width=canvas.offsetWidth*dpr;canvas.height=canvas.offsetHeight*dpr;ctx.scale(dpr,dpr);const W=canvas.offsetWidth,H=canvas.offsetHeight;(function draw(){requestAnimationFrame(draw);if(!analyser)return;const data=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(data);ctx.clearRect(0,0,W,H);const bars=48,bw=W/bars;for(let i=0;i<bars;i++){const v=data[Math.floor(i*data.length/bars)]/255,bh=v*H*0.85;const g=ctx.createLinearGradient(0,H,0,H-bh);g.addColorStop(0,'rgba(80,128,176,0.2)');g.addColorStop(1,'rgba(114,168,216,0.6)');ctx.fillStyle=g;ctx.fillRect(i*bw+1,H-bh,bw-2,bh)}})()}
 
 /* EXPORT/IMPORT */
-async function exportAll(){const data=await _ibBuildExportData();downloadJSON(data,'InternalBeyond_backup_'+new Date().toISOString().slice(0,10)+'.json');toast('数据已导出（含 ICode 项目文件）')}
-function downloadJSON(data,filename){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(a.href),100)}
+/* ══════════════ v46 — 导入 / 导出工作台 ══════════════
+   点 Export / Import 先进本层，在层内选文件、再手动点「开始」。
+   执行期间关闭键与背景点击被禁用，页面其余部分不可操作；
+   逐仓推进，每仓之间让出一次渲染，进度条真的会动。
+   解析 JSON 那一步无法细分，界面会明说“这一步会停顿”。
+   结束后展示逐仓明细，用户点关闭才收起。 */
+var _ioMode='export',_ioFile=null,_ioBusy=false;
+var IO_STORE_CN={posts:'日志',categories:'分类',about:'个人资料',apiSettings:'站点设置',
+  chatMessages:'聊天记录',letters:'信件',apiConfigs:'API 配置',groups:'群聊',
+  blogComments:'日志评论',memories:'记忆',chatThreads:'话题频道',chatSummaries:'对话摘要',
+  uploadedFiles:'上传文件',blogAnnotations:'日志批注',projects:'ICode 项目',
+  projectFiles:'ICode 文件',autoMemory:'Auto Memory',calEvents:'日历事项',
+  calNotes:'日历留笺',calLedger:'日历台账'};
+function _ioEl(id){return document.getElementById(id)}
+function _ioFmtSize(n){n=+n||0;if(n>=1048576)return (n/1048576).toFixed(1)+' MB';if(n>=1024)return (n/1024).toFixed(0)+' KB';return n+' B'}
+function _ioYield(){return new Promise(function(r){setTimeout(r,0)})}
+function ioOpen(mode){
+  if(_ioBusy)return;
+  _ioMode=mode==='import'?'import':'export';_ioFile=null;
+  var ov=_ioEl('io-ov');if(!ov)return;
+  ov.hidden=false;
+  _ioEl('io-title').textContent=_ioMode==='import'?'Import':'Export';
+  _ioEl('io-sub').textContent=_ioMode==='import'?'导入全站存档':'导出全站存档';
+  _ioEl('io-x').disabled=false;
+  ioRenderSetup();
+}
+function ioClose(){
+  if(_ioBusy)return;
+  var ov=_ioEl('io-ov');if(ov)ov.hidden=true;
+  _ioFile=null;
+}
+function ioRenderSetup(){
+  var bd=_ioEl('io-bd'),ft=_ioEl('io-ft');
+  if(_ioMode==='export'){
+    bd.innerHTML='<div class="io-note">把站内全部数据导出为一个 JSON 文件，包含日志、聊天记录、记忆、信件、API 配置、日历与 ICode 项目文件。<br><b>API 密钥以明文包含在内</b>，请妥善保管该文件。</div>'
+      +'<div class="io-prog-hint">数据量大时导出会占用较长时间。这个界面在处理期间会停止响应，属于正常现象，请不要关闭页面。</div>';
+    ft.innerHTML='<button class="btn" onclick="ioClose()">取消</button><button class="btn btn-primary" onclick="ioRun()">开始导出</button>';
+  }else{
+    bd.innerHTML='<div class="io-note">选择此前导出的 JSON 存档。导入为<b>合并写入</b>：同编号的记录会被存档中的版本覆盖，站内已有而存档中没有的记录保持不变。</div>'
+      +'<div class="io-drop" id="io-drop"><div class="io-dt">点击选择文件，或把 JSON 拖到这里</div><div class="io-ds">仅接受本站导出的 .json 存档</div></div>'
+      +'<div id="io-picked"></div>';
+    ft.innerHTML='<button class="btn" onclick="ioClose()">取消</button><button class="btn btn-primary" id="io-go" onclick="ioRun()" disabled>开始导入</button>';
+    var dz=_ioEl('io-drop');
+    dz.onclick=function(){
+      var inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';
+      inp.onchange=function(){if(inp.files&&inp.files[0])_ioPick(inp.files[0])};inp.click();
+    };
+    dz.ondragover=function(e){e.preventDefault();dz.classList.add('dragover')};
+    dz.ondragleave=function(){dz.classList.remove('dragover')};
+    dz.ondrop=function(e){e.preventDefault();dz.classList.remove('dragover');
+      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)_ioPick(f)};
+  }
+}
+function _ioPick(f){
+  if(!/\.json$/i.test(f.name)){toast('请选择 .json 存档文件');return}
+  _ioFile=f;
+  _ioEl('io-picked').innerHTML='<div class="io-picked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>'+esc(f.name)+'</span><span class="io-sz">'+_ioFmtSize(f.size)+'</span></div>';
+  var go=_ioEl('io-go');if(go)go.disabled=false;
+}
+function _ioProgUI(title){
+  _ioEl('io-bd').innerHTML='<div class="io-prog"><div class="io-prog-lab"><span id="io-step">'+esc(title)+'</span><span class="pc" id="io-pct">0%</span></div>'
+    +'<div class="io-prog-bar"><div class="io-prog-fill" id="io-fill"></div></div>'
+    +'<div class="io-prog-hint" id="io-hint">处理期间界面不响应属于正常现象，请不要关闭页面。</div></div>';
+  _ioEl('io-ft').innerHTML='';
+  _ioEl('io-x').disabled=true;
+}
+function _ioStep(txt,pct,hint){
+  var a=_ioEl('io-step'),b=_ioEl('io-pct'),c=_ioEl('io-fill'),d=_ioEl('io-hint');
+  if(a)a.textContent=txt;if(b)b.textContent=Math.round(pct)+'%';if(c)c.style.width=pct+'%';
+  if(d&&hint)d.textContent=hint;
+}
+function _ioResult(ok,head,rows,extra){
+  _ioEl('io-bd').innerHTML='<div class="io-sum '+(ok?'ok':'err')+'">'+head+'</div>'
+    +(rows?'<div class="io-res">'+rows+'</div>':'')
+    +(extra?'<div class="io-prog-hint">'+extra+'</div>':'');
+  _ioEl('io-ft').innerHTML='<button class="btn btn-primary" onclick="ioClose()">关闭</button>';
+  _ioEl('io-x').disabled=false;
+}
+function _ioRows(counts){
+  var h='',k;
+  for(k in counts){if(!Object.prototype.hasOwnProperty.call(counts,k))continue;
+    var v=counts[k];
+    h+='<div class="rr'+(v?'':' zero')+'"><span class="rn">'+esc(IO_STORE_CN[k]||k)+'</span><span class="rv">'+v+' 条</span></div>';
+  }
+  return h;
+}
+async function ioRun(){
+  if(_ioBusy)return;
+  if(_ioMode==='import'&&!_ioFile){toast('请先选择存档文件');return}
+  _ioBusy=true;
+  try{
+    if(_ioMode==='export')await _ioDoExport();
+    else await _ioDoImport();
+  }catch(err){
+    _ioResult(false,(_ioMode==='export'?'导出':'导入')+'未完成。<br>'+esc(String(err&&err.message||err)),'',
+      _ioMode==='import'?'如果文件是从其他工具生成的，格式可能不被识别。请确认它是本站 Export 导出的存档。':'');
+  }finally{_ioBusy=false}
+}
+async function _ioDoExport(){
+  _ioProgUI('正在读取站内数据…');
+  await _ioYield();
+  var counts={},data={},i,name,arr;
+  var list=IB_STORES.filter(function(x){return x!=='music'});
+  for(i=0;i<list.length;i++){
+    name=list[i];
+    _ioStep('正在读取：'+(IO_STORE_CN[name]||name)+'（'+(i+1)+'/'+list.length+'）',Math.round(i/list.length*70));
+    await _ioYield();
+    try{arr=await dbGetAll(name)}catch(e){arr=[]}
+    if(name==='chatMessages')arr=arr.map(function(m){var c=Object.assign({},m);delete c.upstreamRaw;delete c.thinkingSources;return c});
+    if(name==='apiSettings')arr=arr.filter(function(r){return!(r&&r.id==='ib_fsSyncDir')});
+    if(name==='groups'){try{arr=await loadGroups()}catch(e){}}
+    data[name]=arr;counts[name]=arr.length;
+  }
+  data.exportDate=new Date().toISOString();data.version=4;
+  _ioStep('正在生成存档文件（这一步会停顿）…',82,'正在把数据序列化为 JSON。这一步无法拆分，界面会短暂无响应。');
+  await _ioYield();
+  var str=JSON.stringify(data);
+  _ioStep('正在写出文件…',94);
+  await _ioYield();
+  var fn='InternalBeyond_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  var blob=new Blob([str],{type:'application/json;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+  _ioStep('完成',100);
+  var total=0,k;for(k in counts)total+=counts[k];
+  _ioResult(true,'导出完成，共 <b>'+total+'</b> 条记录，文件体积约 <b>'+_ioFmtSize(str.length)+'</b>。<br>文件名：'+esc(fn),
+    _ioRows(counts),'文件已发送到浏览器的下载目录。API 密钥以明文包含在该文件中，请勿分享给他人。');
+}
+async function _ioDoImport(){
+  _ioProgUI('正在读取文件…');
+  await _ioYield();
+  var text=await _ioFile.text();
+  _ioStep('正在解析存档（这一步会停顿）…',12,'正在解析 JSON。文件越大这一步越久，且无法拆分，界面会短暂无响应。');
+  await _ioYield();
+  var data=JSON.parse(String(text||'').replace(/^\ufeff/,''));
+  if(!data||typeof data!=='object')throw new Error('文件内容不是有效的存档结构');
+  var list=IB_STORES.filter(function(x){return x!=='music'});
+  var counts={},skipped=[],i,name,arr,done=0;
+  for(i=0;i<list.length;i++){
+    name=list[i];arr=data[name];
+    _ioStep('正在写入：'+(IO_STORE_CN[name]||name)+'（'+(i+1)+'/'+list.length+'）',15+Math.round(i/list.length*75));
+    await _ioYield();
+    if(!Array.isArray(arr)||!arr.length){counts[name]=0;continue}
+    try{await dbPutAll(name,arr);counts[name]=arr.length;done+=arr.length}
+    catch(e){counts[name]=0;skipped.push(IO_STORE_CN[name]||name)}
+  }
+  _ioStep('正在刷新站内状态…',94);
+  await _ioYield();
+  try{await migrateLockedPosts()}catch(e){}
+  try{localStorage.removeItem('ib_guardMuted')}catch(e){}
+  var _go=document.getElementById('ib-guard-overlay');if(_go){_go.remove();_ibGuardShown=false}
+  _ibToolsCache=null;
+  try{await loadApiConfigs()}catch(e){}
+  try{_refreshCachedUserName()}catch(e){}
+  _calEarliest=null;
+  _ioStep('完成',100);
+  var unknown=Object.keys(data).filter(function(k){return Array.isArray(data[k])&&list.indexOf(k)<0});
+  var extra='';
+  if(skipped.length)extra+='以下类别写入失败，已跳过：'+esc(skipped.join('、'))+'。<br>';
+  if(unknown.length)extra+='存档中有本版本不认识的类别，已忽略：'+esc(unknown.join('、'))+'。<br>';
+  extra+='导入为合并写入，站内原有而存档中没有的记录未被删除。';
+  _ioResult(!skipped.length,'导入完成，共写入 <b>'+done+'</b> 条记录。'
+    +(data.exportDate?'<br>存档生成于 '+esc(String(data.exportDate).slice(0,19).replace('T',' ')):''),
+    _ioRows(counts),extra);
+  try{navTo(currentPage)}catch(e){}
+}
+/* 执行期间挡住背景点击与 Esc */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&!_ioBusy){var ov=_ioEl('io-ov');if(ov&&!ov.hidden){ioClose();e.preventDefault()}}
+},true);
+/* v47c 修复：原先点弹层外围就关闭。这里需要先选文件再点开始，
+   鼠标在盒子外一点、或者选中文字时拖出了盒子，都会把已选好的文件弄丢。
+   现在只能用右上角叉号、取消键或 Esc 关闭。 */
+
+async function exportAll(){const data=await _ibBuildExportData();downloadJSON(data,'InternalBeyond_backup_'+new Date().toISOString().slice(0,10)+'.json',true);toast('数据已导出（含 ICode 项目文件）')}
+function downloadJSON(data,filename,compact){const blob=new Blob([JSON.stringify(data,null,compact?0:2)],{type:'application/json'});/* v46 — compact：整站备份不做缩进美化，文件体积与生成时的峰值内存均明显下降 */const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(a.href),100)}
 
 /* ══════════ 数据保险系统 ══════════
    浏览器可能在存储压力回收或数据库损坏自愈时清空 IndexedDB（localStorage 为独立子系统，不受影响）。
    四道防护各堵一个环节：
    ① persist()：申请持久化标记，避免存储压力自动回收（对损坏自愈无效，故有②③④）
-   ② 空库熔断：启动即检测"整站为空 + 存在历史活跃痕迹"，立刻弹警告并给出镜像回灌/导入备份两条出路
+   ② 空库熔断：启动即检测"整站为空 + 存在历史活跃痕迹"，立刻弹警告并给出导入备份的出路
    ③ 每日自动备份：每天首次打开约半分钟后静默导出完整 JSON（含 ICode）到下载文件夹
    ④ 紧急镜像：核心数据节流写入 localStorage，按优先级装箱、聊天记录从最新往回塞满预算；
       带"空库保护"——全站为空时绝不覆盖上一份好镜像 */
-var IB_MIRROR_KEY='ib_mirror_v1',IB_MIRROR_META='ib_mirror_meta';
-var _ibMirrorDirty=false,_ibMirrorLastTs=0,_ibGuardShown=false;
+var _ibGuardShown=false;/* v49h：按用户要求整删"紧急镜像"功能——它每 10 分钟对全站数据做一次同步打包写入 localStorage，数据量大时一次冻结主线程可达秒级，正是 Room 精灵动画周期性顿卡的来源；日常备份由自动备份与本地文件夹同步承担 */
 async function _ibRequestPersist(){
   try{
     if(!(navigator.storage&&navigator.storage.persist))return;
@@ -7544,7 +8793,7 @@ async function _ibVitals(){
   v.total=v.chatMessages+v.posts+v.letters+v.memories+v.apiConfigs+v.projectFiles;
   return v;
 }
-/* —— 导出打包（Export 按钮 / 每日自动备份 / 紧急镜像 共用同一数据源） —— */
+/* —— 导出打包（Export 按钮 / 每日自动备份 / 本地文件夹同步 共用同一数据源） —— */
 async function _ibBuildExportData(){
   async function g(s){try{return await dbGetAll(s)}catch(e){return[]}}
   /* 剔除测试版曾写入的原始流归档字段；保留原版正文、thinking 与其余消息结构。 */
@@ -7563,83 +8812,11 @@ async function _ibAutoBackupTick(){
     var v=await _ibVitals();
     if(v.total===0)return;/* 空站不备份，也避免熔断场景下载空文件 */
     var data=await _ibBuildExportData();
-    downloadJSON(data,'InternalBeyond_auto_'+today+'.json');
+    downloadJSON(data,'InternalBeyond_auto_'+today+'.json',true);
     try{localStorage.setItem('ib_autoBakLast',today)}catch(e){}
     toast('今日数据已自动备份到下载文件夹');
     _ibRenderGuardPanel();
   }catch(e){}
-}
-/* —— 紧急镜像：优先级装箱（预算内 localStorage 能装多少装多少） —— */
-function _ibMirrorPack(all,budget){
-  budget=budget||3500000;
-  var out={ts:Date.now(),stores:{},truncated:{}};
-  var used=120;
-  var pri=['about','apiSettings','apiConfigs','groups','chatThreads','memories','chatSummaries','letters','categories'];
-  for(var i=0;i<pri.length;i++){
-    var st=pri[i],arr=all[st]||[];
-    if(!arr.length)continue;
-    var j=JSON.stringify(arr);
-    if(used+j.length>budget){out.truncated[st]=arr.length;continue}
-    out.stores[st]=arr;used+=j.length;
-  }
-  var msgs=(all.chatMessages||[]).map(function(m){var c=Object.assign({},m);delete c.upstreamRaw;delete c.thinkingSources;return c}).sort(function(a,b){return(a.timestamp||0)-(b.timestamp||0)});
-  var takeM=[];
-  for(var k=msgs.length-1;k>=0;k--){
-    var mj=JSON.stringify(msgs[k]);
-    if(used+mj.length>budget)break;
-    takeM.unshift(msgs[k]);used+=mj.length;
-  }
-  if(takeM.length)out.stores.chatMessages=takeM;
-  if(takeM.length<msgs.length)out.truncated.chatMessages=msgs.length-takeM.length;
-  var rest=[['posts','timestamp'],['projects','lastModified'],['projectFiles','lastModified'],['blogComments','timestamp'],['blogAnnotations','timestamp'],['uploadedFiles','timestamp']];
-  for(var r0=0;r0<rest.length;r0++){
-    var s2=rest[r0][0],f2=rest[r0][1];
-    var arr2=(all[s2]||[]).slice().sort(function(a,b){return((a[f2]||a.created||0))-((b[f2]||b.created||0))});
-    if(!arr2.length)continue;
-    var take2=[];
-    for(var q=arr2.length-1;q>=0;q--){var jj=JSON.stringify(arr2[q]);if(used+jj.length>budget)break;take2.unshift(arr2[q]);used+=jj.length}
-    if(take2.length)out.stores[s2]=take2;
-    if(take2.length<arr2.length)out.truncated[s2]=arr2.length-take2.length;
-  }
-  return out;
-}
-async function _ibMirrorNow(force){
-  try{
-    var now=Date.now();
-    if(!force&&now-_ibMirrorLastTs<10*60000)return;
-    if(_ibGuardShown)return;/* 熔断状态下绝不动镜像 */
-    var v=await _ibVitals();
-    var meta=null;try{meta=JSON.parse(localStorage.getItem(IB_MIRROR_META)||'null')}catch(e){}
-    if(v.total===0&&meta&&meta.total>0){if(force)toast('站内没有数据，为保护上一份镜像未执行覆盖');return}
-    var all=await _ibBuildExportData();
-    var pack=_ibMirrorPack(all),str=JSON.stringify(pack);
-    var ok=false;
-    for(var tries=0;tries<4;tries++){
-      try{localStorage.setItem(IB_MIRROR_KEY,str);ok=true;break}
-      catch(e){pack=_ibMirrorPack(all,Math.max(400000,Math.floor(str.length/2)));str=JSON.stringify(pack)}
-    }
-    if(!ok)return;
-    try{localStorage.setItem(IB_MIRROR_META,JSON.stringify({ts:pack.ts,total:v.total,msgs:(pack.stores.chatMessages||[]).length}))}catch(e){}
-    _ibMirrorLastTs=now;_ibMirrorDirty=false;
-    if(force)toast('紧急镜像已更新');
-    _ibRenderGuardPanel();
-  }catch(e){}
-}
-async function _ibRestoreMirror(){
-  var pack=null;
-  try{pack=JSON.parse(localStorage.getItem(IB_MIRROR_KEY)||'null')}catch(e){}
-  if(!pack||!pack.stores){toast('没有可用的紧急镜像');return}
-  var n=0;
-  for(var st in pack.stores){
-    var arr=pack.stores[st]||[];
-    for(var i=0;i<arr.length;i++){try{await dbPut(st,arr[i]);n++}catch(e){}}
-  }
-  try{await migrateLockedPosts()}catch(e){}
-  var ov=document.getElementById('ib-guard-overlay');if(ov)ov.remove();
-  _ibGuardShown=false;
-  try{localStorage.removeItem('ib_guardMuted')}catch(e){}
-  toast('已从紧急镜像恢复 '+n+' 条记录（镜像时间 '+new Date(pack.ts).toLocaleString('zh-CN')+'）');
-  try{await loadApiConfigs();_refreshCachedUserName();loadPosts();loadCategories();updateBlogStats();loadAboutDisplay();navTo(currentPage)}catch(e){}
 }
 /* —— ⑤ 本地文件夹同步（File System Access API */
 var _ibFsHandle=null,_ibFsDirty=false,_ibFsLastTs=0,_ibFsBusy=false,_ibFsErr='';
@@ -7753,14 +8930,11 @@ async function _ibGuardCheck(){
 function _ibShowGuardOverlay(){
   if(document.getElementById('ib-guard-overlay'))return;
   _ibGuardShown=true;
-  var meta=null;try{meta=JSON.parse(localStorage.getItem(IB_MIRROR_META)||'null')}catch(e){}
   var ov=document.createElement('div');ov.id='ib-guard-overlay';
-  var mirrorBtn=(meta&&meta.total>0)?'<button class="btn" style="border-color:rgba(120,190,140,0.5)" onclick="_ibRestoreMirror()">从紧急镜像恢复（'+(meta.msgs||0)+' 条聊天 · '+new Date(meta.ts).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})+'）</button>':'';
   ov.innerHTML='<div class="ibg-card">'
     +'<div class="ibg-title">检测到异常：数据库清空</div>'
     +'<div class="ibg-text">这台浏览器留有本站的历史使用痕迹，但整站数据为空。可能刚刚发生了浏览器层面的数据清除（磁盘告急触发的存储回收 / 数据库损坏自愈重建）。建议请先不要写入新内容。</div>'
     +'<div class="ibg-btns">'
-    +mirrorBtn
     +'<button class="btn" onclick="document.getElementById(\'importFile\').click()">导入备份文件</button>'
     +'<button class="btn" style="opacity:0.75" onclick="try{localStorage.setItem(\'ib_guardMuted\',\'1\')}catch(e){};this.closest(\'#ib-guard-overlay\').remove();_ibGuardShown=false">无视，关闭此提示</button>'
     +'</div>'
@@ -7775,8 +8949,6 @@ function _ibRenderGuardPanel(){
     if(p1)p1.textContent=window._ibPersisted===undefined?'检测中…':(window._ibPersisted?'已生效：浏览器不会自动回收本站存储。':'未生效：浏览器保留回收权限。');
     var p2=document.getElementById('ib-autobak-state');
     if(p2){var last='';try{last=localStorage.getItem('ib_autoBakLast')||''}catch(e){}p2.textContent=(_ibAutoBakOn()?'开启':'已关闭')+(last?' · 上次 '+last:' · 尚未执行')}
-    var p3=document.getElementById('ib-mirror-state');
-    if(p3){var m=null;try{m=JSON.parse(localStorage.getItem(IB_MIRROR_META)||'null')}catch(e){}p3.textContent=m?(new Date(m.ts).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})+' · 含 '+(m.msgs||0)+' 条聊天'):'尚未生成'}
     var p4=document.getElementById('ib-fs-state'),p4b=document.getElementById('ib-fs-btns');
     if(p4&&p4b){
       var fsm=null;try{fsm=JSON.parse(localStorage.getItem('ib_fsSyncMeta')||'null')}catch(e){}
@@ -7791,15 +8963,15 @@ function _ibRenderGuardPanel(){
   }catch(e){}
 }
 function _ibGuardInit(){
+  try{localStorage.removeItem('ib_mirror_v1');localStorage.removeItem('ib_mirror_meta')}catch(e){}/* v49h：镜像功能已删，清掉历史遗留的大块存储 */
   _ibRequestPersist();
   _ibFsInit();
   setTimeout(_ibAutoBackupTick,25000);
-  setTimeout(function(){_ibMirrorNow(false)},8000);/* 开站先照一张底片 */
-  setInterval(function(){_ibAutoBackupTick();if(_ibFsDirty)_ibFsSyncNow(false);if(_ibMirrorDirty)_ibMirrorNow(false);_ibRenderGuardPanel()},60000);
-  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){if(_ibFsDirty&&_ibFsState==='granted')_ibFsSyncNow('hidden');/* 切后台即抢写一份，静默 */if(_ibMirrorDirty)_ibMirrorNow(true)}});
+  setInterval(function(){var _ric=window.requestIdleCallback||function(f){setTimeout(f,1)};_ric(function(){_ibAutoBackupTick();if(_ibFsDirty)_ibFsSyncNow(false);_ibRenderGuardPanel()},{timeout:15000})},60000);/* v49g：例行备份挪到浏览器空闲帧执行，不与动画抢时间 */
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){if(_ibFsDirty&&_ibFsState==='granted')_ibFsSyncNow('hidden')/* 切后台即抢写一份，静默 */}});
   _ibRenderGuardPanel();
 }
-async function importAll(e){const file=e.target.files[0];if(!file)return;try{const text=await file.text();const data=JSON.parse(text);if(data.posts)for(const p of data.posts)await dbPut('posts',p);if(data.categories)for(const c of data.categories)await dbPut('categories',c);if(data.about)for(const a of data.about)await dbPut('about',a);if(data.apiSettings)for(const s of data.apiSettings)await dbPut('apiSettings',s);if(data.apiConfigs)for(const s of data.apiConfigs)await dbPut('apiConfigs',s);if(data.chatMessages)for(const m of data.chatMessages)await dbPut('chatMessages',m);if(data.letters)for(const l of data.letters)await dbPut('letters',l);if(data.groups)for(const g of data.groups)await dbPut('groups',g);if(data.blogComments)for(const c of data.blogComments)await dbPut('blogComments',c);if(data.memories)for(const m of data.memories)await dbPut('memories',m);if(data.chatThreads)for(const t of data.chatThreads)await dbPut('chatThreads',t);if(data.chatSummaries)for(const s of data.chatSummaries)await dbPut('chatSummaries',s);if(data.projects)for(const p of data.projects)await dbPut('projects',p);if(data.projectFiles)for(const f of data.projectFiles)await dbPut('projectFiles',f);if(data.uploadedFiles)for(const u of data.uploadedFiles)await dbPut('uploadedFiles',u);if(data.blogAnnotations)for(const a of data.blogAnnotations)await dbPut('blogAnnotations',a);if(data.autoMemory)for(const am of data.autoMemory)await dbPut('autoMemory',am);if(data.calEvents)for(const ce of data.calEvents)await dbPut('calEvents',ce);if(data.calNotes)for(const cn of data.calNotes)await dbPut('calNotes',cn);if(data.calLedger)for(const cl of data.calLedger)await dbPut('calLedger',cl);await migrateLockedPosts();try{localStorage.removeItem('ib_guardMuted')}catch(e2){}var _go=document.getElementById('ib-guard-overlay');if(_go){_go.remove();_ibGuardShown=false}setTimeout(function(){_ibMirrorNow(true)},3000);_ibToolsCache=null;/* 导入可能带来新的外部工具配置，使缓存失效 */await loadApiConfigs();_refreshCachedUserName();_calEarliest=null;/* 同步刷新内存缓存：API 配置、用户名头像、日历最早日期 */toast('数据已导入');navTo(currentPage)}catch(err){toast('导入失败：文件格式错误')}e.target.value=''}
+async function importAll(e){const file=e.target.files[0];if(!file)return;try{const text=await file.text();const data=JSON.parse(text);/* v46 — 逐条 await dbPut 改为按仓批量写入（每个仓库一个事务）：万条级备份的导入不再逐条排队，卡死概率大幅下降；仓名与备份文件的字段名一一对应，music 不参与导出入（与旧行为一致） */for(const _s of IB_STORES){if(_s==='music')continue;if(Array.isArray(data[_s])&&data[_s].length){try{await dbPutAll(_s,data[_s])}catch(_e){}}}await migrateLockedPosts();try{localStorage.removeItem('ib_guardMuted')}catch(e2){}var _go=document.getElementById('ib-guard-overlay');if(_go){_go.remove();_ibGuardShown=false}_ibToolsCache=null;/* 导入可能带来新的外部工具配置，使缓存失效 */await loadApiConfigs();_refreshCachedUserName();_calEarliest=null;/* 同步刷新内存缓存：API 配置、用户名头像、日历最早日期 */toast('数据已导入');navTo(currentPage)}catch(err){toast('导入失败：文件格式错误')}e.target.value=''}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
 
@@ -8653,6 +9825,25 @@ function searchChat(q){
 /* ═══ Chat 归档模式：只读浏览已归档好友的聊天记录（进入/退出仅切换本页视图，不影响迷你面板与在线对话） ═══ */
 var _chatArchMode=false,_chatArchPrevTitles=null;
 function toggleChatArchive(){if(_chatArchMode)exitChatArchive();else enterChatArchive()}
+/* Chat 顶部说明栏折叠（v48）：进站默认展开，折叠只在本次会话内生效。
+   动画分两步：先淡出正文，再一步收高——避免逐帧改高度带动整个聊天区重排。 */
+var _chatIntroCollapsed=false,_ciAnim=false;
+try{localStorage.removeItem('ib_chatIntro')}catch(e){}
+function toggleChatIntro(){
+  var mi=document.querySelector('#page-chat .module-intro');if(!mi||_ciAnim)return;
+  _ciAnim=true;
+  if(!mi.classList.contains('mi-collapsed')){
+    _chatIntroCollapsed=true;
+    mi.classList.add('mi-fading');
+    setTimeout(function(){if(!mi.classList.contains('mi-arch'))mi.classList.add('mi-collapsed');_ciAnim=false},230);
+  }else{
+    _chatIntroCollapsed=false;
+    mi.classList.remove('mi-collapsed');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){mi.classList.remove('mi-fading');_ciAnim=false})});
+  }
+  var b=document.getElementById('chat-intro-collapse');
+  if(b){b.title=_chatIntroCollapsed?'展开说明':'收起说明';b.setAttribute('aria-label',b.title)}
+}
 function enterChatArchive(){
   if(_chatArchMode)return;
   if(_chatSelectMode)exitChatSelectMode();
@@ -8662,6 +9853,9 @@ function enterChatArchive(){
   const t=document.getElementById('chat-intro-title');if(t)t.textContent='Archived';
   const s=document.getElementById('chat-intro-sub');if(s)s.textContent='Preserved conversations';
   const d=document.getElementById('chat-intro-desc');if(d)d.innerHTML='已离线好友的历史对话存档。可搜索与按日期浏览，所有记录为只读状态。<br>归档好友可随时前往 API Settings 恢复至API管理区。记忆库中的关联记忆不受归档影响。';
+  /* 归档视图下 Return 按钮变宽，与折叠键位置重叠；此时隐藏折叠键，并展开说明保证归档提示可见 */
+  const _mi=document.querySelector('#page-chat .module-intro');
+  if(_mi){_mi.classList.add('mi-arch');_mi.classList.remove('mi-collapsed','mi-fading')}
   const b=document.getElementById('chat-arch-toggle');
   if(b){b.classList.add('arch-return');b.classList.remove('arch-clock');b.innerHTML=_ARCH_RETURN_SVG+'Return';b.title='返回Chat'}
   /* 侧栏 */
@@ -8684,6 +9878,10 @@ function enterChatArchive(){
   renderChatCalendar();
 }
 function exitChatArchive(quiet){
+  /* 退出归档：恢复折叠键，并按本机记录的上次折叠状态还原 */
+  try{var _mi=document.querySelector('#page-chat .module-intro');
+    if(_mi){_mi.classList.remove('mi-arch');
+      if(_chatIntroCollapsed)_mi.classList.add('mi-collapsed','mi-fading')}}catch(e){}
   if(!_chatArchMode)return;
   _chatArchMode=false;
   activeFriendId=null;activeThreadId=null;
@@ -9085,7 +10283,7 @@ async function requestLetterFromSelected(){
     if(about){
       context+='【以下是正在与你对话的用户的个人资料（不是你的身份信息）】\n';
       context+='用户昵称：'+about.name+'\n';
-      if(about.bio)context+='用户简介：'+about.bio+'\n';
+      if(about.bio&&!about.bioPrivate)context+='用户简介：'+about.bio+'\n';/* v47b — 简介可设为仅自己可见 */
       context+='（以上为用户资料。）\n';
     }
     if(recentPosts.length){
@@ -9218,7 +10416,7 @@ async function requestBlogComment(postId){
     context+='你现在位于一个名为 Internal Beyond 的个人网站中。\n';
     if(about){
       context+='【用户信息，不是你的身份】\n昵称：'+about.name+'\n';
-      if(about.bio)context+='简介：'+about.bio+'\n';
+      if(about.bio&&!about.bioPrivate)context+='简介：'+about.bio+'\n';/* v47b */
     }
     context+='\n【你正在阅读的日志】\n';
     context+='标题：'+(post.title||'无标题')+'\n';/* fix: 发给 API 的 prompt 不做 HTML 转义（同塔罗处已修的问题），否则 & < > 会变成实体 */
@@ -9286,12 +10484,12 @@ let _annoPostId='';let _annoSelText='';let _annoParaIdx=-1;let _annoSelectedAI=n
   tb.innerHTML='<button class="anno-tb-btn" onclick="_annoCopy()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制</button><div class="anno-tb-sep"></div><div class="anno-tb-pen" id="anno-pen" onclick="_annoToggleDrop(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span class="anno-sel-name" id="anno-sel-name"></span><div class="anno-tb-drop" id="anno-drop"></div></div>';
   document.body.appendChild(tb);
   const ib=document.createElement('div');ib.id='anno-input-bar';
-  ib.innerHTML='<span class="ai-name" id="anno-inp-name"></span><span class="ai-dot">·</span><input id="anno-inp-field" maxlength="40" placeholder="Say something or don\'t" onkeydown="if(event.key===\'Enter\')_annoSend()" oninput="_annoLimitInput(this)"><button class="anno-send-btn" onclick="_annoSend()"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-light)" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>';
+  ib.innerHTML='<span class="ai-name" id="anno-inp-name"></span><span class="ai-dot">·</span><input id="anno-inp-field" maxlength="100" placeholder="Say something or don\'t" onkeydown="if(event.key===\'Enter\')_annoSend()" oninput="_annoLimitInput(this)"><button class="anno-send-btn" onclick="_annoSend()"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-light)" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>';
   document.body.appendChild(ib);
 })();
 
 /* Limit input: EN=1, CN=2, max 40 */
-function _annoLimitInput(el){let len=0;let cut=-1;for(let i=0;i<el.value.length;i++){len+=(el.value.charCodeAt(i)>127?2:1);if(len>40&&cut<0)cut=i}if(cut>=0)el.value=el.value.slice(0,cut)}
+function _annoLimitInput(el){let len=0;let cut=-1;for(let i=0;i<el.value.length;i++){len+=(el.value.charCodeAt(i)>127?2:1);if(len>100&&cut<0)cut=i}if(cut>=0)el.value=el.value.slice(0,cut)}
 
 /* ── Selection handler ── */
 document.addEventListener('mouseup',function(e){
@@ -9382,7 +10580,8 @@ function _annoPickAI(aiId,e){
 }
 
 async function _annoSend(){
-  if(!_annoSelectedAI||!_annoPostId)return;
+  if(!_annoPostId){toast('请先打开一篇日志');return}
+  if(!_annoSelectedAI)return;
   const cfg=_annoSelectedAI;
   if(!cfg.apiKey){toast('该API未配置密钥');return}
   if(!cfg.endpoint){toast('该API未配置接口地址');return}
@@ -9407,7 +10606,7 @@ async function _annoSend(){
   let prompt='';
   if(cfg.relationship)prompt+='你和对方的关系是：'+cfg.relationship+'。\n';
   prompt+='你现在正在陪TA阅读日志内容，用户在阅读过程中选中了一段文字。\n';
-  if(about){prompt+='用户昵称：'+about.name+(about.bio?'（'+about.bio+'）':'')+'\n'}
+  if(about){prompt+='用户昵称：'+about.name+((about.bio&&!about.bioPrivate)?'（'+about.bio+'）':'')+'\n'}/* v47b */
   prompt+='\n【日志标题】'+(post.title||'无标题')+'\n';
   prompt+='【选中文字所在的段落】\n'+paraText+'\n';
   prompt+='【用户选中的文字】\n'+selText+'\n';
@@ -9446,13 +10645,23 @@ async function _loadAnnotations(postId){
 
 function _annoFormatTime(ts){const d=new Date(ts);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 
+var _annoMarksLive=false;/* v49c：页面上当前是否有批注标记（决定要不要整页重建以清除） */
 async function _renderAnnotationsForPost(postId){
   const annos=await _loadAnnotations(postId);
   const post=await dbGet('posts',postId);if(!post)return;
-  const paras=post.content.split(/\n\n+/);
+  const isMd=post.format==='md';
+  const _bks=_blogBlocks(post.content,isMd);
+  const paras=isMd?_bks.map(function(b){if(b.text)return b.text;var t=document.createElement('div');t.innerHTML=b.html||'';return t.textContent||''}):post.content.split(/\n\n+/);
   const pvc=document.querySelector('#blog-read-view .post-view-content');if(!pvc)return;
 
-  pvc.innerHTML=paras.map((p,i)=>'<div class="pv-para" data-idx="'+i+'">'+esc(p)+'</div>').join('');
+  /* v49c 大文档保护：没有批注、页面上也没有旧标记时，沿用 viewPost 已分批渲染好的正文。
+     此前这里每次打开纯文本日志都把正文整页同步重建一遍，把分批渲染的成果推倒重来，大文档必卡 */
+  if(!annos.length&&!_annoMarksLive)return;
+
+  pvc.innerHTML='';
+  _blogRenderParas(pvc,isMd?_bks:paras.map(function(p){return {html:esc(p),id:'',level:0,text:''}}),function(){
+  _annoMarksLive=annos.length>0;
+  if(!annos.length)return;
 
   const byPara={};
   annos.forEach(a=>{
@@ -9505,6 +10714,7 @@ async function _renderAnnotationsForPost(postId){
       insertAfter.insertAdjacentElement('afterend',grpDiv);
       insertAfter=grpDiv;
     });
+  });
   });
 }
 
@@ -9789,6 +10999,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
     if(m.id){const db=document.createElement('button');db.className='chat-msg-del';db.textContent='✕';db.title='删除此消息';db.onclick=function(ev){ev.stopPropagation();deleteSingleMsg(m.id,div,frag)};div.appendChild(db)}
   }
   frag.appendChild(div);
+  if(m.quote)div.appendChild(_buildQuoteEl(m.quote));/* v48 — 引用在气泡内、正文下方 */
   return frag;
 }
 var _cachedUserName='';
@@ -9838,6 +11049,7 @@ function _renderAllChat(container,msgs,isFullscreen){
   container._ibWin=st;
   var frag=document.createDocumentFragment();
   for(var i=start;i<msgs.length;i++)frag.appendChild(_chatWinMsgEl(msgs,i,isFullscreen,i===start));
+  try{frag.querySelectorAll('.chat-msg').forEach(function(el){el.classList.add('bs-static')})}catch(e){}/* v49d：历史消息即开即现，不做进场动画 */
   container.appendChild(frag);
   _chatWinBind(container);
   _chatWinPin(container,st);
@@ -9881,6 +11093,7 @@ function _chatWinMore(container,st){
   var oldStart=st.start,newStart=Math.max(0,oldStart-_CHAT_WIN);
   var frag=document.createDocumentFragment();
   for(var i=newStart;i<oldStart;i++)frag.appendChild(_chatWinMsgEl(st.msgs,i,st.isFullscreen,i===newStart));
+  try{frag.querySelectorAll('.chat-msg').forEach(function(el){el.classList.add('bs-static')})}catch(e){}/* v49d：补载批同样不做进场动画 */
   var prevAnchor=container.style.overflowAnchor;
   container.style.overflowAnchor='none';/* 补载期间关闭浏览器自动滚动锚定，避免与下方手动回补叠加成双重偏移 */
   container.insertBefore(frag,st.top.nextSibling);
@@ -9908,6 +11121,7 @@ function _renderPanelList(container,msgs,mapFn,viewKey,emptyHTML){
 }
 
 async function loadChatMessages(){
+  if(typeof clearQuote==='function'&&_pendingQuote&&_pendingQuote._fid!==activeFriendId)clearQuote();/* v46 — 切对话后旧引用作废 */
   const container=document.getElementById('chat-messages');
   try{
     const filtered=activeFriendId?(await dbGetByIndex('chatMessages','byFriend',activeFriendId)):(await dbGetAll('chatMessages'));
@@ -9992,6 +11206,111 @@ function compressImage(file){
 }
 
 function renderImagePreviews(){renderAttachPreviews()}
+/* ═══ v48 — 消息引用（用户侧） ═══
+   点消息右上角的引用键 → 引用条出现在输入栏上方 → 连同下一条消息一起发出。
+   引用存 120 字；渲染在气泡内正文下方（细杠 + 昵称 + 单行省略）。 */
+var _pendingQuote=null;
+var QUOTE_MAX=120;/* v47c：再缩短——引用只要能认出是哪句话 */
+function _quoteBarIds(){return ['chat-full-quote','chat-mini-quote']}
+function quoteMessage(id,role,name,text){
+  var t=String(text||'').replace(/\s+$/,'');
+  if(!t){toast('这条消息没有可引用的文字');return}
+  _pendingQuote={id:id,role:role,name:name||'',_fid:activeFriendId,text:t.length>QUOTE_MAX?t.slice(0,QUOTE_MAX)+'…':t};
+  renderQuoteBar();
+  var inp=currentPage==='chat'?document.getElementById('chat-full-input'):document.getElementById('chat-input');
+  if(inp)inp.focus();
+}
+function clearQuote(){_pendingQuote=null;renderQuoteBar()}
+function renderQuoteBar(){
+  _quoteBarIds().forEach(function(bid){
+    var bar=document.getElementById(bid);if(!bar)return;
+    if(!_pendingQuote){bar.classList.remove('on');bar.innerHTML='';return}
+    bar.classList.add('on');
+    bar.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v4"/></svg>'
+      +(_pendingQuote.name?'<span class="bq-n">'+esc(_pendingQuote.name)+'</span>':'')
+      +'<span class="q-t">'+esc(_pendingQuote.text)+'</span>'
+      +'<button class="chat-quote-x" onclick="clearQuote()" title="取消引用" aria-label="取消引用">✕</button>';
+  });
+}
+/* v48 引用块：气泡内、正文下方的一行小引（细杠 + 昵称 + 原文） */
+function _buildQuoteEl(q){
+  var w=document.createElement('div');w.className='chat-bq';
+  if(q.name){var n=document.createElement('span');n.className='bq-n';n.textContent=q.name;w.appendChild(n)}
+  var b=document.createElement('span');b.className='bq-t';b.textContent=String(q.text||'').slice(0,QUOTE_MAX);
+  w.appendChild(b);return w;
+}
+/* v46 引用键的注入：消息渲染入口有五处（历史两套布局 / 流式 / 非流式两套），
+   逐处插按钮容易遗漏且重复。改为指针进入消息时懒注入，一处代码覆盖全部。 */
+function _ensureQuoteBtn(el){
+  if(!el||el.querySelector(':scope>.chat-msg-quote'))return;
+  var id=el.dataset&&el.dataset.msgId;if(!id)return;
+  if(!el.querySelector(':scope>.chat-msg-del'))return;/* 只给可操作的消息加（归档 / 选择模式下删除键不存在） */
+  var b=document.createElement('button');
+  b.className='chat-msg-quote';b.title='引用此消息';b.setAttribute('aria-label','引用此消息');
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v4"/></svg>';
+  b.onclick=function(ev){
+    ev.stopPropagation();
+    var isUser=el.classList.contains('user');
+    var hd=el.querySelector(':scope>.r-head')||el.querySelector('.bs-seg .r-head'),nm='';
+    if(hd){var c=hd.cloneNode(true),tm=c.querySelector('.r-time');if(tm)tm.remove();nm=c.textContent.trim()}
+    if(!nm)nm=isUser?(_cachedUserName||'You'):(_getActiveAiName()||'AI');
+    var rt=el.querySelector(':scope>.r-text'),tx='';
+    if(rt)tx=rt.textContent;
+    else{/* 经典布局的用户气泡没有 .r-text：克隆后剔除非正文元素再取字 */
+      var cl=el.cloneNode(true);
+      cl.querySelectorAll('.chat-msg-del,.chat-msg-quote,.chat-bq,.chat-sel-circle,.r-head,.chat-msg-cont-time,.chat-bubble-img').forEach(function(x){x.remove()});
+      tx=cl.textContent||'';
+    }
+    quoteMessage(id,isUser?'user':'assistant',nm,tx.trim());
+  };
+  el.appendChild(b);
+}
+document.addEventListener('pointerover',function(e){
+  var t=e.target;if(!t||t.nodeType!==1)return;
+  var el=t.closest&&t.closest('.chat-msg[data-msg-id]');
+  if(el){_ensureQuoteBtn(el);if(el.classList.contains('bs-msg'))_bsEnsureSegActs(el)}
+},true);
+/* v49 分段气泡的逐段操作：引用只引这一段，删除只删这一段。
+   与引用键同为懒注入，历史渲染与流式收尾两条路都被覆盖。 */
+function _bsSegName(el){
+  var hd=el.querySelector(':scope>.r-head')||el.querySelector('.bs-seg .r-head'),nm='';
+  if(hd){var c=hd.cloneNode(true),tm=c.querySelector('.r-time');if(tm)tm.remove();nm=c.textContent.trim()}
+  return nm||(typeof _getActiveAiName==='function'?(_getActiveAiName()||'AI'):'AI');
+}
+function _bsEnsureSegActs(el){
+  var id=el.dataset&&el.dataset.msgId;if(!id)return;
+  if(!el.querySelector(':scope>.chat-msg-del'))return;/* 与消息级按键同一可操作性口径 */
+  el.querySelectorAll(':scope>.r-text.bs-split>.bs-seg').forEach(function(seg,idx){
+    if(seg.querySelector(':scope>.bs-act'))return;
+    var act=document.createElement('div');act.className='bs-act';
+    var q=document.createElement('button');q.className='bs-q';q.title='引用这一段';q.setAttribute('aria-label','引用这一段');
+    q.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v4"/></svg>';
+    q.onclick=function(ev){ev.stopPropagation();
+      var cl=seg.cloneNode(true);cl.querySelectorAll('.bs-act').forEach(function(x){x.remove()});
+      quoteMessage(id,'assistant',_bsSegName(el),(cl.textContent||'').trim());
+    };
+    var d=document.createElement('button');d.className='bs-x';d.textContent='✕';d.title='删除这一段';d.setAttribute('aria-label','删除这一段');
+    d.onclick=function(ev){ev.stopPropagation();_bsDeleteSeg(id,idx,el)};
+    act.appendChild(q);act.appendChild(d);seg.appendChild(act);
+  });
+}
+async function _bsDeleteSeg(id,idx,msgEl){
+  var m;try{m=await dbGet('chatMessages',id)}catch(e){}
+  if(!m||typeof m.content!=='string'){toast('这条消息不支持分段删除');return}
+  var segs=_bsSplit(m.content);
+  if(!segs||idx<0||idx>=segs.length){toast('分段与消息内容对不上，请重进对话后再试');return}
+  segs.splice(idx,1);
+  if(!segs.length){deleteSingleMsg(id,msgEl);return}
+  m.content=segs.join('\n\n');
+  try{await dbPut('chatMessages',m)}catch(e){toast('保存失败');return}
+  var txt=msgEl.querySelector(':scope>.r-text');
+  if(txt){
+    _renderAiContent(txt,msgEl,m.content);
+    if(m.truncated&&typeof _buildContinuePill==='function')txt.appendChild(_buildContinuePill(m.id));
+    _bsEnsureSegActs(msgEl);
+  }
+  updateChatCount();updateChatStorageInfo();
+}
 function renderAttachPreviews(){
   ['chat-full-preview','chat-mini-preview'].forEach(id=>{
     const bar=document.getElementById(id);if(!bar)return;
@@ -10422,7 +11741,9 @@ function _renderSegments(host,text,wsResults){
       if(mode==='full'||mode==='partial'){
         var container=document.createElement('div');
         container.innerHTML=_mdRenderHtml(s.text,mode==='partial');
-        while(container.firstChild)host.appendChild(container.firstChild);
+        /* v49d：渲染器 join('\\n') 会在块元素之间留下换行文本节点——一旦落进仍是 pre-wrap 的容器
+           （分段气泡 / 个别补渲染路径），这些换行会被画成空行，把文字从气泡边缘推开。搬运时剔除纯空白节点 */
+        while(container.firstChild){var _n0=container.firstChild;if(_n0.nodeType===3&&!String(_n0.nodeValue).trim()){container.removeChild(_n0);continue}host.appendChild(_n0)}
       }else{host.appendChild(document.createTextNode(s.text))}
     }
     else if(s.type==='file'){
@@ -10445,14 +11766,90 @@ function _renderSegments(host,text,wsResults){
   });
 }
 /* Render AI text: segments (text + op */
+/* v46 — 分段气泡显示：开关存本机，默认关。
+   实现上只在渲染层把整段回复拆成多个气泡容器，每个容器各自走原来的 _renderSegments；
+   消息实体仍是一条，不入库、不改 API 请求、不影响缓存。 */
+var _bsCache=null;
+function _bsOn(){if(_bsCache!==null)return _bsCache==='1';try{return localStorage.getItem('ib_bubbleSplit')==='1'}catch(e){return false}}
+function _bsToggle(){
+  var el=document.getElementById('api-bubble-split');
+  var v=(el&&el.checked)?'1':'0';_bsCache=v;
+  try{localStorage.setItem('ib_bubbleSplit',v)}catch(e){}
+  try{dbPut('apiSettings',{id:'ib_bubbleSplit',v:v}).catch(function(){})}catch(e){}
+  if(typeof loadChatMessages==='function')loadChatMessages();
+  try{if(typeof activeFriendId!=='undefined'&&activeFriendId){
+    if(String(activeFriendId).indexOf('group_')===0){if(typeof selectGroup==='function')selectGroup(activeFriendId)}
+    else if(typeof selectFriend==='function')selectFriend(activeFriendId)
+  }}catch(e){}/* v49d：全屏对话页开着时勾选即生效，无需重进 */
+}
+/* v49c 启动恢复：优先数据库里的值（localStorage 在部分打开方式下不保留），并回写勾选框；
+   开关随 apiSettings 一起进备份，换机导入后设置也在 */
+function _bsInit(tries){
+  var el=document.getElementById('api-bubble-split');
+  var apply=function(v){_bsCache=v;if(el)el.checked=(v==='1');try{localStorage.setItem('ib_bubbleSplit',v)}catch(e){}};
+  var ls=null;try{ls=localStorage.getItem('ib_bubbleSplit')}catch(e){}
+  if(ls!==null)apply(ls);
+  if(!db){if((tries||0)<20)setTimeout(function(){_bsInit((tries||0)+1)},400);return}
+  dbGet('apiSettings','ib_bubbleSplit').then(function(r){
+    if(r&&typeof r.v!=='undefined'){
+      var _nv=String(r.v),_was=_bsCache;
+      apply(_nv);
+      /* v49d：localStorage 未保留时首屏按"未分段"画出，库里的真值稍后才到——
+         到值即按正确参数重画一次当前视图，消除"先对、卡一下、变样"的错位 */
+      if(_was!==_nv){try{
+        if(typeof activeFriendId!=='undefined'&&activeFriendId){
+          if(String(activeFriendId).indexOf('group_')===0){if(typeof selectGroup==='function')selectGroup(activeFriendId)}
+          else if(typeof selectFriend==='function')selectFriend(activeFriendId)
+        }
+        var _mini=document.getElementById('chat-panel');
+        if(_mini&&_mini.classList.contains('show')&&typeof loadChatMessages==='function')loadChatMessages();
+      }catch(e){}}
+    }
+    else if(ls!==null){try{dbPut('apiSettings',{id:'ib_bubbleSplit',v:ls}).catch(function(){})}catch(e){}}
+  }).catch(function(){});
+}
+_bsInit(0);
+/* 拆分规则：按空行切段；含代码围栏、表格行、引用行、列表项、工作区标签的整段不拆，
+   段数 1 段或超过 12 段时也不拆（前者无意义，后者会磎成磎气泡） */
+function _bsSplit(text){
+  var t=String(text==null?'':text);
+  if(t.indexOf('```')>=0||t.indexOf('<ws_')>=0||t.indexOf('|---')>=0)return null;
+  var raw=t.split(/\n\s*\n/),segs=[],i,x;
+  for(i=0;i<raw.length;i++){x=raw[i].replace(/^\s+|\s+$/g,'');if(x)segs.push(x)}
+  if(segs.length<2||segs.length>12)return null;
+  for(i=0;i<segs.length;i++){
+    if(/^\s*(>|\||#{1,6}\s|[-*+]\s|\d+[.)]\s)/.test(segs[i]))return null;
+    if(segs[i].length>900)return null;/* 单段过长拆了也不像在“发消息” */
+  }
+  return segs;
+}
 function _renderAiContent(textEl,container,text,wsResults){
+  var _bsHost=container||textEl.closest('.chat-msg');
+  /* 若上一次渲染把 r-head 移进过首段，先移回气泡内原位，避免被下面的清空动作抹掉 */
+  var _hdPrev=textEl.querySelector('.r-head');
+  if(_hdPrev&&_bsHost)_bsHost.insertBefore(_hdPrev,textEl);
   textEl.textContent='';
   var mode=_mdMode();
   if(mode==='full'||mode==='partial'){
-    /* 找到所属的 chat-msg 元素并添加 md-rendered 类 */
-    var msgEl=container||textEl.closest('.chat-msg');
-    if(msgEl&&msgEl.classList)msgEl.classList.add('md-rendered');
+    if(_bsHost&&_bsHost.classList)_bsHost.classList.add('md-rendered');
   }
+  var segs=_bsOn()?_bsSplit(text):null;
+  if(segs){
+    if(_bsHost&&_bsHost.classList)_bsHost.classList.add('bs-msg');
+    textEl.classList.add('bs-split');
+    for(var i=0;i<segs.length;i++){
+      var seg=document.createElement('div');seg.className='bs-seg';
+      _renderSegments(seg,segs[i],i===segs.length-1?wsResults:null);
+      textEl.appendChild(seg);
+    }
+    /* 无头像布局下昵称行原本在气泡内：移入首段，让首段就是一条普通消息 */
+    var _hd=_bsHost?_bsHost.querySelector(':scope>.r-head'):null;
+    var _sg1=textEl.querySelector('.bs-seg');
+    if(_hd&&_sg1)_sg1.insertBefore(_hd,_sg1.firstChild);
+    return;
+  }
+  if(_bsHost&&_bsHost.classList)_bsHost.classList.remove('bs-msg');
+  textEl.classList.remove('bs-split');
   _renderSegments(textEl,text,wsResults);
 }
 
@@ -11353,12 +12750,18 @@ async function sendChatMessage(voiceMsg){
   const sentFiles=_voice?[]:_pendingFiles.slice();if(!_voice){_pendingFiles=[];renderAttachPreviews()}
 
   const userMsg={id:'msg_'+Date.now()+'_u',role:'user',content:text,friendId:_targetFriend,timestamp:Date.now()};/* 编号方式与群聊统一：后缀防同毫秒碰撞 */
+  /* v46 引用：随本条消息存入，并在发送后清空引用条 */
+  const _sentQuote=_voice?null:_pendingQuote;
+  if(_sentQuote){userMsg.quote={id:_sentQuote.id,role:_sentQuote.role,name:_sentQuote.name,text:_sentQuote.text};_pendingQuote=null;renderQuoteBar()}
   if(sentImages.length)userMsg.images=sentImages.map(img=>({dataUrl:img.dataUrl,base64:img.base64,mime:img.mime,name:img.name}));
   if(sentFiles.length)userMsg.files=sentFiles.map(f=>({name:f.name,ext:f.ext,size:f.size,text:f.text}));
   if(_voice)userMsg.voice={dataUrl:_voice.dataUrl,mime:_voice.mime,duration:_voice.duration,transcript:_voice.transcript||'',tone:_voice.tone||''};
   if(_targetThread)userMsg.threadId=_targetThread;
   await dbPut('chatMessages',userMsg);
   appendChatBubble('user',text,undefined,undefined,userMsg.id,sentImages,sentFiles,undefined,_voice);
+  /* 已渲染的气泡补上引用块（appendChatBubble 不接受 quote 参数，这里后插以免改它的签名） */
+  if(_sentQuote)try{document.querySelectorAll('.chat-msg[data-msg-id="'+userMsg.id+'"]').forEach(function(el){
+    if(!el.querySelector(':scope>.chat-bq'))el.appendChild(_buildQuoteEl(_sentQuote))})}catch(e){}
   /* 上传的文件同步归档进 ICode 的「User」文件夹（先落库再请求 AI；文件内容随本条消息注入，后续可按文件名 ws_read 读取） */
   if(sentFiles.length){try{await _wsArchiveUserUploads(sentFiles)}catch(e){}}
 
@@ -11397,6 +12800,10 @@ async function sendChatMessage(voiceMsg){
     const _vNative=_vmAudioNative(cfg)&&(_vtS1.direct!==false);/* 音频直发判定：能听原声的模型（「音频直发」开关默认开）不附加声学语气段 */
     const messages=history.map((m,i)=>{
       var mc=m.content||'';
+      /* v46 引用：以一段前缀告知 AI 本条在回应哪句话。
+         写在消息正文内部（不新增消息、不改角色序列），且历史重放时逐字一致，
+         前缀缓存不会因此失效。 */
+      if(m.quote&&m.quote.text)mc='[引用 '+(m.quote.name||(m.quote.role==='user'?'对方':'你'))+'的消息：'+String(m.quote.text).slice(0,300)+']\n'+mc;
       if(m.voice)mc+=(mc?'\n':'')+_voiceApiLine(m.voice,!_vNative);
       if(m.files&&m.files.length)m.files.forEach(function(f){mc+='\n\n[文件上传: '+f.name+']\n'+_capFileText(f.text)});
       var _mm={role:m.role==='assistant'?'assistant':'user',content:m.role==='assistant'?_wsStubHistory(mc):mc};
@@ -11421,6 +12828,7 @@ async function sendChatMessage(voiceMsg){
     let _tailCtx='';
     /* 时间戳：每分钟都变，必须放在 tail */
     _tailCtx+='当前时间：'+new Date().toLocaleString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long',hour:'2-digit',minute:'2-digit'})+'。';
+    try{var _pg=_presenceTake(_targetFriend);if(_pg)_tailCtx+=_pg}catch(e){}/* v46 Presence：离开时长随本条消息带给 AI，不单独发消息 */
     /* 「正在播放」（Presence 内开关，默认关）：随播放/暂停变化 → tail，不进 system */
     try{if(ss.musicEnabled&&currentTrackIdx>=0&&!audioEl.paused&&playlist[currentTrackIdx])_tailCtx+='正在听：《'+playlist[currentTrackIdx].name+'》。';}catch(e){}
     /* CALENDAR：临近日程栏走 tail（挂末条用户消息），按天生成，一天之内逐字不变 */
@@ -13145,21 +14553,24 @@ async function _checkWelcomeBack(lastActiveOverride){
   /* 格式化含上下文的时间缺口 */
   const hours=Math.floor(gap/3600000);const mins=Math.floor((gap%3600000)/60000);
   let dur='';if(hours>0)dur+=hours+' 小时';if(mins>0)dur+=(hours>0?' ':'')+mins+' 分钟';
+  if(!dur)dur='0 分钟';
   const sameDay=_isSameDay(lastActive,now);
-  let gapText='[你在 '+(sameDay?'':_formatDate(lastActive)+' ')+_formatTime(lastActive)+' 离开，'
-    +(sameDay?'':_formatDate(now)+' ')+_formatTime(now)+' 回来，离开约 '+dur+']';
-  /* fix: 取输入框逻辑与 sendChatMessage 保持一致（按 */
-  const input=currentPage==='chat'?document.getElementById('chat-full-input'):document.getElementById('chat-input');
-  if(input){
-    /* fix: 暂存并恢复用户未发送的草稿与待发附件，避免被自动消息覆盖/顺 */
-    const _draft=input.value,_imgs=_pendingImages,_fls=_pendingFiles;
-    _pendingImages=[];_pendingFiles=[];
-    input.value=gapText;
-    sendChatMessage();
-    input.value=_draft;
-    _pendingImages=_imgs;_pendingFiles=_fls;
-    renderAttachPreviews();autoResizeInput(input);
-  }
+  /* v46 — Presence 重做。
+     旧实现把离开时长填进输入框并替用户按下发送，它在聊天记录里就是一条用户发出的消息，
+     回来就自己冒出一句话，这就是“生硬突兀”的来源；同时它会往历史里插入一条新消息，
+     把后续每一轮的前缀都往后推一格。
+     现改为写入待注入变量，由下一条真实消息的尾部上下文区携带——
+     不产生任何气泡、不写入数据库、不进入历史，缓存前缀结构完全不变。 */
+  _presenceGap={fid:activeFriendId,
+    text:'TA在 '+(sameDay?'':_formatDate(lastActive)+' ')+_formatTime(lastActive)+' 离开，'
+      +(sameDay?'':_formatDate(now)+' ')+_formatTime(now)+' 回来，离开了 '+dur+'。'};
+}
+/* 待注入的离开信息：只存内存，被下一条消息取走后即清空；切好友后作废 */
+var _presenceGap=null;
+function _presenceTake(fid){
+  if(!_presenceGap)return '';
+  if(_presenceGap.fid!==fid){_presenceGap=null;return ''}
+  var t=_presenceGap.text;_presenceGap=null;return t;
 }
 /* Track activity：click/keydown/scroll/mousemove 维持活跃 */
 document.addEventListener('click',_updateLastActive);document.addEventListener('keydown',_updateLastActive);
@@ -13179,7 +14590,10 @@ var FILE_MAX_BYTES=50*1024*1024,FILE_MAX_COUNT=15;/* 单文件 50MB、最多 15 
 function pickFile(panel){
   document.querySelectorAll('.chat-attach-popup.show').forEach(p=>p.classList.remove('show'));
   const inp=document.createElement('input');inp.type='file';inp.multiple=true;
-  inp.accept='.txt,.md,.markdown,.js,.mjs,.cjs,.ts,.tsx,.jsx,.vue,.svelte,.json,.jsonc,.csv,.tsv,.xml,.html,.htm,.css,.scss,.less,.py,.java,.kt,.c,.h,.cpp,.hpp,.cs,.go,.rs,.rb,.php,.swift,.lua,.sql,.sh,.bash,.zsh,.bat,.ps1,.yaml,.yml,.log,.ini,.cfg,.conf,.toml,.env,.properties,.gitignore,.dockerfile,.tex,.srt,.vtt,.pdf,.docx,.xlsx,.xls,.pptx,.rtf,.epub';
+  /* v46 — 可选文件类型扩充：新增一批纯文本格式（配置、数据、字幕、地理、笔记、课件等），
+     以及三种能提取文字的办公格式（doc / ppt / odt 系）。能否真正读出内容取决于文件本身是否含文字层，
+     扫描件 PDF、纯图片电子书仍然读不出文字（浏览器内无 OCR）。 */
+  inp.accept='.txt,.text,.md,.markdown,.mdx,.rst,.adoc,.org,.tex,.bib,.js,.mjs,.cjs,.ts,.tsx,.jsx,.vue,.svelte,.astro,.json,.jsonc,.json5,.ndjson,.csv,.tsv,.psv,.xml,.xsd,.xsl,.html,.htm,.xhtml,.css,.scss,.sass,.less,.styl,.py,.pyi,.ipynb,.java,.kt,.kts,.scala,.groovy,.c,.h,.cpp,.hpp,.cc,.hh,.cxx,.m,.mm,.cs,.go,.rs,.rb,.erb,.php,.swift,.dart,.lua,.pl,.pm,.r,.jl,.hs,.ml,.ex,.exs,.erl,.clj,.f90,.f95,.for,.pas,.vb,.asm,.s,.v,.sv,.vhd,.sql,.psql,.graphql,.gql,.proto,.sh,.bash,.zsh,.fish,.bat,.cmd,.ps1,.psm1,.awk,.sed,.yaml,.yml,.log,.ini,.cfg,.conf,.config,.toml,.env,.properties,.plist,.reg,.gitignore,.gitattributes,.editorconfig,.dockerfile,.dockerignore,.makefile,.mk,.cmake,.gradle,.podspec,.lock,.srt,.vtt,.ass,.ssa,.lrc,.sub,.geojson,.kml,.gpx,.svg,.dot,.mermaid,.mmd,.puml,.diff,.patch,.eml,.vcf,.ics,.bibtex,.pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.rtf,.epub,.odt,.ods,.odp';
   inp.onchange=async function(){
     const files=Array.from(inp.files||[]);if(!files.length)return;
     let added=0,lastName='';
@@ -13220,13 +14634,20 @@ async function clearAllApiKeys(){
 }
 async function resetAllData(){
   if(!confirm('⚠ 这将删除所有数据：日志、聊天记录、信件、API配置、个人资料…\n\n确定要重置吗？'))return;
-  if(!confirm('最后确认：此操作不可逆，所有数据将永久丢失。'))return;
+  if(!confirm('最后确认：此操作不可逆。所有数据将永久丢失，包括日历、Auto Memory 档案与本机设置。'))return;
   try{localStorage.setItem('ib_resetAt',String(Date.now()))}catch(e){}/* 主动重置：熔断警告静音 15 分钟 */
-  const stores=['posts','categories','about','music','apiSettings','chatMessages','letters','apiConfigs','groups','blogComments','memories','chatThreads','chatSummaries','uploadedFiles','projects','projectFiles','blogAnnotations'];
-  for(const s of stores){try{const all=await dbGetAll(s);for(const item of all)await dbDelete(s,item.id||item.name)}catch(e){}}
+  /* v46 — 重置不干净与卡顿的三处修复：
+     ① 仓库清单改用 IB_STORES，旧清单漏掉 autoMemory / calEvents / calNotes / calLedger 四个仓，
+        Auto Memory 档案与日历的事项 / 留笺 / 台账在重置后仍然存在；
+     ② 逐条 delete 改为整仓 clear，万条级数据不再卡死；
+     ③ 本机设置键与内存缓存一并清除，避免旧数据在重置后被写回。 */
+  for(const s of IB_STORES){try{await dbClear(s)}catch(e){}}
   try{if(typeof ibExtReset==='function')ibExtReset()}catch(e){}/* 扩展数据（MCP 配置/向量库/白名单等）一并清理 */
+  try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('ib_')===0&&k!=='ib_resetAt')localStorage.removeItem(k)})}catch(e){}/* 本机设置键（含历史遗留的 ib_mirror_* 镜像残留） */
+  try{_tkCacheDoc=null}catch(e){}/* Token 仪表盘内存缓存：不清会在下次记账时把旧明细写回库 */
   apiConfigs=[];activeFriendId=null;activeThreadId=null;lockedDiaryUnlocked=false;diaryMode=false;activeCat='all';
-  toast('所有数据已重置');navTo('home');
+  toast('所有数据已重置，正在重新加载…');
+  setTimeout(function(){try{location.reload()}catch(e){navTo('home')}},700);/* 重载一次：日历 / 播放列表 / 各模块的内存镜像同步清空 */
 }
 
 async function clearChatImages(){
@@ -13273,7 +14694,7 @@ async function buildSiteContext(){
     if(about){
       ctx+='\n\n【对方的个人资料】';
       ctx+='\n昵称：'+about.name;
-      if(about.bio)ctx+='\n简介：'+about.bio.slice(0,300);
+      if(about.bio&&!about.bioPrivate)ctx+='\n简介：'+about.bio.slice(0,300);/* v47b */
       ctx+='\n（以上为对方的个人资料。）';
     }
     if(recentPosts.length){
@@ -16536,7 +17957,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){_fa
 var ICODE_IMP={MAX_FILES:2000,MAX_TOTAL:500*1024*1024,MAX_FILE:50*1024*1024};/* 导入上限：2000 个 / 500MB / 单文件 50MB */
 var _ICODE_SKIP_DIRS={'node_modules':1,'.git':1,'.svn':1,'.hg':1,'dist':1,'build':1,'out':1,'__pycache__':1,'.venv':1,'venv':1,'env':1,'.idea':1,'.vscode':1,'.next':1,'.nuxt':1,'coverage':1,'target':1,'vendor':1,'.cache':1};
 var _ICODE_TEXT_EXT=/\.(txt|md|markdown|rst|adoc|js|mjs|cjs|ts|tsx|jsx|vue|svelte|json|jsonc|json5|csv|tsv|xml|html?|xhtml|css|scss|sass|less|styl|py|pyi|ipynb|java|kt|kts|scala|groovy|c|h|cpp|hpp|cc|cxx|cs|go|rs|rb|erb|php|swift|m|mm|lua|sql|sh|bash|zsh|fish|bat|cmd|ps1|ya?ml|log|ini|cfg|conf|config|toml|env|properties|lock|gradle|tex|bib|srt|vtt|ass|gd|r|jl|pl|pm|ex|exs|erl|hrl|clj|cljs|edn|hs|elm|dart|proto|graphql|gql|prisma|sol|asm|s|diff|patch|gitignore|gitattributes|editorconfig|dockerfile|dockerignore|npmrc|nvmrc|babelrc|eslintignore|prettierignore)$/i;
-var _ICODE_TEXT_NAMES=/^(readme|license|licence|copying|changelog|changes|history|authors|contributors|notice|todo|makefile|gnumakefile|dockerfile|containerfile|procfile|rakefile|gemfile|justfile|cmakelists\.txt|requirements[^\/]*|pipfile|cargo\.toml|go\.(mod|sum)|\.gitignore|\.gitattributes|\.gitmodules|\.editorconfig|\.env[^\/]*|\.eslintrc[^\/]*|\.prettierrc[^\/]*|\.babelrc[^\/]*|\.npmrc|\.nvmrc)$/i;
+var _ICODE_TEXT_NAMES=/^(readme|license|licence|copying|changelog|changes|history|authors|contributors|notice|todo|makefile|gnumakefile|dockerfile|containerfile|procfile|rakefile|gemfile|justfile|cmakelists\.txt|requirements[^\/]*|pipfile|cargo\.toml|go\.(mod|sum)|\.gitignore|\.gitattributes|\.gitmodules|\.editorconfig|\.env[^\/]*|\.eslintrc[^\/]*|\.prettierrc[^\/]*|\.babelrc[^\/]*|\.npmrc|\.nvmrc|\.dockerignore|\.prettierignore|\.eslintignore|vagrantfile|brewfile|podfile|package\.json|tsconfig[^\/]*|jsconfig[^\/]*)$/i;/* v46 — 补充几个常见的无扩展名 / 固定名文本文件 */
 function _icodeIsText(name){return _ICODE_TEXT_EXT.test(name)||_ICODE_TEXT_NAMES.test(name)}
 /* ── 二进制嗅探：头 1KB 里出现 NUL 字节即视为二进制（几乎所有真二进制格式开头都有 NUL） ── */
 function _icodeLooksBinary(bytes){
@@ -16554,7 +17975,9 @@ async function _icodeSniffText(f){
    独立本地库缓存（IndexedDB: IB_LibCache），此后离线可用；开关关闭
    且本地无缓存时给出提示、不发起任何网络请求、不崩溃。
    文本提取供 AI 读取时注入；生成器（DOCX / PDF / XLSX）供 ws_make_* 指令调用。 */
-var _ICODE_RICH_EXT=/\.(pdf|docx|xlsx|xls|pptx|rtf|epub)$/i;
+/* v46 — ICode 富文件识别同步扩充：doc / ppt 与 OpenDocument 三件套。
+   它们与原有格式走同一条提取链路，失败时按原逻辑回落。 */
+var _ICODE_RICH_EXT=/\.(pdf|docx|doc|xlsx|xls|pptx|ppt|rtf|epub|odt|ods|odp)$/i;
 function _icodeIsRich(name){return _ICODE_RICH_EXT.test(String(name||''))}
 function _wsRichKind(name){var m=String(name||'').toLowerCase().match(_ICODE_RICH_EXT);return m?m[1]:''}
 function _wsRichMime(name){
@@ -16911,6 +18334,49 @@ async function _wsExtractRtfText(bytes){
   return out||'[该 RTF 中没有可提取的正文文本]';
 }
 /* EPUB：ZIP + XHTML。按 OPF 的 spine 顺序抽正文，解析失败时按文件名自然序兜底 */
+/* v47c\uff1a\u6309\u7ae0\u62c6\u5206\u7684 EPUB \u63d0\u53d6\u3002\u4e0e _wsExtractEpubText \u5171\u7528\u540c\u4e00\u5957 spine \u89e3\u6790\uff0c
+   \u4e0d\u540c\u5904\u5728\u4e8e\u5b83\u628a\u6bcf\u4e2a spine \u9879\u5355\u72ec\u8fd4\u56de\uff0c\u5e76\u4ece <h1>~<h3> \u6216 <title> \u91cc\u53d6\u7ae0\u540d\u3002 */
+async function _wsExtractEpubChapters(bytes){
+  var ents=_wsZipList(bytes),byName={};
+  ents.forEach(function(e){byName[e.name]=e});
+  async function readTxt(en){return new TextDecoder('utf-8').decode(await _wsZipRead(bytes,en))}
+  var order=[];
+  try{
+    var cont=byName['META-INF/container.xml'],opfPath=null;
+    if(cont){var cx=await readTxt(cont);var cm=cx.match(/full-path\s*=\s*"([^"]+)"/);if(cm)opfPath=cm[1]}
+    if(opfPath&&byName[opfPath]){
+      var opf=await readTxt(byName[opfPath]);
+      var dir=opfPath.indexOf('/')>-1?opfPath.slice(0,opfPath.lastIndexOf('/')+1):'';
+      var items={};
+      opf.replace(/<item\s+[^>]*>/gi,function(tag){
+        var id=(tag.match(/\bid\s*=\s*"([^"]+)"/)||[])[1],href=(tag.match(/\bhref\s*=\s*"([^"]+)"/)||[])[1];
+        if(id&&href)items[id]=href;return tag});
+      opf.replace(/<itemref\s+[^>]*>/gi,function(tag){
+        var idr=(tag.match(/\bidref\s*=\s*"([^"]+)"/)||[])[1];
+        if(idr&&items[idr]){var pp=dir+decodeURIComponent(items[idr]);if(byName[pp])order.push(byName[pp])}
+        return tag});
+    }
+  }catch(e){}
+  if(!order.length){
+    order=ents.filter(function(e){return /\.x?html?$/i.test(e.name)});
+    order.sort(function(a,b){return a.name<b.name?-1:(a.name>b.name?1:0)});
+  }
+  var out=[],CAP=3000000,used=0;
+  for(var i=0;i<order.length&&used<CAP;i++){
+    var h;try{h=await readTxt(order[i])}catch(e){continue}
+    var ti='';
+    var hm=h.match(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]\s*>/i)||h.match(/<title[^>]*>([\s\S]*?)<\/title\s*>/i);
+    if(hm)ti=_wsXmlUnescape(hm[1].replace(/<[^>]+>/g,'')).replace(/\s+/g,' ').trim().slice(0,80);
+    var t=h.replace(/<(script|style)\b[\s\S]*?<\/\1\s*>/gi,'')
+      .replace(/<\/(p|div|h[1-6]|li|tr|section|article|blockquote)\s*>/gi,'\n')
+      .replace(/<br[^>]*\/?>/gi,'\n').replace(/<[^>]+>/g,'');
+    t=_wsXmlUnescape(t).replace(/\n{3,}/g,'\n\n').trim();
+    if(!t)continue;
+    used+=t.length;
+    out.push({title:ti,text:t});
+  }
+  return out;
+}
 async function _wsExtractEpubText(bytes){
   var ents=_wsZipList(bytes),byName={};
   ents.forEach(function(e){byName[e.name]=e});
@@ -19492,19 +20958,31 @@ async function buildMemorySky(){
   sky.querySelectorAll('.mem-star,.mem-sparkle').forEach(function(e){e.remove()});
   var all=await dbGetAll('memories');
   /* ── 防叠加：如果两颗星的位置过近，给后来的星施加微偏移 ── */
-  var _placed=[];
-  function _jitter(x,y){
-    for(var j=0;j<_placed.length;j++){
-      var dx=x-_placed[j][0],dy=y-_placed[j][1];
-      if(dx*dx+dy*dy<12){/* ~3.5% 画幅内算重叠 */
-        var ang=Math.atan2(dy,dx)+Math.PI*(0.4+Math.random()*0.2);
-        x=Math.max(4,Math.min(96,x+Math.cos(ang)*4));
-        y=Math.max(4,Math.min(96,y+Math.sin(ang)*4));
-        j=-1;/* 重新检查 */
+  /* v46 — 重叠检测改写：旧写法每放一颗星就与已放置的全部星逐一比对，且命中后从头重扫（O(n²) 起步，最坏情况更高），
+     记忆达到数百至上千条时星图会直接卡死。现改为网格分桶：只与相邻 3×3 格子里的星比对，并限制单颗星的推挤次数。
+     判定半径、位移角度与边界限制与原来完全一致，星图观感不变。 */
+  var _placed=[],_grid={},_GS=3.5;/* 格边长取判定半径，邻域 3×3 即可覆盖 */
+  function _hits(x,y){
+    var gx=Math.floor(x/_GS),gy=Math.floor(y/_GS),a,b,cell,i,dx,dy;
+    for(a=-1;a<=1;a++)for(b=-1;b<=1;b++){
+      cell=_grid[(gx+a)+':'+(gy+b)];if(!cell)continue;
+      for(i=0;i<cell.length;i++){
+        dx=x-cell[i][0];dy=y-cell[i][1];
+        if(dx*dx+dy*dy<12)return cell[i];/* ~3.5% 画幅内算重叠 */
       }
     }
-    _placed.push([x,y]);
-    return [x,y];
+    return null;
+  }
+  function _jitter(x,y){
+    for(var t=0;t<24;t++){
+      var h=_hits(x,y);if(!h)break;
+      var ang=Math.atan2(y-h[1],x-h[0])+Math.PI*(0.4+Math.random()*0.2);
+      x=Math.max(4,Math.min(96,x+Math.cos(ang)*4));
+      y=Math.max(4,Math.min(96,y+Math.sin(ang)*4));
+    }
+    var pt=[x,y],k=Math.floor(x/_GS)+':'+Math.floor(y/_GS);
+    _placed.push(pt);(_grid[k]=_grid[k]||[]).push(pt);
+    return pt;
   }
   /* ── AM 恒星：每个开启了 Auto Memory 的 API 渲染为渐变色恒星 ── */
   var _amApis=(typeof apiConfigs!=='undefined'?apiConfigs:[]).filter(function(c){return c.autoMem||c.amRecordOnly});
@@ -19521,19 +20999,45 @@ async function buildMemorySky(){
     sky.appendChild(btn);
   });
   var _cstPts=[];/* internal 星座连线用：本次渲染的全部星点坐标与领域 */
-  all.forEach(function(m){
+  /* ══ v47 星图密度方案 ══
+     ① 密度自适应：星星的尺寸与光晕随实际绘制数量收缩，数量越多越小、越淡。
+     ② 超过 300 条后开始隐藏：按“活跃度 + 新近度”排序，只绘前 300 颗；
+        置顶记忆永不隐藏，AM 恒星也不参与限额。记忆本身不受影响，只是不画在图上。
+     ③ 入场：逐批浮现，不是整屏同时出现。 */
+  var SKY_CAP=500;/* v47b：最多显示 500 颗，超过才开启隐藏 */
+  var _vis=all;
+  if(all.length>SKY_CAP){
+    var _now=Date.now();
+    _vis=all.map(function(m){
+      var age=(_now-(m.lastActivated||m.created||_now))/864e5;
+      /* 活跃度为主、新近度为辅；置顶直接抬到最高优先级 */
+      var r=Math.exp(-age/240);
+      return {m:m,_k:m.pinned?1e9:getMemVitality(m)*0.72+r*0.28};
+    }).sort(function(a,b){return b._k-a._k}).slice(0,SKY_CAP).map(function(o){return o.m});
+  }
+  /* 密度系数：按图上实际绘制数量做轻微收缩——160 颗以内原尺寸，
+     满 500 颗时约收到七成，下限 0.55；只求缓解拥挤，不改变星图的观感 */
+  var _dk=Math.max(0.55,Math.min(1,Math.pow(160/Math.max(1,_vis.length),0.3)));
+  var _si=0;
+  _vis.forEach(function(m){
     var vit=getMemVitality(m),sc=getMemoryScore(m);
     /* fix: 与 getMemoryScore 同款读取端兜底——importAll 原样入库，旧备份缺 V/A/重要性时星星会算出 left:NaN% 直接消失 */
     var _xy0=[8+(m.valence!=null?m.valence:0.5)*84,8+(1-(m.arousal!=null?m.arousal:0.3))*84];
     var _xyJ=_jitter(_xy0[0],_xy0[1]);var x=_xyJ[0],y=_xyJ[1];
     _cstPts.push({x:x,y:y,d:m.domain||'日常'});
-    var d=3.5+(m.importance||5)*0.78;
+    /* 置顶星不参与缩小（它们是锚点，得一直认得出来） */
+    var _k=m.pinned?Math.max(0.78,_dk):_dk;
+    var d=(3.5+(m.importance||5)*0.78)*_k;
+    if(d<1.5)d=1.5;
     var dc=m.pinned?_memGold():(MEM_DOMAIN_COLORS[m.domain]||MEM_DOMAIN_COLORS['日常']).c;
-    var gc=m.pinned?_memGoldRgba((0.4+vit*0.4).toFixed(2)):'rgba(114,168,216,'+(0.2+vit*0.35).toFixed(2)+')';
-    var gb=(m.pinned?11:Math.round(4+d*vit))+'px';
+    var _ga=m.pinned?(0.4+vit*0.4):(0.2+vit*0.35)*(0.55+_k*0.45);/* 密集时光晕同步减弱，避免整片发白 */
+    var gc=m.pinned?_memGoldRgba(_ga.toFixed(2)):'rgba(114,168,216,'+_ga.toFixed(2)+')';
+    var gb=(m.pinned?Math.round(11*_k):Math.round((4+d*vit)*(0.6+_k*0.4)))+'px';
     var btn=document.createElement('button');
     btn.className='mem-star'+(m.pinned?' pinned':'');
-    btn.style.cssText='left:'+x+'%;top:'+y+'%;--sc:'+dc+';--sd:'+d.toFixed(1)+'px;--sop:'+(0.3+vit*0.7).toFixed(2)+';--sgc:'+gc+';--sg:'+gb+';--stw:'+(3+Math.random()*3.5).toFixed(1)+'s';
+    var _sop=(0.3+vit*0.7)*(0.72+_k*0.28);/* 同理：数量越大整体越淡 */
+    btn.style.cssText='left:'+x+'%;top:'+y+'%;--sc:'+dc+';--sd:'+d.toFixed(1)+'px;--sop:'+_sop.toFixed(2)+';--sgc:'+gc+';--sg:'+gb+';--stw:'+(3+Math.random()*3.5).toFixed(1)+'s';
+    btn.style.setProperty('--sin',(Math.min(_si,240)*3.5)+'ms');_si++;/* 逐批浮现的延迟；置于 cssText 之后，避免被整体覆写 */
     var dt=new Date(m.created);
     var dateStr=dt.getFullYear()+'.'+(dt.getMonth()+1)+'.'+dt.getDate()+' '+dt.getHours()+':'+String(dt.getMinutes()).padStart(2,'0');
     btn.innerHTML='<span class="mem-star-dot"></span><span class="mem-star-tip">'+esc(m.title||'')+' · '+dateStr+'</span>';
@@ -19547,6 +21051,22 @@ async function buildMemorySky(){
     sky.appendChild(btn);
   });
   _memSkyConstellations(_cstPts);
+  _memSkyCount(_vis.length+_amApis.length,all.length+_amApis.length);
+}
+/* 右上角计数：未隐藏时只报总数；有隐藏时报“已显示 / 总数”。
+   两个数字都含 AM 恒星在内。 */
+function _memSkyCount(shown,total){
+  var el=document.getElementById('mem-sky-count');if(!el)return;
+  if(!total){el.classList.remove('on');el.innerHTML='';return}
+  if(shown>=total){
+    el.textContent=total+' STARS';
+    el.title=total+' stars on the map';
+  }else{
+    el.innerHTML=shown+' SHOWN <span class="hid">/ '+total+' TOTAL</span>';
+    el.title=shown+' of '+total+' stars shown — '+(total-shown)
+      +' dim or long-inactive memories are hidden to keep the map readable';
+  }
+  el.classList.add('on');
 }
 
 /* ── internal 星座连线：同一领域内按横坐标相邻的记忆星之间画发丝线（像星座连线），
@@ -20863,7 +22383,8 @@ function renderSelected(){
     list.innerHTML=rows.map(function(r){
       if(r.hol)return '<div class="ev-item"><i class="dt hd"></i><div><div class="et">'+esc(r.hol)+'</div></div><b class="ev-du">'+(r.du===0?'今天':'<span class="n">'+r.du+'</span><small>天后</small>')+'</b></div>';
       var it=r.it,cl=dotCls(it);
-      return '<div class="ev-item"><i class="dt '+cl+'"></i><div><div class="et">'+esc(it.title)+'</div></div><b class="ev-du">'+(r.du===0?'今天':'<span class="n">'+r.du+'</span><small>天后</small>')+'</b></div>';
+      /* v46 — 有时刻的事项在标题后面跟一个淡色时间 */
+      return '<div class="ev-item"><i class="dt '+cl+'"></i><div><div class="et">'+esc(it.title)+(it.time?'<span class="et-tm">'+esc(it.time)+'</span>':'')+'</div></div><b class="ev-du">'+(r.du===0?'今天':'<span class="n">'+r.du+'</span><small>天后</small>')+'</b></div>';
     }).join('');
   }
 }
@@ -21194,7 +22715,7 @@ function syncKindUI(kind,defaults){
   $('#date-repeat-label').textContent=c[1]?'Start Date & Repeat — 开始日期与重复':'Date & Repeat — 日期与重复';
   if(defaults&&selRep)selRep.set(c[2]);if(defaults&&selVis)selVis.set(c[3]<0?VIS_OPTS.length-1:c[3]);
   if(defaults&&$('#f-remind')){$('#f-remind').checked=!!c[4];syncVisibilityReminder();syncReminderUI()}
-  syncRepeatUI();syncVisUI();
+  syncRepeatUI();syncVisUI();syncTimeField();
 }
 /* ── v44 — 每周多选与可见范围多选的界面同步 ── */
 function visPicked(){return $$('#vis-pick button.on').map(function(b){return b.dataset.ai})}
@@ -21234,6 +22755,14 @@ function noteTrim(s){
   }
   return out;
 }
+/* v46 — 计划 / 记录才显示时刻列；切换到纪念日 / 生日时隐藏并清空，避免遗留值被写入 */
+function syncTimeField(){
+  var t=document.getElementById('f-time');if(!t)return;
+  var k=curKind(),on=(k==='plan'||k==='memo');
+  t.style.display=on?'':'none';
+  if(!on)t.value='';
+  var row=t.parentNode;if(row&&row.classList)row.classList.toggle('has-time',on);
+}
 function formItem(end){
   var y=1950+selY.get(),m=selM.get(),d=selD.get()+1,rep=repKey(selRep.get()),kind=curKind();
   var vis=VIS_OPTS[selVis.get()].v;
@@ -21241,6 +22770,9 @@ function formItem(end){
   var it={kind:kind,title:(($('#f-title').value)||'').trim(),
     date:y+'-'+p2(m+1)+'-'+p2(d),repeat:rep,vis:vis,
     remind:vis!=='self'&&$('#f-remind').checked};
+  /* v46 — 时刻：仅计划 / 记录写入，格式 HH:MM；留空则不写该字段（旧数据同样无此字段，按全天事项显示） */
+  if(kind==='plan'||kind==='memo'){var _tv=((($('#f-time')||{}).value)||'').trim();
+    if(/^\d{1,2}:\d{2}$/.test(_tv)){var _tp=_tv.split(':');it.time=p2(+_tp[0])+':'+p2(+_tp[1])}}
   if((kind==='plan'||kind==='memo')&&end&&(rep!=='once'||end!==it.date))it.endDate=end;
   var nv=noteTrim(((($('#f-note')||{}).value)||'').trim());
   if(nv)it.note=nv;
@@ -21263,12 +22795,14 @@ function clearEdit(){
   var t=$('#f-title');if(t)t.value='';
   var n=$('#f-note');if(n)n.value='';
   var e=$('#f-end-date');if(e){e.value='';e.dataset.valid=''}
+  var tm=$('#f-time');if(tm)tm.value='';/* v46 — 退出编辑态一并清空时刻 */
 }
 function fillForm(it){
   EDIT_ID=it.id;
   var kind=it.kind||'anniv';
   $$('#kind-seg button').forEach(function(x){x.classList.toggle('on',x.dataset.k===kind)});
   syncKindUI(kind,false);
+  var tm=$('#f-time');if(tm)tm.value=it.time||'';/* v46 — 编辑已有事项时回填时刻 */
   $('#f-title').value=it.title||'';
   var b=itemDate(it)||TODAY;
   selY.set(Math.max(0,Math.min(2100,b.getFullYear())-1950));
@@ -21807,7 +23341,8 @@ async function buildTail(cfg){
       }
       if(p[1]&&!led.noted)mark+='〔可留笺〕';
     }
-    lines.push('· '+kindCN(it)+'：'+it.title+' — '+when+'（'+tailDateText(it,r.show||r.occ)+'）'+mark+(it.note?' 备注：'+it.note:''));
+    /* v46 — 事项带时刻时一并告知 AI（只多一段短文本，不改变本栏结构） */
+    lines.push('· '+kindCN(it)+'：'+it.title+' — '+when+'（'+tailDateText(it,r.show||r.occ)+(it.time?' '+it.time:'')+'）'+mark+(it.note?' 备注：'+it.note:''));
   }
   return lines.join('\n');
 }
@@ -22890,7 +24425,7 @@ if(!REDUCED)requestAnimationFrame(loop);
   else revealIBEmails();
 })();
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
+<script src="signs.js"></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e"}' crossorigin="anonymous"></script>
