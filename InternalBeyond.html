@@ -600,7 +600,7 @@ body:not(.theme-infernal) #page-chat .chat-msg.user .r-head{color:#1a3a6c}
 .chat-thinking-toggle:hover{opacity:0.7}
 .chat-thinking-toggle .think-arrow{font-size:0.72rem;color:var(--silver);transition:transform 0.3s;display:inline-block}
 .chat-thinking-toggle.open .think-arrow{transform:rotate(90deg)}
-.chat-thinking-toggle .think-label{font-size:0.88rem;color:var(--silver);font-family:'Noto Sans SC',sans-serif;font-weight:400;letter-spacing:0.02em}
+.chat-thinking-toggle .think-label{font-size:0.8rem;color:var(--silver);font-family:'Noto Sans SC',sans-serif;font-weight:400;letter-spacing:0.02em}
 .chat-thinking-body{display:none;margin-top:6px;padding:8px 0 8px 14px;border-left:2px solid rgba(155,185,232,0.25);
   font-size:0.86rem;color:var(--light);line-height:1.7;white-space:pre-wrap;word-wrap:break-word;background:none;
   max-height:360px;overflow-y:auto}
@@ -806,7 +806,8 @@ body:not(.theme-infernal) .mem-card.mem-pinned .mem-card-score{color:#cf9414;tex
 .mem-resolved-badge{font-size:0.72rem;color:rgba(130,210,170,0.95);display:flex;align-items:center;gap:3px;font-weight:400}
 .mem-vis-badge{font-size:0.7rem;padding:2px 8px;border-radius:8px;background:rgba(114,168,216,0.14);color:var(--silver);font-weight:400}
 /* Memory modal — liquid glass */
-.mem-modal-overlay{position:fixed;inset:0;z-index:10000;background:rgba(10,18,38,0.5);backdrop-filter:blur(20px) saturate(0.8);-webkit-backdrop-filter:blur(20px) saturate(0.8);display:none;align-items:center;justify-content:center}
+.mem-modal-overlay{position:fixed;inset:0;z-index:10000;background:rgba(18,20,24,0.20);backdrop-filter:blur(12px) saturate(1.02);-webkit-backdrop-filter:blur(12px) saturate(1.02);display:none;align-items:center;justify-content:center}
+body:not(.theme-infernal) .mem-modal-overlay{background:rgba(250,250,251,0.22)}
 .mem-modal-overlay.show{display:flex}
 .mem-modal{
   background:linear-gradient(145deg,rgba(120,160,218,0.16),rgba(100,140,200,0.12),rgba(80,120,180,0.14));
@@ -881,7 +882,7 @@ body:not(.theme-infernal) .mem-modal{
   border-color:rgba(180,215,248,0.55);
   box-shadow:0 20px 80px rgba(100,150,220,0.2),0 2px 16px rgba(130,175,235,0.12),inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -1px 0 rgba(130,175,235,0.12);
   backdrop-filter:blur(42px) saturate(1.5) brightness(1.08);-webkit-backdrop-filter:blur(42px) saturate(1.5) brightness(1.08)}
-body:not(.theme-infernal) .mem-modal-overlay{background:rgba(200,220,248,0.35)}
+body:not(.theme-infernal) .mem-modal-overlay{background:rgba(250,250,251,0.22)}
 body:not(.theme-infernal) .mem-modal h3{color:#0f2045}
 #mem-modal-title{color:var(--white)}
 body:not(.theme-infernal) #mem-modal-title{color:#11264c}
@@ -1494,7 +1495,7 @@ body.theme-infernal .home-content{--ti:#f5f0ee;--tb:#4c1a22;--tiglow:0 1px 12px 
 .chat-messages{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
 .chat-messages::-webkit-scrollbar{width:3px}.chat-messages::-webkit-scrollbar-thumb{background:rgba(175,195,228,0.2);border-radius:3px}
 .chat-msg{max-width:85%;padding:12px 16px;border-radius:14px;font-size:0.92rem;line-height:1.6;word-wrap:break-word;white-space:pre-wrap;animation:fadeUp 0.3s ease}
-.chat-msg.user{align-self:flex-end;background:rgba(80,128,176,0.25);border:1px solid rgba(80,128,176,0.3);color:var(--light);border-bottom-right-radius:4px}
+.chat-msg.user{align-self:flex-end;background:rgba(74,122,178,0.26);border:1px solid rgba(74,122,178,0.32);color:var(--light);border-bottom-right-radius:4px}
 .chat-msg.ai{align-self:flex-start;background:rgba(175,195,228,0.08);border:1px solid var(--glass-border);color:var(--text-primary);border-bottom-left-radius:4px}
 .chat-msg.system{align-self:center;font-size:0.72rem;color:var(--text-muted);background:none;border:none;padding:4px 8px}
 
@@ -2642,7 +2643,8 @@ body:not(.theme-infernal) .post-card:hover{transform:translateY(-2px);border-col
   background:linear-gradient(90deg,rgba(114,168,216,0.2),transparent 60%) top left/100% 1px no-repeat}
 /* v49 只读文档卡片：元信息行下同款字体的一行小字，右对齐，不做标签样式 */
 
-.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(18,26,34,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;animation:modalIn 0.4s var(--transition)}
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(18,20,24,0.20);backdrop-filter:blur(12px) saturate(1.02);-webkit-backdrop-filter:blur(12px) saturate(1.02);display:none;align-items:center;justify-content:center;padding:20px;animation:modalIn 0.4s var(--transition)}
+body:not(.theme-infernal) .modal-overlay{background:rgba(250,250,251,0.22)}
 .modal-overlay.show{display:flex}
 @keyframes modalIn{from{opacity:0}to{opacity:1}}
 .modal{width:100%;max-width:700px;max-height:85vh;padding:32px;overflow-y:auto;animation:modalSlide 0.4s var(--transition)}
@@ -3255,7 +3257,7 @@ body:not(.theme-infernal) #page-about .pc-avatar-name{text-shadow:0 1px 4px rgba
 .playlist-item .del-track{opacity:0;font-size:0.65rem;color:var(--text-muted);cursor:pointer;transition:opacity 0.2s}
 .playlist-item:hover .del-track{opacity:1}.playlist-item .del-track:hover{color:#e88}
 
-.page-overlay{position:fixed;inset:0;z-index:1;background:rgba(120,150,185,0.08);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:none;animation:modalIn 0.5s var(--transition);pointer-events:none}
+.page-overlay{position:fixed;inset:0;z-index:1;background:rgba(20,22,26,0.07);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;animation:modalIn 0.5s var(--transition);pointer-events:none}
 .page-overlay.show{display:block}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(175,195,228,0.2);border-radius:2px}
 .toast-stack{position:fixed;bottom:80px;left:0;right:0;z-index:600;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
@@ -3380,7 +3382,7 @@ body:not(.theme-infernal) .page.active .api-item-detail{color:#233e6c}
 .panel-drag-handle{cursor:grab;user-select:none;-webkit-user-select:none}
 .panel-drag-handle:active{cursor:grabbing}
 /* === GROUP CHAT DIALOG === */
-.group-dialog-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+.group-dialog-overlay{position:fixed;inset:0;z-index:200;background:rgba(18,20,24,0.20);backdrop-filter:blur(12px) saturate(1.02);-webkit-backdrop-filter:blur(12px) saturate(1.02);display:none;align-items:center;justify-content:center}/* 液态玻璃：浅罩高模糊高饱和 */
 .group-dialog-overlay.show{display:flex}
 .group-dialog{background:var(--bg-mid);border:1px solid var(--glass-border);border-radius:16px;padding:24px;width:340px;max-width:90vw;color:var(--text-primary);box-shadow:0 12px 48px rgba(0,0,0,0.3)}
 body:not(.theme-infernal) .group-dialog{background:rgba(250,253,255,0.95);color:#1a3262;border-color:rgba(170,210,245,0.4)}
@@ -3403,7 +3405,8 @@ body:not(.theme-infernal) .group-api-item.selected{background:rgba(120,175,242,0
 /* ── 创建群聊 / 新建话题频道 弹窗 · 统一样式 ──
    两个弹窗共用同一套视觉配方，参照 api-del-dialog 的干净玻璃底板：
    不使用浏览器原生配色，所有文字颜色显式指定，双主题均有清晰可读性。 ── */
-#group-dialog-overlay,#thread-dialog-overlay{background:rgba(12,18,34,0.42);backdrop-filter:blur(14px) saturate(0.9);-webkit-backdrop-filter:blur(14px) saturate(0.9)}
+#group-dialog-overlay,#thread-dialog-overlay{background:rgba(18,20,24,0.20);backdrop-filter:blur(12px) saturate(1.02);-webkit-backdrop-filter:blur(12px) saturate(1.02)}
+body:not(.theme-infernal) #group-dialog-overlay,body:not(.theme-infernal) #thread-dialog-overlay{background:rgba(250,250,251,0.22);backdrop-filter:blur(12px) saturate(1.02);-webkit-backdrop-filter:blur(12px) saturate(1.02)}
 #group-dialog-overlay .group-dialog,#thread-dialog-overlay .group-dialog{width:340px;padding:24px 24px 20px;border-radius:16px;
   background:var(--bg-mid);border:1px solid var(--glass-border);color:var(--text-primary);
   box-shadow:0 12px 48px rgba(0,0,0,0.3)}
@@ -3424,7 +3427,7 @@ body:not(.theme-infernal) .group-api-item.selected{background:rgba(120,175,242,0
   box-shadow:0 2px 12px rgba(80,128,176,0.12)}
 #group-dialog-overlay .group-dialog-actions .btn-primary:hover,#thread-dialog-overlay .group-dialog-actions .btn-primary:hover{background:rgba(80,128,176,0.4);box-shadow:0 4px 18px rgba(80,128,176,0.2)}
 /* internal（浅色）：与 api-del-dialog 同一套干净底板 */
-body:not(.theme-infernal) #group-dialog-overlay,body:not(.theme-infernal) #thread-dialog-overlay{background:rgba(205,223,245,0.4)}
+body:not(.theme-infernal) #group-dialog-overlay,body:not(.theme-infernal) #thread-dialog-overlay{background:rgba(250,250,251,0.22)}
 body:not(.theme-infernal) #group-dialog-overlay .group-dialog,body:not(.theme-infernal) #thread-dialog-overlay .group-dialog{
   background:rgba(250,253,255,0.95);color:#1a3262;border-color:rgba(170,210,245,0.4);
   box-shadow:0 16px 60px rgba(100,150,220,0.18),0 2px 12px rgba(130,175,235,0.1)}
@@ -5143,6 +5146,7 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
         </div>
         <div style="display:flex;gap:10px;align-items:center">
           <select class="chat-tool-btn" id="chat-mem-member-select" style="display:none;border:1px solid var(--glass-border);background:var(--glass-bg);border-radius:8px;padding:2px 6px;font-size:0.76rem;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;padding-right:18px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%238895b4' fill='none' stroke-width='1.5'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 4px center"></select>
+          <button class="chat-tool-btn" id="chat-group-manage-btn" style="display:none" title="群聊管理——增删成员、静默模式、记忆开关与改名" onclick="openGroupManage()">Manage</button>
           <button class="chat-tool-btn" id="chat-select-toggle" title="选择——批量删除聊天记录或选择性地生成记忆。" onclick="toggleChatSelectMode()">Select</button>
           <button class="chat-tool-btn" id="chat-gen-mem-btn" title="AI summarizes recent chat into a memory" onclick="generateMemoryFromChat()">Save Memory</button>
         </div>
@@ -5656,9 +5660,14 @@ body:not(.theme-infernal) .page.active #cal-open-btn:active{background:rgba(222,
     </div>
 
     <div class="api-section glass-card" style="padding:20px">
-      <h3>选项卡</h3>
-      <p style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">开启后 AI 可在提问时给出候选答案：选项会以独立卡片浮现在输入框上方，点选某项或自行输入后作为你的消息发出。对所有 API 与群聊生效，与手机端同为全局开关；切换后下一条消息会重建一次提示缓存，之后恢复稳定命中。</p>
+      <h3>进阶指令</h3>
+      <p style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">以下能力各自对应一段发给 AI 的指令说明。关闭的项目不会写入提示词，AI 也不会知道有这项能力。全局生效；开关切换后下一条消息会重建一次提示缓存，之后恢复稳定命中。</p>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem"><input type="checkbox" id="ask-global-toggle" style="width:auto;accent-color:var(--accent)" onchange="_askGlobalSet(this.checked)"> 启用选项卡</label>
+      <p style="font-size:0.8rem;line-height:1.7;margin:6px 0 14px 26px;opacity:0.7">AI 提问时可给出候选答案，选项以独立卡片浮现在输入框上方，点选某项或自行输入后作为你的消息发出。对所有 API 与群聊生效。</p>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem"><input type="checkbox" id="adv-memsearch-toggle" style="width:auto;accent-color:var(--accent)" onchange="_ibAdvSet('memSearch',this.checked)"> 启用记忆库检索</label>
+      <p style="font-size:0.8rem;line-height:1.7;margin:6px 0 14px 26px;opacity:0.7">AI 判断需要回忆或核对过往信息时，可检索记忆库中对它可见的条目与它自己的记忆档案，检索过程与命中结果在聊天中以操作卡显示，结果在下一条消息回传给它。仅在需要时调用，不是每轮都会检索。</p>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.88rem"><input type="checkbox" id="adv-calwrite-toggle" style="width:auto;accent-color:var(--accent)" onchange="_ibAdvSet('calWrite',this.checked)"> 启用日历写入</label>
+      <p style="font-size:0.8rem;line-height:1.7;margin:6px 0 0 26px;opacity:0.7">AI 可按你的要求新建、修改、删除日历事项（纪念日 / 生日 / 计划 / 记录），也可更正它与你的相遇纪念日。每条回复最多 2 次操作，执行结果在聊天中以操作卡显示。需同时开启该 AI 的日历读取与留言权限。</p>
     </div>
 
     <div class="api-section glass-card" style="padding:20px">
@@ -6204,6 +6213,10 @@ i would like the room to be enough.
           <p><strong>添加 API</strong>：点击 <strong>「+ 添加API」</strong>，选择预设（Anthropic / OpenAI / DeepSeek / Gemini）或自定义接口，填写 Key、模型和地址。</p>
           <p><strong>个性化</strong>：每个 API 可设昵称（即好友名）和系统提示词（定义角色与风格）。保存后自动出现在 Chat、Letters、Blog 评论、Room 等模块中。</p>
           <p><strong>Token 仪表盘</strong>：汇总用量，含缓存命中率、模型明细、费用估算。支持按时间段查看和清除。</p>
+          <p><strong>进阶指令</strong>：以下能力各自对应一段发给 AI 的指令说明。关闭的项目不会写入提示词，AI 也不会知道有这项能力。全局生效；开关切换后下一条消息会重建一次提示缓存，之后恢复稳定命中。</p>
+          <p><strong>选项卡</strong>：AI 提问时可给出候选答案，选项以独立卡片浮现在输入框上方，点选某项或自行输入后作为你的消息发出。对所有 API 与群聊生效。</p>
+          <p><strong>记忆库检索</strong>：AI 判断需要回忆或核对过往信息时，可检索记忆库中对它可见的条目与它自己的记忆档案，检索过程与命中结果在聊天中以操作卡显示，结果在下一条消息回传给它。仅在需要时调用，不是每轮都会检索。</p>
+          <p><strong>日历写入</strong>：AI 可按你的要求新建、修改、删除日历事项（纪念日 / 生日 / 计划 / 记录），也可更正它与你的相遇纪念日。每条回复最多 2 次操作，执行结果在聊天中以操作卡显示。需同时开启该 AI 的日历读取与留言权限。</p>
           <p><strong>AI 读取范围</strong>：分别控制聊天记录、群聊记录和日志的读取条数。</p>
           <p><strong>图片识别（视觉能力）</strong>：开启后发送图片时会将图片编码后发给 API，关闭则仅发送文字。默认值根据服务商自动设置，可手动覆盖。</p>
           <p><strong>流式传输（打字机效果）</strong>：开启后 AI 回复会逐字显示并支持中途停止生成（节省 token）。仅影响 Chat 对话，Letters 始终为非流式。Memory 的流式传输在「记忆系统设置」中单独控制。</p>
@@ -6728,9 +6741,10 @@ i would like the room to be enough.
 
 <div class="group-dialog-overlay" id="group-dialog-overlay">
   <div class="group-dialog">
-    <h3>创建群聊</h3>
+    <h3 id="group-dialog-title">创建群聊</h3>
     <label>群聊名称</label>
     <input type="text" id="group-name-input" placeholder="给群聊起个名字…">
+    <div id="group-rename-hint" style="display:none;font-size:0.66rem;color:var(--text-muted);margin:2px 0 10px;line-height:1.6">群名会写进系统提示：改名后 AI 从下一条消息起以新群名对话；已命中的提示缓存会随之重建一次。</div>
     <label>选择API成员（至少2个）</label>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:8px;line-height:1.5">勾选顺序即为群聊发言顺序</div>
     <div class="group-api-list" id="group-api-list"></div>
@@ -6747,7 +6761,7 @@ i would like the room to be enough.
     </label>
     <div class="group-dialog-actions">
       <button class="btn" onclick="closeGroupDialog()">取消</button>
-      <button class="btn btn-primary" onclick="confirmCreateGroup()">创建</button>
+      <button class="btn btn-primary" id="group-dialog-confirm" onclick="confirmGroupDialog()">创建</button>
     </div>
   </div>
 </div>
@@ -9579,6 +9593,7 @@ async function selectFriend(id){
   if(memBtn)memBtn.style.display='';
   const memSel=document.getElementById('chat-mem-member-select');
   if(memSel)memSel.style.display='none';
+  const mgBtn0=document.getElementById('chat-group-manage-btn');if(mgBtn0)mgBtn0.style.display='none';
   /* Load chat for this friend — exclude thread messages */
   const friendMsgs=(await dbGetByIndex('chatMessages','byFriend',id)).filter(m=>!m.threadId).sort((a,b)=>(a.timestamp||a.created)-(b.timestamp||b.created));
   const container=document.getElementById('chat-full-messages');
@@ -9604,6 +9619,10 @@ function createGroup(){
   _groupMentionOnly=new Set();
   const list=document.getElementById('group-api-list');
   list.innerHTML=apiConfigs.map(a=>'<div class="group-api-item" data-id="'+a.id+'" onclick="_toggleGroupMember(this)"><input type="checkbox" tabindex="-1"><span>'+esc(a.nickname||a.model||'AI')+'</span><span class="group-order-badge" style="display:none;margin-left:auto;font-size:0.62rem;opacity:0.6;min-width:16px;text-align:center"></span></div>').join('');
+  _groupEditingId=null;
+  document.getElementById('group-dialog-title').textContent='创建群聊';
+  document.getElementById('group-dialog-confirm').textContent='创建';
+  document.getElementById('group-rename-hint').style.display='none';
   document.getElementById('group-name-input').value='';
   document.getElementById('group-memory-toggle').checked=false;/* BUGFIX: 原先只重置思考链开关，记忆开关会残留上次的勾选 */
   document.getElementById('group-thinking-toggle').checked=false;
@@ -9612,6 +9631,61 @@ function createGroup(){
 }
 var _groupSelectOrder=[];
 var _groupMentionOnly=new Set();/* 静默模式：开启静默的成员 id 集合（仅被@时才发言） */
+var _groupEditingId=null;/* 群聊管理：非空=管理既有群（复用创建弹窗），null=创建 */
+function confirmGroupDialog(){if(_groupEditingId)confirmSaveGroup();else confirmCreateGroup()}
+async function openGroupManage(){
+  const gid=activeFriendId;if(!gid)return;
+  const group=(await loadGroups()).find(g=>g.id===gid);
+  if(!group){toast('当前不是群聊');return}
+  _groupEditingId=gid;
+  _groupSelectOrder=(group.members||[]).slice();
+  _groupMentionOnly=new Set(group.mentionOnly||[]);
+  /* 成员候选=全部现役 API + 已在群里的归档成员（归档只可移除、置灰显示） */
+  const list=document.getElementById('group-api-list');
+  const rows=apiConfigs.map(a=>({id:a.id,label:(a.nickname||a.model||'AI'),arch:false}));
+  (group.members||[]).forEach(mid=>{
+    if(apiConfigs.some(a=>a.id===mid))return;
+    const ac=archivedConfigs.find(a=>a.id===mid);
+    rows.push({id:mid,label:((ac?(ac.nickname||ac.model):'AI'))+'（已归档）',arch:true});
+  });
+  list.innerHTML=rows.map(r=>'<div class="group-api-item'+(_groupSelectOrder.indexOf(r.id)!==-1?' selected':'')+'" data-id="'+r.id+'"'+(r.arch?' style="opacity:0.55"':'')+' onclick="_toggleGroupMember(this)"><input type="checkbox" tabindex="-1"'+(_groupSelectOrder.indexOf(r.id)!==-1?' checked':'')+'><span>'+esc(r.label)+'</span><span class="group-order-badge" style="display:none;margin-left:auto;font-size:0.62rem;opacity:0.6;min-width:16px;text-align:center"></span></div>').join('');
+  document.querySelectorAll('#group-api-list .group-api-item').forEach(item=>{
+    const badge=item.querySelector('.group-order-badge');
+    const idx=_groupSelectOrder.indexOf(item.dataset.id);
+    if(idx>=0){badge.textContent=idx+1;badge.style.display=''}else{badge.style.display='none'}
+  });
+  document.getElementById('group-name-input').value=group.name||'';
+  document.getElementById('group-memory-toggle').checked=!!group.memoryEnabled;
+  document.getElementById('group-thinking-toggle').checked=!!group.thinkingEnabled;
+  _renderGroupMentionList();
+  document.getElementById('group-dialog-title').textContent='群聊管理';
+  document.getElementById('group-dialog-confirm').textContent='保存';
+  document.getElementById('group-rename-hint').style.display='';
+  document.getElementById('group-dialog-overlay').classList.add('show');
+}
+async function confirmSaveGroup(){
+  const gid=_groupEditingId;if(!gid)return;
+  const group=(await loadGroups()).find(g=>g.id===gid);
+  if(!group){toast('群聊不存在');closeGroupDialog();return}
+  const name=document.getElementById('group-name-input').value.trim();
+  if(!name){toast('请输入群聊名称');return}
+  const known=id=>apiConfigs.some(a=>a.id===id)||archivedConfigs.some(a=>a.id===id);
+  const members=_groupSelectOrder.filter(known);
+  if(members.length<2){toast('请至少保留2个成员');return}
+  const silent=members.filter(id=>_groupMentionOnly.has(id));
+  const activeTalkers=members.filter(id=>apiConfigs.some(a=>a.id===id)&&!_groupMentionOnly.has(id));
+  if(!activeTalkers.length){toast('至少留一位现役且不开静默的成员');return}
+  const renamed=group.name!==name;
+  const upd=Object.assign({},group,{name:name,members:members,mentionOnly:silent,
+    memoryEnabled:!!document.getElementById('group-memory-toggle').checked,
+    thinkingEnabled:!!document.getElementById('group-thinking-toggle').checked});
+  await dbPut('groups',upd);
+  _groupEditingId=null;
+  closeGroupDialog();
+  loadFriendsList();
+  if(activeFriendId===gid)selectGroup(gid);/* 刷新头部群名、成员下拉与空态成员行 */
+  toast(renamed?'已保存。AI 会从下一条消息起使用新群名':'群聊设置已保存');
+}
 function _renderGroupMentionList(){
   const wrap=document.getElementById('group-mention-wrap');
   const list=document.getElementById('group-mention-list');
@@ -9699,6 +9773,8 @@ async function selectGroup(gid){
   /* Show memory generation button in group chat with member selector */
   const memBtn=document.getElementById('chat-gen-mem-btn');
   if(memBtn)memBtn.style.display='';
+  const mgBtn=document.getElementById('chat-group-manage-btn');
+  if(mgBtn)mgBtn.style.display='';
   const groups=await loadGroups();
   const group=groups.find(g=>g.id===gid);
   const memSel=document.getElementById('chat-mem-member-select');
@@ -9780,6 +9856,7 @@ async function selectThread(friendId,threadId){
   if(memBtn)memBtn.style.display='';
   const memSel=document.getElementById('chat-mem-member-select');
   if(memSel)memSel.style.display='none';
+  const mgBtn1=document.getElementById('chat-group-manage-btn');if(mgBtn1)mgBtn1.style.display='none';
   const allMsgs=(await dbGetByIndex('chatMessages','byFriend',friendId)).filter(m=>m.threadId===threadId);
   allMsgs.sort((a,b)=>(a.timestamp||a.created)-(b.timestamp||b.created));
   const container=document.getElementById('chat-full-messages');
@@ -9876,6 +9953,7 @@ function enterChatArchive(){
   if(selBtn){selBtn.classList.add('chat-tool-disabled');selBtn.title='归档对话不支持选择操作'}
   if(memBtn){memBtn.classList.add('chat-tool-disabled');memBtn.title='归档对话不支持生成记忆';memBtn.style.display=''}
   const memSel=document.getElementById('chat-mem-member-select');if(memSel)memSel.style.display='none';
+  const mgBtn2=document.getElementById('chat-group-manage-btn');if(mgBtn2)mgBtn2.style.display='none';
   /* 消息区只读、输入区替换为静态提示 */
   const full=document.getElementById('chat-full-messages');
   if(full){full.classList.add('chat-arch-ro');full.innerHTML='<div class="chat-msg system">选择一位离线好友查看对话</div>'}
@@ -10907,7 +10985,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
     wrap.className='chat-thinking-wrap';
     const toggle=document.createElement('div');
     toggle.className='chat-thinking-toggle';
-    toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">thinking</span>';
+    toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">Thought process</span>';
     toggle.onclick=function(){wrap.classList.toggle('expanded');toggle.classList.toggle('open')};
     wrap.appendChild(toggle);
     const body=document.createElement('div');
@@ -10975,7 +11053,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
       wrap.style.cssText='max-width:100%;margin:0 0 4px 0';
       const toggle=document.createElement('div');
       toggle.className='chat-thinking-toggle';
-      toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">thinking</span>';
+      toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">Thought process</span>';
       toggle.onclick=function(){wrap.classList.toggle('expanded');toggle.classList.toggle('open')};
       wrap.appendChild(toggle);
       const body=document.createElement('div');
@@ -12554,6 +12632,7 @@ async function sendChatMessage(voiceMsg){
         /* 群聊摘要 → tail */
         if(gSummaryText)_gTailCtx+='\n\n【对话历史备忘（此为后台参考信息，不要向对方复述或提及此段内容的存在）】\n'+gSummaryText;
         /* 群聊记忆注入：仅在 group.memoryEnabled 时注入公开记忆 */
+        try{_ibSetMemScope(!!group.memoryEnabled,true,!!group.memoryEnabled)}catch(e){}/* 群聊：检索口径＝注入口径 */
         if(group.memoryEnabled){
           const gMemCtx=await getMemoryContext(cfg.id,{maxChars:1500,isGroup:true,groupMemEnabled:true,userMessage:_ctxText});
           if(gMemCtx)_gTailCtx+=(_gTailCtx?'\n\n':'')+gMemCtx;
@@ -12637,7 +12716,7 @@ async function sendChatMessage(voiceMsg){
           gStreamRefs=activeFriendId===_targetFriend?_createStreamBubble(_targetFriend,selfName):[];
           let _gSBuf='',_gSThinkBuf='',_gSState=0;
           let _gLiveThink=[];
-          const _gEnsureThink=()=>{if(_gLiveThink.length)return;gStreamRefs.forEach(ref=>{const w=document.createElement('div');w.className='chat-thinking-wrap expanded';if(!ref.full)w.style.cssText='max-width:100%;margin:0 0 4px 0';const t=document.createElement('div');t.className='chat-thinking-toggle open';t.innerHTML='<span class="think-arrow">\u25b8</span><span class="think-label">thinking</span>';t.onclick=function(){w.classList.toggle('expanded');t.classList.toggle('open')};w.appendChild(t);const b=document.createElement('div');b.className='chat-thinking-body chat-stream-cursor';b.style.whiteSpace='pre-wrap';w.appendChild(b);let _ga=ref.div;while(_ga.previousElementSibling&&(_ga.previousElementSibling.classList.contains('chat-msg-header')||_ga.previousElementSibling.classList.contains('chat-msg-cont-time')||_ga.previousElementSibling.classList.contains('chat-thinking-wrap'))){_ga=_ga.previousElementSibling}ref.container.insertBefore(w,_ga);/* 原设计：思考链恒在消息组最顶端（头像行之上） */_gLiveThink.push({w,b,t})})};
+          const _gEnsureThink=()=>{if(_gLiveThink.length)return;gStreamRefs.forEach(ref=>{const w=document.createElement('div');w.className='chat-thinking-wrap expanded';if(!ref.full)w.style.cssText='max-width:100%;margin:0 0 4px 0';const t=document.createElement('div');t.className='chat-thinking-toggle open';t.innerHTML='<span class="think-arrow">\u25b8</span><span class="think-label">Thought process</span>';t.onclick=function(){w.classList.toggle('expanded');t.classList.toggle('open')};w.appendChild(t);const b=document.createElement('div');b.className='chat-thinking-body chat-stream-cursor';b.style.whiteSpace='pre-wrap';w.appendChild(b);let _ga=ref.div;while(_ga.previousElementSibling&&(_ga.previousElementSibling.classList.contains('chat-msg-header')||_ga.previousElementSibling.classList.contains('chat-msg-cont-time')||_ga.previousElementSibling.classList.contains('chat-thinking-wrap'))){_ga=_ga.previousElementSibling}ref.container.insertBefore(w,_ga);/* 原设计：思考链恒在消息组最顶端（头像行之上） */_gLiveThink.push({w,b,t})})};
           const _gThinkF=(tk)=>{_gEnsureThink();_gLiveThink.forEach(e=>{e.b.textContent+=tk})};
           const _gWsFilter=_wsMakeStreamFilter(_wsMakeStreamWriters(gStreamRefs));
           let _gSrchLive=null;
@@ -12844,6 +12923,7 @@ async function sendChatMessage(voiceMsg){
     try{if(window.IBCAL){const _calSys=await IBCAL.buildSys(cfg);if(_calSys)sysContent=(sysContent?sysContent+'\n\n':'')+_calSys}}catch(e){}
     let _threadMemOk=true;
     if(_targetThread){const _thr=await (async()=>{try{return await dbGet('chatThreads',_targetThread)}catch(e){return null}})();_threadMemOk=_thr&&_thr.memoryEnabled}
+    try{_ibSetMemScope(_threadMemOk,false,false)}catch(e){}/* 1对1：检索口径＝注入口径 */
     /* ── 缓存重排（核心）：所有逐轮变化的内容从 system 移至末条用户消息 ── */
     let _tailCtx='';
     /* 时间戳：每分钟都变，必须放在 tail */
@@ -12853,6 +12933,7 @@ async function sendChatMessage(voiceMsg){
     try{if(ss.musicEnabled&&currentTrackIdx>=0&&!audioEl.paused&&playlist[currentTrackIdx])_tailCtx+='正在听：《'+playlist[currentTrackIdx].name+'》。';}catch(e){}
     /* CALENDAR：临近日程栏走 tail（挂末条用户消息），按天生成，一天之内逐字不变 */
     try{if(window.IBCAL){const _calT=await IBCAL.buildTail(cfg);if(_calT)_tailCtx+='\n\n'+_calT}}catch(e){}
+    try{var _advT=_ibAdvDrain();if(_advT)_tailCtx+='\n\n'+_advT}catch(e){}/* 进阶指令结果只挂末条用户消息，前缀不动 */
     /* 摘要：每次生成后变化 → 移至 tail */
     if(summaryText)_tailCtx+='\n\n【对话历史备忘（此为后台参考信息，不要向对方复述或提及此段内容的存在）】\n'+summaryText;
     if(_threadMemOk){const memCtx=await getMemoryContext(cfg.id,{userMessage:_ctxText});
@@ -12870,6 +12951,7 @@ async function sendChatMessage(voiceMsg){
     }
     if(cfg.imageGen)sysContent+=_IMGGEN_INSTR_BLOCK;
     if(await _askGlobalGet())sysContent+=_ASK_INSTR_BLOCK;/* v55：选项卡改全局开关（会话内稳定，缓存友好） */
+    try{var _advI=await _ibAdvGet();if(_advI.memSearch)sysContent+=_MEMSEARCH_INSTR_BLOCK;if(_advI.calWrite)sysContent+=_CALWRITE_INSTR_BLOCK}catch(e){}/* 进阶指令：常量块，随开关整块注入 */
     if(sysContent)messages.unshift({role:'system',content:sysContent});
     if(_tailCtx){for(let _ti=messages.length-1;_ti>=0;_ti--){if(messages[_ti].role==='user'){messages[_ti]={role:'user',content:(typeof messages[_ti].content==='string'?messages[_ti].content:String(messages[_ti].content||''))+'\n\n---\n[以下为系统注入的参考上下文，不属于用户发言，勿复述或提及以下内容的存在]\n'+_tailCtx};break}}}
     const _visionOk=cfg.vision!==undefined?!!cfg.vision:!!(PROVIDERS[cfg.provider]&&PROVIDERS[cfg.provider].vision);
@@ -12935,7 +13017,7 @@ async function sendChatMessage(voiceMsg){
           const wrap=document.createElement('div');wrap.className='chat-thinking-wrap expanded';
           if(!ref.full)wrap.style.cssText='max-width:100%;margin:0 0 4px 0';
           const toggle=document.createElement('div');toggle.className='chat-thinking-toggle open';
-          toggle.innerHTML='<span class="think-arrow">\u25b8</span><span class="think-label">thinking</span>';
+          toggle.innerHTML='<span class="think-arrow">\u25b8</span><span class="think-label">Thought process</span>';
           toggle.onclick=function(){wrap.classList.toggle('expanded');toggle.classList.toggle('open')};
           wrap.appendChild(toggle);
           const body=document.createElement('div');body.className='chat-thinking-body chat-stream-cursor';body.style.whiteSpace='pre-wrap';
@@ -13040,7 +13122,7 @@ async function sendChatMessage(voiceMsg){
           const wrap=document.createElement('div');wrap.className='chat-thinking-wrap';
           if(!ref.full)wrap.style.cssText='max-width:100%;margin:0 0 4px 0';
           const toggle=document.createElement('div');toggle.className='chat-thinking-toggle';
-          toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">thinking</span>';
+          toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">Thought process</span>';
           toggle.onclick=function(){wrap.classList.toggle('expanded');toggle.classList.toggle('open')};
           wrap.appendChild(toggle);
           const body=document.createElement('div');body.className='chat-thinking-body';body.textContent=thinkingText;
@@ -13161,7 +13243,7 @@ function appendChatBubble(role,text,senderName,thinkingText,msgId,images,files,w
       if(!full)wrap.style.cssText='max-width:100%;margin:0 0 4px 0';
       const toggle=document.createElement('div');
       toggle.className='chat-thinking-toggle';
-      toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">thinking</span>';
+      toggle.innerHTML='<span class="think-arrow">▸</span><span class="think-label">Thought process</span>';
       toggle.onclick=function(){wrap.classList.toggle('expanded');toggle.classList.toggle('open')};
       wrap.appendChild(toggle);
       const body=document.createElement('div');
@@ -13520,12 +13602,26 @@ function _extractSuggestedMaxTok(e){
   var n=parseInt(m[1].replace(/,/g,''),10);
   return(n>=256&&n<=400000)?n:0;
 }
-/* 接缝去重：续写开头若重复了已有结尾（模型常见行为），裁掉重叠部分 */
+/* 接缝去重：续写开头若重复了已有结尾（锚点复述协议 / 模型常见行为），裁掉重叠部分。
+   吞行修复：截断常落在行尾换行符之前，且部分端点会剥掉续写回复开头的空白、或把 \r\n 改写为 \n，
+   导致两行在接缝处挤成一行（如「})return result」）。现改为锚点续写（见 _WS_CONT_PROMPT）：
+   模型先逐字复述末尾 30 字符再继续，换行保存在重叠区内部；精确比对失配时按 \r\n 归一化再比一轮，
+   命中后按 next 的原始字符位置裁切。 */
 function _wsDedupSeam(prev,next){
   if(!prev||!next)return next||'';
   var max=Math.min(400,prev.length,next.length);
   for(var k=max;k>=16;k--){
     if(prev.slice(prev.length-k)===next.slice(0,k))return next.slice(k);
+  }
+  var np=String(prev).replace(/\r\n/g,'\n'),nn='',xn=[];
+  for(var i=0;i<next.length&&nn.length<=400;i++){
+    var ch=next.charAt(i);
+    if(ch==='\r'&&next.charAt(i+1)==='\n')continue;
+    nn+=(ch==='\r'?'\n':ch);xn.push(i);
+  }
+  var m2=Math.min(400,np.length,nn.length);
+  for(var k2=m2;k2>=16;k2--){
+    if(np.slice(np.length-k2)===nn.slice(0,k2))return next.slice(xn[k2-1]+1);
   }
   return next;
 }
@@ -13540,7 +13636,7 @@ async function saveOutputSettings(){
   _maxContinuesPref=Math.max(0,Math.min(10,parseInt(el&&el.value)||3));
   try{await dbPut('apiSettings',{id:'outputSettings',maxContinues:_maxContinuesPref})}catch(e){}
 }
-const _WS_CONT_PROMPT='[系统指令] 你上一条回复因输出长度上限被截断。请从截断处无缝继续输出剩余内容：不要重复任何已输出的内容，不要重新开头，不要致歉或解释，不要输出 <thinking>。如果截断发生在 <ws_create>/<ws_edit> 标签或代码块内部，直接继续其内容，并在结束时正确闭合标签/代码块。输出完剩余内容即停止。';
+const _WS_CONT_PROMPT='[系统指令] 你上一条回复因输出长度上限被截断。请从截断处无缝继续输出剩余内容。续写的第一步：先逐字复述已输出内容的最后 30 个字符（含其中的换行与空格，一模一样），再紧接着继续后文——系统会自动识别这段重叠并裁掉，不会重复显示，这样即使截断正好落在换行处也不会丢失换行。除这 30 个字符外不要重复任何已输出的内容，不要重新开头，不要致歉或解释，不要输出 <thinking>。如果截断发生在 <ws_create>/<ws_edit> 标签或代码块内部，直接继续其内容，并在结束时正确闭合标签/代码块。输出完剩余内容即停止。';
 
 /* 流式：包装器（对外接口不变），内部循环调用单次版并自动续写 */
 async function callApiChatStream(cfg,messages,opts){
@@ -14705,10 +14801,105 @@ var _siteCtxLastHash='';/* 跟踪上次注入的 profile 内容哈希：内容�
 /* 图像生成指令块：按好友开关注入 system prompt（与思考链同模式——切换重建一次缓存后恢复稳定命中） */
 const _IMGGEN_INSTR_BLOCK='\n\n【图像生成】本对话已开启图像生成能力。当用户希望你画图/生成图片时，输出：\n<ws_gen_image prompt="画面的完整描述" size="1024x1024"/>\n规则：prompt 写清晰具体的画面描述（主体、风格、构图、光线、色调等，中英文皆可）；size 可选且仅支持枚举值 1024x1024、1536x1024、1024x1536（不写则用默认——生图接口不接受 200x200 之类的任意尺寸，用户要小图时请照常按默认尺寸生成，并说明图片可自行缩放使用）；描述很长时也可写成 <ws_gen_image>描述…</ws_gen_image> 的正文形式；每条回复最多 1 个生图标签。生成的图片会直接显示在聊天中并自动存入 ICode，生成结果会在之后的消息回传给你。不要在文字里假装已生成——没有标签就没有图片。';
 var _askGCache=null;
-async function _askGlobalGet(){if(_askGCache!==null)return _askGCache;try{var r=await dbGet('apiSettings','askGlobal');_askGCache=!!(r&&r.on)}catch(e){_askGCache=false}return _askGCache}
-async function _askGlobalSet(v){_askGCache=!!v;try{await dbPut('apiSettings',{id:'askGlobal',on:!!v})}catch(e){}}
-(async function(){try{var el=document.getElementById('ask-global-toggle');if(el)el.checked=await _askGlobalGet()}catch(e){}})();
-const _ASK_INSTR_BLOCK='\n\n【选项卡】当你想向用户提问并给出可点选的候选答案时，输出：\n<ws_ask title="问题文本">\nA. 选项一\nB. 选项二\n</ws_ask>\n规则：title 为问题本身；正文每行一个选项（2-6 个）；每条回复最多 1 个选项卡；标签会渲染成可点选的卡片，用户点选某项或自行输入后，该内容会作为下一条用户消息发给你；选项卡之外的正文照常书写，不要在文字里复述选项。';
+async function _askGlobalGet(){if(_askGCache!==null)return _askGCache;var r=null,ok=false;try{r=await dbGet('apiSettings','askGlobal');ok=true}catch(e){ok=false}var v=!!(r&&r.on);if(ok)_askGCache=v;return v}/* v66：读失败不落缓存——原 catch 里 _askGCache=false 会把"DB 未就绪"永久当成"关"，开关刷新即回弹（与 _advCache 同类坑） */
+async function _askGlobalSet(v){_askGCache=!!v;try{await dbPut('apiSettings',{id:'askGlobal',on:!!v})}catch(e){_askGCache=null}}
+function _askGlobalRestoreUI(){_askGCache=null;_askGlobalGet().then(function(v){var el=document.getElementById('ask-global-toggle');if(el)el.checked=v}).catch(function(){})}
+(async function(){try{var el=document.getElementById('ask-global-toggle');if(el)el.checked=await _askGlobalGet()}catch(e){}})();/* 解析时这次读大概率失败，但已不落缓存；DB 就绪后由 _askGlobalRestoreUI 重刷 */
+const _ASK_INSTR_BLOCK='\n\n【选项卡】当你想向用户提供可点选的选项时，输出：\n<ws_ask title="问题文本">\nA. 选项一\nB. 选项二\n</ws_ask>\n规则：title 为问题本身；正文每行一个选项（2-6 个）；每条回复最多 1 个选项卡；标签会渲染成可点选的卡片，用户点选某项或自行输入后，该内容会作为下一条用户消息发给你。在你想给对方提供选择、推进对话、或让互动更有趣时主动使用。选项卡之外的正文照常书写，不要在文字里复述选项。';
+
+/* ═══ 进阶指令（记忆库检索 / 日历写入）：常量块随开关整块注入，结果只挂末条用户消息，前缀不动 ═══ */
+const _MEMSEARCH_INSTR_BLOCK='\n\n【记忆库检索】你可以检索记忆库来核实过往信息。\n用法：<ws_mem_search q="关键词" />\n说明：\n- q 填 1–4 个关键词（空格分隔），系统在对你可见的记忆条目与你的记忆档案中匹配，命中内容在下一条消息回传给你。\n- 仅在对话涉及过往的人、事件或约定，而你记不清楚或感到好奇的时候调用检索。\n- 不要编造检索结果——等系统回传。';
+const _CALWRITE_INSTR_BLOCK='\n\n【日历写入】你可以替对方管理日历事项，对话中出现值得记住的日期、计划或约定时，可主动提议添加。每条回复最多 2 次。\n标签：\n<ws_cal_add kind="类型" date="YYYY-MM-DD" title="标题" end="YYYY-MM-DD" note="备注" />\n<ws_cal_edit id="事项id" date="新日期" title="新标题" note="新备注" />\n<ws_cal_del id="事项id" />\n<ws_cal_meet date="YYYY-MM-DD" />\n字段说明：\n- kind：anniv（纪念日）、birthday（生日）、plan（计划）、memo（记录）。纪念日与生日按年重复，计划与记录为单次。\n- date：必填，YYYY-MM-DD 格式。\n- title：必填，事项标题（40字内）。\n- end：选填，仅 plan / memo 有效，标记结束日期。\n- note：选填，备注（120字内），会随事项一并提供给有权限的 AI。\n- id：编辑或删除时必填，取自日历栏中的括号标注或上一轮回传，不要臆造。\n- ws_cal_meet 用于更正你与对方的相遇纪念日，仅在对方明确告知日期时使用。\n执行结果在下一条消息回传给你。';
+var _advCache=null;
+/* 原实现的坑：这段脚本在解析时就跑一次 _ibAdvGet()，那时 openDB() 还没 resolve，
+   全局 db 是 undefined，dbGet 直接抛错 → catch 吞掉 → 把"两个都关"当成结果
+   写进 _advCache 并永久缓存。于是①开关回弹成关；②本次会话注入判定一直读到假值；
+   ③下次 _ibAdvSet 又把这份假值写回库，真正存过的设置被抹掉。
+   现在：读失败不落缓存（下次再读），写入前直接以库里的记录为准做合并。 */
+async function _ibAdvGet(){
+  if(_advCache)return _advCache;
+  var r=null,ok=false;
+  try{r=await dbGet('apiSettings','advInstr');ok=true}catch(e){ok=false}
+  var v={memSearch:!!(r&&r.memSearch),calWrite:!!(r&&r.calWrite)};
+  if(ok)_advCache=v;/* 只有真读到库才敢缓存；读失败保持 null，等 DB 就绪后重读 */
+  return v;
+}
+async function _ibAdvSet(k,v){
+  var cur=null;
+  try{cur=await dbGet('apiSettings','advInstr')}catch(e){cur=null}
+  var c={memSearch:!!(cur&&cur.memSearch),calWrite:!!(cur&&cur.calWrite)};
+  c[k]=!!v;
+  try{await dbPut('apiSettings',{id:'advInstr',memSearch:c.memSearch,calWrite:c.calWrite});_advCache=c}
+  catch(e){_advCache=null}/* 写失败就让缓存失效，别让界面显示一个没落库的状态 */
+  return c;
+}
+/* DB 就绪后由 init() 调用，把开关刷成库里的真实状态 */
+async function _ibAdvRestoreUI(){
+  try{
+    _advCache=null;
+    var a=await _ibAdvGet();
+    var m=document.getElementById('adv-memsearch-toggle');if(m)m.checked=!!a.memSearch;
+    var c=document.getElementById('adv-calwrite-toggle');if(c)c.checked=!!a.calWrite;
+  }catch(e){}
+}
+window._ibAdvRestoreUI=_ibAdvRestoreUI;
+var _ibAdvPending=[];
+function _ibAdvDrain(){if(!_ibAdvPending.length)return'';var t=_ibAdvPending;_ibAdvPending=[];return '【进阶指令执行结果】\n'+t.join('\n')}
+function _advAttr(a,k){var m=new RegExp(k+'\\s*=\\s*"([^"]*)"','i').exec(String(a||''));return m?m[1].trim():''}
+async function _ibMemSearchExec(cfg,q){
+  var kws=String(q||'').split(/[\s,，、]+/).filter(Boolean).slice(0,6);
+  if(!kws.length)return{ok:false,label:'记忆库检索未执行',detail:'关键词为空'};
+  var fid=cfg&&cfg.id;
+  var sc0=_ibMemScope||{memOk:true,isGroup:false,groupMemEnabled:false};
+  /* 本会话已关闭记忆注入 → 检索也必须关，否则等于给了一条绕过开关的后门 */
+  if(!sc0.memOk)return{ok:false,label:'记忆库检索未执行',detail:'当前会话已关闭记忆读取。'};
+  var all=[];try{all=await dbGetAll('memories')}catch(e){}
+  /* 与 getMemoryContext 用同一个判定，不再就地手写（原实现漏判 private） */
+  var vis=all.filter(function(m){return isMemoryVisibleTo(m,fid,sc0.isGroup,sc0.groupMemEnabled)});
+  /* 记忆档案（Auto Memory）跟随该 AI 的 autoMem 开关；关着就不该被检索出来 */
+  var ams=[];
+  if(typeof amEnabled==='function'?amEnabled(cfg):!!(cfg&&cfg.autoMem)){
+    try{ams=await dbGetByIndex('autoMemory','byFriend',fid)}catch(e){}
+  }
+  function sc(t){var low=String(t||'').toLowerCase(),n=0;kws.forEach(function(k){if(low.indexOf(String(k).toLowerCase())!==-1)n++});return n}
+  var hits=[];
+  /* v66：每条命中完整回传，不再截 180 字符（原截断导致长记忆检索不全）。
+     仍取相关度前 8 条；单次回传设 20000 字符安全上限——超限时按整条丢弃后续命中并注明，
+     绝不把某条记忆拦腰截断。 */
+  vis.forEach(function(m){var t=[m.title,m.content,m.summary,(m.tags||[]).join(' ')].filter(Boolean).join(' ');var n=sc(t);if(n)hits.push({n:n,src:'记忆库',x:(m.title?m.title+'：':'')+String(m.content||m.summary||'')})});
+  (ams||[]).forEach(function(e){var n=sc(e.content);if(n)hits.push({n:n,src:'记忆档案',x:String(e.content||'')})});
+  hits.sort(function(a,b){return b.n-a.n});hits=hits.slice(0,8);
+  if(!hits.length)return{ok:true,label:'检索记忆库 ·「'+kws.join(' ')+'」· 无命中',detail:'检索范围：对你可见的记忆库条目与你的记忆档案。没有命中的条目。'};
+  var CAP=20000,used=0,lines=[],dropped=0;
+  hits.forEach(function(h){var line='· ['+h.src+'] '+h.x;if(used+line.length<=CAP||!lines.length){lines.push(line);used+=line.length}else dropped++});
+  if(dropped)lines.push('（另有 '+dropped+' 条命中因超出单次回传上限未展示，可换更精确的关键词再检索）');
+  return{ok:true,label:'检索记忆库 ·「'+kws.join(' ')+'」· 命中 '+hits.length+' 条',detail:lines.join('\n')};
+}
+var _ADV_TAG_RE=/<ws_(mem_search|cal_add|cal_edit|cal_del|cal_meet)\b([^>]*?)\/?>/gi;
+async function _ibAdvProcess(text,cfg,calApi){
+  var out={clean:text,cards:[]};
+  if(!text||!/<ws_(mem_search|cal_add|cal_edit|cal_del|cal_meet)\b/i.test(String(text)))return out;
+  var adv=await _ibAdvGet(),ops=[];
+  out.clean=String(text).replace(_ADV_TAG_RE,function(_m,kind,attrs){ops.push({kind:String(kind).toLowerCase(),a:attrs||''});return ''}).replace(/\n{3,}/g,'\n\n').replace(/[ \t]+\n/g,'\n').trim();
+  var nCal=0,nS=0;
+  for(var i=0;i<ops.length;i++){
+    var op=ops[i],a=op.a,r=null;
+    if(op.kind==='mem_search'){
+      if(!adv.memSearch)r={ok:false,label:'记忆库检索未执行',detail:'用户未开启「记忆库检索」，请不要再输出该标签'};
+      else r=await _ibMemSearchExec(cfg,_advAttr(a,'q')||_advAttr(a,'query'));
+    }else{
+      if(!adv.calWrite)r={ok:false,label:'日历写入未执行',detail:'用户未开启「日历写入」，请不要再输出该标签'};
+      else if(!calApi)r={ok:false,label:'日历写入未执行',detail:'日历模块未就绪'};
+      else if(++nCal>2)r={ok:false,label:'日历写入未执行',detail:'每条回复最多 2 次日历操作，多余的已忽略'};
+      else if(op.kind==='cal_add')r=await calApi.addItem({kind:_advAttr(a,'kind'),date:_advAttr(a,'date'),title:_advAttr(a,'title'),end:_advAttr(a,'end'),note:_advAttr(a,'note')},cfg);
+      else if(op.kind==='cal_edit')r=await calApi.editItem({id:_advAttr(a,'id'),date:_advAttr(a,'date'),title:_advAttr(a,'title'),end:_advAttr(a,'end'),note:_advAttr(a,'note')},cfg);
+      else if(op.kind==='cal_del')r=await calApi.delItem(_advAttr(a,'id'),cfg);
+      else r=await calApi.setMeet(_advAttr(a,'date'),cfg);
+    }
+    if(r){out.cards.push(r);_ibAdvPending.push('- '+(r.ok?'':'（失败）')+r.label+(r.detail?'\n'+r.detail:''))}
+  }
+  return out;
+}
 /* ═══ v56 选项卡（重做）：消息内只留一条标记；选项做成独立浮坞停在输入框上方 ═══ */
 function _askKey(d){var t=String(d.title||'')+'|'+String(d.body||'');var h=0;for(var i=0;i<t.length;i++){h=((h<<5)-h+t.charCodeAt(i))|0}return 'a'+(h>>>0).toString(36)}
 function _askAnsGet(k){try{var m=JSON.parse(localStorage.getItem('ib_askAnswers')||'{}');return m[k]||''}catch(e){return ''}}
@@ -20094,17 +20285,32 @@ function getMemoryScore(mem){
   return Math.round(score*100)/100;
 }
 
-/* --- 可见性过滤 --- */
+/* ═══ 可见性过滤 —— 全局唯一入口，任何要判断"这条记忆能不能给这个 AI 看"的
+   地方都必须走这里，禁止再就地手写 filter（历史上就地实现漏判 private，
+   导致 ws_mem_search 能检索到私密记忆）。
+   取值历史包袱：电脑端记忆编辑器写 'public'，手机端写 'all'，两者等价＝全部可见。
+   缺失/空值按 public 处理（旧版导入的记录没有这个字段）；
+   其余任何无法识别的取值一律拒绝（fail-closed，宁可少给不可错给）。 */
 function isMemoryVisibleTo(mem,apiId,isGroupChat,groupMemEnabled){
-  if(mem.visibility==='private')return false;
+  if(!mem)return false;
+  var v=String(mem.visibility==null||mem.visibility===''?'public':mem.visibility).toLowerCase();
+  if(v==='private')return false;
+  var openToAll=(v==='public'||v==='all');
   if(isGroupChat){
     if(!groupMemEnabled)return false;
-    return mem.visibility==='public';
+    return openToAll;/* 群聊只放全公开的：only/except 是按单个 AI 授权的，群里没法安全展开 */
   }
-  if(mem.visibility==='public')return true;
-  if(mem.visibility==='only')return (mem.visibleTo||[]).includes(apiId);
-  if(mem.visibility==='except')return !(mem.excludeFrom||[]).includes(apiId);
+  if(openToAll)return true;
+  if(v==='only')return Array.isArray(mem.visibleTo)&&mem.visibleTo.indexOf(apiId)!==-1;
+  if(v==='except')return !(Array.isArray(mem.excludeFrom)&&mem.excludeFrom.indexOf(apiId)!==-1);
   return false;
+}
+/* 当前这一轮回复的记忆可见范围。ws_mem_search 拿不到 sendMessage 内部的
+   isGroup / groupMemEnabled / 本会话记忆开关，所以在发起调用前写进这里，
+   检索时读同一份，保证「注入什么」和「能检索到什么」口径完全一致。 */
+var _ibMemScope={memOk:true,isGroup:false,groupMemEnabled:false};
+function _ibSetMemScope(memOk,isGroup,groupMemEnabled){
+  _ibMemScope={memOk:!!memOk,isGroup:!!isGroup,groupMemEnabled:!!groupMemEnabled};
 }
 
 /* --- 语义相关性：本地关键词匹配（零 token 消耗） --- */
@@ -22145,7 +22351,7 @@ async function selectPanelThread(friendId,threadId){
   if(sp)obs.observe(sp,{attributes:true,attributeFilter:['class']});
 })();
 
-async function init(){await openDB();_ibGuardCheck();loadOutputSettings();await migrateLockedPosts();await loadApiConfigs();_refreshCachedUserName();loadPosts();loadCategories();updateBlogStats();loadAboutDisplay();_updateLastActive();_fabSyncHeight();_ibGuardInit();_vmInit();setTimeout(function(){_checkWelcomeBack(_presenceStartupLastActive)},2000)}
+async function init(){await openDB();try{await _ibAdvRestoreUI()}catch(e){}try{_askGlobalRestoreUI()}catch(e){}/* 进阶指令与选项卡开关必须等 DB 打开后再读 */_ibGuardCheck();loadOutputSettings();await migrateLockedPosts();await loadApiConfigs();_refreshCachedUserName();loadPosts();loadCategories();updateBlogStats();loadAboutDisplay();_updateLastActive();_fabSyncHeight();_ibGuardInit();_vmInit();setTimeout(function(){_checkWelcomeBack(_presenceStartupLastActive)},2000)}
 init();
 initChatHeader();
 setTimeout(function(){var m=document.getElementById('music-mini');if(m)m.classList.add('visible')},1800);
@@ -23605,11 +23811,73 @@ async function execNote(op,cfg){
   led.noted=1;ledPut(led);
   return {ok:true,label:'已在日历留下便笺 ·「'+hit.title+'」',detail:note.body};
 }
+function _advIso(v){var t=String(v||'').trim().replace(/[\/年月]/g,'-').replace(/日/g,'');var m=t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!m)return '';var y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>31)return '';return y+'-'+p2(mo)+'-'+p2(d)}
+function _advRefresh(){try{if(_inited){rebuildSheet();renderSelected();renderAnni();renderFeed()}}catch(e){}}
+function _advGuard(cfg){
+  if(!cfg||!cfg.id)return '缺少会话信息';
+  if(!ALLOW_NOTES)return '日历接入总开关已关闭';
+  var p=perm(cfg.id);
+  if(!p[0]||!p[1])return '这位 AI 的日历读取或留言权限未开启';
+  return '';
+}
+async function advAddItem(o,cfg){
+  var g=_advGuard(cfg);if(g)return{ok:false,label:'日历写入未执行',detail:g};
+  var kind=({anniv:'anniv',anni:'anniv',birthday:'birthday',birth:'birthday',plan:'plan',memo:'memo'})[String(o.kind||'').toLowerCase()]||'';
+  if(!kind)return{ok:false,label:'日历写入未执行',detail:'kind 只能是 anniv / birthday / plan / memo'};
+  var date=_advIso(o.date);if(!date)return{ok:false,label:'日历写入未执行',detail:'date 需写成 YYYY-MM-DD'};
+  var title=String(o.title||'').trim().slice(0,40);if(!title)return{ok:false,label:'日历写入未执行',detail:'缺少 title'};
+  var it={id:'cal_'+Date.now().toString(36)+'_'+Math.floor(Math.random()*46656).toString(36),
+    kind:kind,title:title,date:date,repeat:(kind==='anniv'||kind==='birthday')?'yearly':'once',
+    vis:'all',remind:true,lead:LEAD,note:String(o.note||'').trim().slice(0,120),
+    created:Date.now(),createdBy:'ai',createdByName:(cfg.nickname||cfg.model||'AI')};
+  var end=_advIso(o.end);
+  if(end&&end>=date&&(kind==='plan'||kind==='memo'))it.endDate=end;
+  try{await dbPut('calEvents',it)}catch(e){return{ok:false,label:'日历写入失败',detail:'写入本地数据库失败'}}
+  ITEMS.push(it);_advRefresh();
+  return{ok:true,label:'已写入日历 ·「'+it.title+'」',detail:kindCN(it)+' · '+it.date+(it.endDate?'—'+it.endDate:'')+(it.note?' · '+it.note:'')+'（id:'+it.id+'）'};
+}
+async function advEditItem(o,cfg){
+  var g=_advGuard(cfg);if(g)return{ok:false,label:'日历修改未执行',detail:g};
+  var id=String(o.id||'').trim(),hit=null,idx=-1;
+  for(var i=0;i<ITEMS.length;i++){if(ITEMS[i].id===id){hit=ITEMS[i];idx=i;break}}
+  if(!hit)return{ok:false,label:'日历修改未执行',detail:'日历中没有 id 为 '+(id||'（空）')+' 的事项'};
+  var it=Object.assign({},hit);
+  if(String(o.title||'').trim())it.title=String(o.title).trim().slice(0,40);
+  if(String(o.date||'').trim()){var d=_advIso(o.date);if(!d)return{ok:false,label:'日历修改未执行',detail:'date 需写成 YYYY-MM-DD'};it.date=d}
+  if(String(o.note||'').trim())it.note=String(o.note).trim().slice(0,120);
+  if(String(o.end||'').trim()){var e2=_advIso(o.end);if(e2&&e2>=it.date)it.endDate=e2}
+  it.edited=Date.now();
+  try{await dbPut('calEvents',it)}catch(e){return{ok:false,label:'日历修改失败',detail:'写入本地数据库失败'}}
+  ITEMS[idx]=it;_advRefresh();
+  return{ok:true,label:'已修改日历 ·「'+it.title+'」',detail:kindCN(it)+' · '+it.date+(it.note?' · '+it.note:'')+'（id:'+it.id+'）'};
+}
+async function advDelItem(id,cfg){
+  var g=_advGuard(cfg);if(g)return{ok:false,label:'日历删除未执行',detail:g};
+  id=String(id||'').trim();var idx=-1;
+  for(var i=0;i<ITEMS.length;i++){if(ITEMS[i].id===id){idx=i;break}}
+  if(idx<0)return{ok:false,label:'日历删除未执行',detail:'日历中没有 id 为 '+(id||'（空）')+' 的事项'};
+  var t=ITEMS[idx].title;
+  try{await dbDelete('calEvents',id)}catch(e){return{ok:false,label:'日历删除失败',detail:'删除本地数据库记录失败'}}
+  ITEMS.splice(idx,1);_advRefresh();
+  return{ok:true,label:'已从日历移除 ·「'+t+'」',detail:'id:'+id};
+}
+async function advSetMeet(date,cfg){
+  var g=_advGuard(cfg);if(g)return{ok:false,label:'相遇纪念日未更正',detail:g};
+  var iso=_advIso(date);if(!iso)return{ok:false,label:'相遇纪念日未更正',detail:'date 需写成 YYYY-MM-DD'};
+  MEETSET[cfg.id]=iso;saveCalSettings();_advRefresh();
+  return{ok:true,label:'相遇纪念日已记为 '+iso,detail:'此前按第一条聊天记录推算，现已按该日期显示'};
+}
 async function processReply(replyText,cfg){
   var out={clean:replyText,results:[]};
   try{
     if(!replyText)return out;
-    if(String(replyText).toLowerCase().indexOf('<cal_note')===-1){await scanMentions(replyText,cfg);return out}
+    if(typeof window._ibAdvProcess==='function'){
+      try{
+        var _av=await window._ibAdvProcess(out.clean,cfg,{addItem:advAddItem,editItem:advEditItem,delItem:advDelItem,setMeet:advSetMeet});
+        if(_av){out.clean=_av.clean;replyText=_av.clean;if(_av.cards&&_av.cards.length)out.results=out.results.concat(_av.cards)}
+      }catch(e){}
+    }
+    if(String(replyText).toLowerCase().indexOf('<cal_note')===-1){await scanMentions(replyText,cfg);if(out.results.length&&_inited){renderFeed();renderAnni()}return out}
     await ensureData();
     var ops=[];
     var clean=String(replyText).replace(CAL_TAG_RE,function(_m,attr,body){
