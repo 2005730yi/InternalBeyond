@@ -10990,7 +10990,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
     wrap.appendChild(toggle);
     const body=document.createElement('div');
     body.className='chat-thinking-body';
-    body.textContent=_thinkTxt;
+    body.textContent=String(_thinkTxt||'').replace(/^\s+/,'');/* v69-t11：pre-wrap 下头部空白=大段空隙 */
     wrap.appendChild(body);
     frag.appendChild(wrap);
   }
@@ -11058,7 +11058,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
       wrap.appendChild(toggle);
       const body=document.createElement('div');
       body.className='chat-thinking-body';
-      body.textContent=_thinkTxt;
+      body.textContent=String(_thinkTxt||'').replace(/^\s+/,'');/* v69-t11 */
       wrap.appendChild(body);
       frag.appendChild(wrap);
     }
@@ -13056,8 +13056,8 @@ async function sendChatMessage(voiceMsg){
         if(_sState===2){_sFlush(chunk);return}
         _sBuf+=chunk;
         if(_sState===0){
-          if(_sBuf.includes('<thinking>')){_sState=1;const idx=_sBuf.indexOf('<thinking>');const before=_sBuf.slice(0,idx);_sThinkBuf=_sBuf.slice(idx+11);_sBuf='';if(before.trim())_sFlush(before);_thinkFlush(_sThinkBuf);return}
-          if(_sBuf.includes('<think>')){_sState=1;const idx=_sBuf.indexOf('<think>');const before=_sBuf.slice(0,idx);_sThinkBuf=_sBuf.slice(idx+7);_sBuf='';if(before.trim())_sFlush(before);_thinkFlush(_sThinkBuf);return}
+          if(_sBuf.includes('<thinking>')){_sState=1;const idx=_sBuf.indexOf('<thinking>');const before=_sBuf.slice(0,idx);_sThinkBuf=_sBuf.slice(idx+10);_sBuf='';if(before.trim())_sFlush(before);_thinkFlush(_sThinkBuf.replace(/^\s+/,''));return}/* v69-t11：'<thinking>'长10，原+11多吃一字；首灌掐头 */
+          if(_sBuf.includes('<think>')){_sState=1;const idx=_sBuf.indexOf('<think>');const before=_sBuf.slice(0,idx);_sThinkBuf=_sBuf.slice(idx+7);_sBuf='';if(before.trim())_sFlush(before);_thinkFlush(_sThinkBuf.replace(/^\s+/,''));return}
           if(_sBuf.length>60){_sState=2;_sFlush(_sBuf);_sBuf='';return}
         }
         if(_sState===1){
@@ -13071,7 +13071,7 @@ async function sendChatMessage(voiceMsg){
             _sThinkBuf=cleanThink;
             _sState=2;
             /* 清理面板内容（去掉</thinking>标签残留） */
-            _liveThinkEls.forEach(e=>{e.body.textContent=cleanThink;e.body.classList.remove('chat-stream-cursor')});
+            _liveThinkEls.forEach(e=>{e.body.textContent=cleanThink.replace(/^\s+/,'');e.body.classList.remove('chat-stream-cursor')});/* v69-t11 */
             if(after&&after.trim())_sFlush(after.trim());
           }
         }
@@ -13899,6 +13899,9 @@ async function _callApiChatStreamOnce(cfg,messages,opts){
             /* ── 服务端联网搜索可视化：server_tool_use(累积query) → web_search_tool_result(结果) ── */
             if(j.type==='content_block_start'&&j.content_block){
               const cb=j.content_block;
+              /* v69-t11：加密思考块（redacted_thinking）落占位不吞；多思考块之间补空行 */
+              if(cb.type==='redacted_thinking'){const _sp=(thinkingText?'\n\n':'')+'〔加密思考片段〕';thinkingText+=_sp;onThink(_sp)}
+              else if(cb.type==='thinking'&&thinkingText){thinkingText+='\n\n';onThink('\n\n')}
               if(cb.type==='server_tool_use'&&/search/i.test(cb.name||'')){opts._srchIdx=j.index;opts._srchBuf='';if(opts.onSearch)try{opts.onSearch({phase:'start'})}catch(e){}}
               else if(cb.type==='web_search_tool_result'){
                 const rs=[];try{(Array.isArray(cb.content)?cb.content:[]).forEach(r=>{if(r&&(r.title||r.url))rs.push({title:r.title||r.url,url:r.url||''})})}catch(e){}
@@ -14809,7 +14812,7 @@ const _ASK_INSTR_BLOCK='\n\n【选项卡】当你想向用户提供可点选的�
 
 /* ═══ 进阶指令（记忆库检索 / 日历写入）：常量块随开关整块注入，结果只挂末条用户消息，前缀不动 ═══ */
 const _MEMSEARCH_INSTR_BLOCK='\n\n【记忆库检索】你可以检索记忆库来核实过往信息。\n用法：<ws_mem_search q="关键词" />\n说明：\n- q 填 1–4 个关键词（空格分隔），系统在对你可见的记忆条目与你的记忆档案中匹配，命中内容在下一条消息回传给你。\n- 仅在对话涉及过往的人、事件或约定，而你记不清楚或感到好奇的时候调用检索。\n- 不要编造检索结果——等系统回传。';
-const _CALWRITE_INSTR_BLOCK='\n\n【日历写入】你可以替对方管理日历事项，对话中出现值得记住的日期、计划或约定时，可主动提议添加。每条回复最多 2 次。\n标签：\n<ws_cal_add kind="类型" date="YYYY-MM-DD" title="标题" end="YYYY-MM-DD" note="备注" />\n<ws_cal_edit id="事项id" date="新日期" title="新标题" note="新备注" />\n<ws_cal_del id="事项id" />\n<ws_cal_meet date="YYYY-MM-DD" />\n字段说明：\n- kind：anniv（纪念日）、birthday（生日）、plan（计划）、memo（记录）。纪念日与生日按年重复，计划与记录为单次。\n- date：必填，YYYY-MM-DD 格式。\n- title：必填，事项标题（40字内）。\n- end：选填，仅 plan / memo 有效，标记结束日期。\n- note：选填，备注（120字内），会随事项一并提供给有权限的 AI。\n- id：编辑或删除时必填，取自日历栏中的括号标注或上一轮回传，不要臆造。\n- ws_cal_meet 用于更正你与对方的相遇纪念日，仅在对方明确告知日期时使用。\n执行结果在下一条消息回传给你。';
+const _CALWRITE_INSTR_BLOCK='\n\n【日历写入】你可以替对方管理日历事项，每条回复最多 2 次。\n标签：\n<ws_cal_add kind="类型" date="YYYY-MM-DD" title="标题" end="YYYY-MM-DD" note="备注" />\n<ws_cal_edit id="事项id" date="新日期" title="新标题" note="新备注" />\n<ws_cal_del id="事项id" />\n<ws_cal_meet date="YYYY-MM-DD" />\n字段说明：\n- kind：anniv（纪念日）、birthday（生日）、plan（计划）、memo（记录）。纪念日与生日按年重复，计划与记录为单次。\n- date：必填，YYYY-MM-DD 格式。\n- title：必填，事项标题（40字内）。\n- end：选填，仅 plan / memo 有效，标记结束日期。\n- note：选填，备注（120字内），会随事项一并提供给有权限的 AI。\n- id：编辑或删除时必填，取自日历栏中的括号标注或上一轮回传，不要臆造。\n- ws_cal_meet 用于更正你与对方的相遇纪念日，仅在对方明确告知日期时使用。\n执行结果在下一条消息回传给你。';
 var _advCache=null;
 /* 原实现的坑：这段脚本在解析时就跑一次 _ibAdvGet()，那时 openDB() 还没 resolve，
    全局 db 是 undefined，dbGet 直接抛错 → catch 吞掉 → 把"两个都关"当成结果
