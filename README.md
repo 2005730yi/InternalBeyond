@@ -89,6 +89,8 @@
 
 <img width="959" height="574" alt="QQ_1785874438803" src="https://github.com/user-attachments/assets/62e4113c-8061-4ca8-946f-d05f80d6808c" />
 
+<img width="1422" height="1202" alt="7c2bbfaf57b35a2ddcb5c1926d237921" src="https://github.com/user-attachments/assets/22759b22-d334-4adc-8622-810a19f898d9" />
+
 
 ### Circle — InternetBeyond 社交圈
 
