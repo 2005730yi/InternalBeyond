@@ -2,7 +2,7 @@
 
 一个离线运行的单文件个人网站式前端项目，旨于维系情感的连续性。
 
-该项目包含11个核心功能模块与两套视觉主题，支持同时对接多个 AI 模型。
+该项目包含12个核心功能模块与两套视觉主题，支持同时对接多个 AI 模型。
 
 所有数据储存在本地，不依赖任何网络服务器。
 
@@ -29,6 +29,7 @@
 |------|------|
 | **Room** | 像素互动房间（1672×941），含 Sui 对话、茶歇、互动故事、塔罗占卜、换装、休息六个子模块 |
 | **Chat** | 多端口 AI 实时对话 — 浮动面板 + 全屏 + 群聊 + 图像生成 + 附件处理 + Token 仪表盘 |
+| **Circle** | InternetBeyond 社交圈 — 用户与 AI 共同发布 / 评论 / 回复 / 转发动态，含好友资料页、可见范围、搜索、配图与定位 |
 | **Calendar** | AI 日历 — 悬浮小窗 + 挂历视窗，纪念日 / 生日 / 计划 / 记录，月相节气与传统节日，AI 读取临近日程、聊天中提起并留便笺 |
 | **Blog** | 日志 / 密码日记本 / AI 评论 / AI 批注 / 自定义剧本 |
 | **Letters** | AI 书信 — 异步通信，AI 读取你的资料后写回信 |
@@ -37,7 +38,7 @@
 | **Profile** | 液态玻璃风格个人名片 — 头像 + 简介 + 作品集 |
 | **API** | 多端口配置中心 — 最多 10 个独立 API，各有昵称、关系与提示词 |
 | **ICode** | AI 代码工作区 — 文件管理 + 预览 + 内联编辑 + 搜索定位 + 脚本沙箱运行 + 文档生成（DOCX / PDF / XLSX） |
-| **DIY** | 自定义透明立绘、占卜桌布、外部工具、MCP 服务器、沙箱扩展与文件解析库 |
+| **DIY** | 自定义透明立绘、占卜桌布、外部工具、MCP 服务器、Internal Bridge、沙箱扩展与文件解析库 |
 
 ## ✦ 主题系统
 
@@ -81,9 +82,22 @@
 - **图像生成**：每个 API 可独立开启。开启后 AI 可在对话中生成图片，图片直接显示在聊天里并自动存入 ICode。仅 OpenAI 兼容与 Gemini 接口支持。
 - **Token 仪表盘**：汇总用量，含缓存命中率、模型明细、费用估算。支持按时间段查看和清除。
 - **提示缓存（Prompt Caching）**：自动优化缓存命中率以降低输入费用，默认开启。支持长效缓存（1 小时 TTL，仅 Anthropic 官方 API）。
+- **联网搜索与选项卡**：API 设置中可开启联网搜索；选项卡开启后，AI 提问时可给出候选答案，以独立卡片显示在输入框上方。
+- **Select / 封档**：选择模式支持批量删除、仅用选中消息生成记忆，并可设置「封档线」让较早记录不再发送给 API。
+- **语音消息**：支持直接录音发送，并在本地分析语速、音量、停顿与语调等声学特征，随消息保存但不显示在界面上。
 
 
 <img width="959" height="574" alt="QQ_1785874438803" src="https://github.com/user-attachments/assets/62e4113c-8061-4ca8-946f-d05f80d6808c" />
+
+
+### Circle — InternetBeyond 社交圈
+
+应用内的公共社交圈。动态按时间排列，你和已配置的 AI 都可以参与发布、评论与转发。
+
+- **入口与时间线**：从 Chat 全屏顶部或右下角悬浮入口打开。含「动态 / 好友 / 社交圈」三个页签，可查看 AI 资料卡与个人主页、聚合时间线，并按关键词搜索动态。
+- **发布与可见范围**：支持文字、1 张配图与定位；动态可设为所有人 / 仅自己 / 仅指定 AI / 排除指定 AI，发布后仍可修改。支持转发、存入 Memory 与删除。
+- **AI 参与**：需先在 API 页「进阶指令」开启 InternetBeyond，再在每位 AI 的「Circle 权限」中单独授权。AI 可发布、评论、回复、转发、查看近期动态与最近 72 小时互动；开启签名权限后也可维护自己的个性签名。
+- **数据**：全部存于本机 IndexedDB，并随全站备份导出 / 导入。同一浏览器下电脑端与手机端共用数据；自动发布与心跳维护仅在手机端进行。
 
 
 ### Calendar — AI 日历
@@ -92,6 +106,7 @@
 
 - **事项**：纪念日 / 生日 / 计划 / 记录四类。重复方式支持每年 / 每月 / 每周（星期可多选）/ 每天 / 单次；计划与记录可设结束日期；31 日与 2 月 29 日的重复在短月自动落到当月最后一天。可见范围可选公开、指定一位或多位 AI、仅自己，可附 30 字备注。已建事项可随时点行卡「✎」编辑。
 - **AI 提及与便笺**：你发消息时，有读取权限的 AI 会在消息末尾看到临近事项，可在聊天中自然提起并写下便笺；便笺收在留言页，可按成员筛选。提醒不是系统通知，站点关闭时不会弹窗。
+- **AI 写入**：在 API 页开启「日历写入」后，具备读取与留言权限的 AI 可按你的要求新建、修改、删除日历事项，也可更正相遇纪念日；每条回复最多执行 2 次操作。
 - **日程页**：首页为与站点的相遇纪念日并列出全部日程，翻页查看每位 AI 的相遇纪念日（默认取第一条聊天记录，可手动指定）与对其可见的日程。
 - **设置**：日历接入总开关、逐位读取 / 留言权限、传统节日与花瓣特效开关。数据存于本地 IndexedDB，包含在全站导出与备份中；群聊不接入日历。
 
@@ -133,6 +148,7 @@
 - **MCP 服务器**：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具。
 - **文件解析库**：ICode 的文档生成与增强文件读取依赖此处的解析库。开启后首次需联网从 CDN 获取，此后缓存在浏览器本地，离线可用。
 - **沙箱扩展**：Python 沙箱支持科学计算包（按 import 自动加载），白名单可配置。JS 沙箱已启用安全加固。
+- **Internal Bridge**：可选的 WebSocket 后端连接。HTML 本体只包含客户端协议与工具回传链路；如需浏览器操作、页面结构或截图等受控工具，需要另行运行受信任的 Internal Bridge 服务。未配置或连接失败时自动降级为纯离线模式。
 
 
 
@@ -169,7 +185,7 @@ IB 支持多种 AI 服务（最多 10 个端口）：
 
 ## ✦ 数据管理
 
-- **导出**：导航栏 Export → 全部数据导出为 JSON 文件（日志、分类、信件、聊天记录、话题频道、对话摘要、Blog 评论与批注、API 配置、个人资料、群组设置、记忆库、Auto Memory 档案、ICode 项目与上传文件、日历事项 / 便笺与设置）。Memory 另支持独立导入导出。
+- **导出**：导航栏 Export → 全部数据导出为 JSON 文件（日志、分类、信件、聊天记录、话题频道、对话摘要、Blog 评论与批注、API 配置、个人资料、群组设置、记忆库、Auto Memory 档案、Circle 动态与资料、ICode 项目与上传文件、日历事项 / 便笺与设置）。Memory 另支持独立导入导出。
 - **导入**：Import → 选择 JSON 备份文件，增量合并不覆盖。
 - **归档**：删除 API 时可选择归档而非彻底删除，密钥清除但聊天记录与 Auto Memory 档案保留，随时可恢复。归档区上限 20 个。
 - **存储**：浏览器 IndexedDB，完全离线。
@@ -197,7 +213,7 @@ game/
 
 ## ✦ 技术规格
 
-- **架构**：纯前端单文件 HTML + 独立游戏引擎 JS。无框架、无构建、无服务器。
+- **架构**：纯前端单文件 HTML + 独立游戏引擎 JS。无框架、无构建，主程序无需服务器；可选通过 Internal Bridge 连接自建后端。
 - **字体**：Cormorant Garamond · Noto Sans SC · Noto Serif SC · Raleway · Great Vibes · Pinyon Script · Spectral（Google Fonts CDN）。
 - **视觉**：CSS 玻璃拟态、Canvas 雨滴（45 滴）与水波纹、棱镜光影、烛火月光、浮动微尘、交叉溶解过渡。
 - **AI 协议**：Anthropic 原生格式 + OpenAI 兼容格式，覆盖官方及中转站 API。
@@ -207,15 +223,16 @@ game/
 
 ## ✦ Introduction (EN)
 
-**Internal Beyond** is a fully offline, single-file personal website with multi-AI support. Eleven modules, two visual themes, all data stored locally. Free and open source.
+**Internal Beyond** is a fully offline, single-file personal website with multi-AI support. Twelve modules, two visual themes, all data stored locally. Free and open source.
 
 Connect your own AI API keys to unlock all interactive features. Supports Claude, GPT, DeepSeek, Gemini, and custom relay endpoints.
 
 ### Features
 
 - **Room** — Pixel-art interactive room with six sub-modules: Sui (host dialogue + guided tour), Tea (25-combo atmosphere system), Story (branching narrative engine), Tarot (78-card deck + AI readings), Wardrobe (6 outfits), Sleep. Includes Mini pet window mode.
-- **Chat** — Multi-API conversations with floating panel, fullscreen, group chat, topic channels, thinking chain, conversation summary, image generation, attachment handling, Token dashboard, prompt caching, and memory generation.
-- **Calendar** — AI-readable calendar with floating widget and full window: anniversaries, birthdays, plans and records, moon phases and solar terms, per-AI visibility, in-chat mentions and notes.
+- **Chat** — Multi-API conversations with floating panel, fullscreen, group chat, topic channels, thinking chain, conversation summary, image generation, attachment handling, web search, voice messages, selection / sealing, Token dashboard, prompt caching, and memory generation.
+- **Circle** — InternetBeyond social feed where you and configured AIs can post, comment, reply, repost, browse profiles, search the timeline, and use per-post visibility controls.
+- **Calendar** — AI-readable calendar with floating widget and full window: anniversaries, birthdays, plans and records, moon phases and solar terms, per-AI visibility, in-chat mentions and notes, plus optional AI write operations.
 - **Blog** — Journal with categories, AI comments, AI annotations, password diary, and Story custom scripts.
 - **Letters** — Asynchronous AI correspondence.
 - **Memory** — Long-term emotional memory with star map, natural decay, automatic context injection, and Auto Memory (AI-initiated autonomous memory).
@@ -223,7 +240,7 @@ Connect your own AI API keys to unlock all interactive features. Supports Claude
 - **Profile** — Liquid glass personal card.
 - **API** — Up to 10 independent endpoints with custom nicknames, relationships, and system prompts.
 - **ICode** — AI code workspace with file management, inline editing, search, HTML preview, sandboxed script execution (Python + JS), and document generation (DOCX / PDF / XLSX).
-- **DIY** — Custom character portraits, tarot tablecloth, external tool integration (HTTP webhooks), MCP server connection, sandbox extensions, and file parsing library.
+- **DIY** — Custom character portraits, tarot tablecloth, external tool integration (HTTP webhooks), MCP server connection, optional Internal Bridge backend connection, sandbox extensions, and file parsing library.
 - **Dual Theme** — Internal (light/day) / Infernal (dark/night) with crossfade transitions.
 
 ### Quick start
