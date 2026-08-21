@@ -18,6 +18,13 @@
 })();
 </script>
 <!-- InternalBeyond v17-sync · 2026-08-16 —— 本轮修订：①Chat 悬浮窗右下角自由缩放（与 Circle 悬浮窗同规格：仅本次生效，重新打开恢复默认 438×770）；②补 no-referrer（与手机端同口径）；③GUIDE 订正：IndexedDB 版本号 v14→v15、「哪些操作影响提示缓存命中」新增实测说明、对外请求边界说明；④全站体检：13 个页面遍历与生图 / 进阶指令 / 工作区 / 日历 / 信箱重交互零报错；缓存前缀实测——连开社交圈与日历、发动态、加便笺后 system 前缀逐字不变。 -->
+<!-- InternalBeyond v24-sync · 2026-08-21 —— 本轮修订（单项）：MCP 预设收纳——DIY 页 MCP 卡原本把四枚预设胶囊（麦当劳 / 瑞幸 / Parallel / Exa）平铺在「+ 添加服务器」之后、卡顶再压一大段说明，越加越挤；现改为一颗「预设 ▾」按钮，弹出与全站同款的 .ib-select 下拉（徽标 / 名称 / 一句说明 / 免令牌·需令牌标），外点即收，已添加的置灰而非隐藏；点选逻辑不变（免令牌的入列即自动连接，需令牌的焦点直落令牌栏）；卡顶长说明整段搬进 GUIDE → DIY「MCP 服务器 / MCP 预设」两段，卡上只留一行指引。展开时整卡抬高层级（卡片自带 translateZ 层叠上下文，否则菜单会被下方卡片压住）。MCP 连接 / 调用 / 存储零改动。 -->
+<!-- InternalBeyond v23-sync · 2026-08-20 —— 本轮修订：①联网搜索 MCP 预设——MCP 卡新增「Parallel 联网搜索」「Exa 联网搜索」两枚预设按钮（官方公开端点、实测允许浏览器跨域、无需令牌；点一下即入列并自动连接；Tavily 官方端点浏览器直连不通，未收录）；服务器列表迷你徽标补底色；②Calendar 小窗花瓣回滚到 v17-sync 口径——撤掉 fix-r7 的拖动拖尾（沿轨迹补发、同屏上限 240 片，拖动时掉帧），花瓣起点随小窗 --ox/--oy 即时移动；花形 / 关键帧 / CSS 零改动。 -->
+<!-- InternalBeyond v22-sync · 2026-08-20 —— 本轮修订：①「输出与续写」新增「单次输出上限」（自动＝按服务商顶格 / 4k–128k 手动档），与手机端共用同一条 outputSettings 记录；顺手修正 saveOutputSettings 整条覆写会抹掉手机端字段（toolRounds / wsRounds）的问题，改为合并写；②手机端 AI 的操作卡（ibOps）在电脑端历史消息里也渲染成同款记忆卡 / 便笺卡，与本端 calNotes 互认；③麦当劳 / 瑞幸品牌卡移植到电脑端（四态：待确认 / 成功 / 失败 / 原始报文，确认后原地重绘并写回消息）；MCP 服务器条目新增令牌栏（Authorization: Bearer 自动补前缀、改令牌不清工具表）与两张官方预设（仅预填别名与官方地址占位，需自行填入官方或可信中转）；注意：电脑端 MCP 配置存 localStorage（ib_mcp_cfg），不随备份文件往返。 -->
+<!-- InternalBeyond v21-sync · 2026-08-20 —— 本轮修订（单项）：日历悬浮窗设置页「同一事项重复留笺」视觉修复——v20-sync 新增该项时用了裸原生 select，与同页 ibsel 下拉组件（提前天数 / 重复 / 可见范围等同款）风格脱节、明暗主题也不随动（用户截图的突兀块）；改为同款 makeSelect/.ib-select 组件，面板、下拉菜单、明暗双主题样式全部沿用现成规则，说明文案同步精简一行；口径选项与存取逻辑（NOTE_DUP / saveCalSettings / IndexedDB 键）零改动，提示词与提示缓存零改动。 -->
+<!-- InternalBeyond v20-sync · 2026-08-19 —— 本轮修订：①同一事项重复留笺口径可调——旧行为「同一次日期终身一张」让提前 3 天留过的节日到当天被拒（你截图的七夕案例）；执行器改按「写便笺的那一天」记账（notedDay/notedN），日历悬浮窗设置页新增「同一事项重复留笺」选择：每天 1 张（默认）/每天 3 张（＝手机端口径）/仅一次（旧行为）；只改执行器判定与拒收文案，提示词与提示缓存零改动。②记忆库写入可选参数——<ws_mem_write> 开标签支持 importance(1-10)/valence(0-1)/arousal(0-1)/tags(逗号分隔，至多 5 枚)（domain 收而不宣）：解析器携带 attrs、执行器钳制解析，缺省一律沿用旧默认，提示词补一行说明（与手机端 v127-a 同文）。 -->
+<!-- InternalBeyond v19-sync · 2026-08-18 —— 本轮修订：①停止键复活——发送当口停止键不出现、切窗回来才补显的根因是 _syncStreamBtnsD 以 st.ac 判传输中（ac 在首个分片前与续写轮间隙为 null），改「注册即传输中」并在调用状态注册/注销当口即时刷新按钮；换窗互不干扰的既有行为保持（仍按当前查看的对话判定，另一边照常可发消息）。②记忆库高级检索——_ibMemSearchExec 计分由命中关键词个数升级为 BM25（完整关键词×3＋CJK 相邻双字×1、idf＋文长归一），标签/提示词/输出格式零改动。③记忆库写入提示词精细化（第一人称口吻统一、600 字/条、每回复 3 次、仅写入者自己可见），与手机端 v126-a 逐字同文。 -->
+<!-- InternalBeyond v18-sync · 2026-08-18 —— 本轮修订（单项）：社交圈指令进群聊——群聊 System 按成员开关（进阶指令 Beyond 总开关＋该成员 beyond.on）注入与 1对1 完全同一份 _ibBeyondInstrD 常量块（开关不变则字节不变，缓存前缀稳定，提示词零改动）；群聊 Tail 同步携带该成员的 Beyond 签名资料行（与 1对1 同文，走末条用户消息、零缓存代价）。群聊路径本就解析并执行 ws 标签（_execWsOps，操作者按发言成员署名），故发布/评论/转发/签名/查看在群内即刻生效，无需另接执行管线。 -->
 <title>Internal Beyond</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%0A%3Crect%20x%3D%2218%22%20y%3D%2218%22%20width%3D%2292%22%20height%3D%2292%22%20rx%3D%225%22%20fill%3D%22%23c2d7f8%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Crect%20x%3D%2223%22%20y%3D%2223%22%20width%3D%2282%22%20height%3D%2282%22%20rx%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%23a8c4e8%22%20stroke-width%3D%220.8%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Crect%20x%3D%2227%22%20y%3D%2227%22%20width%3D%2274%22%20height%3D%2274%22%20rx%3D%223%22%20fill%3D%22none%22%20stroke%3D%22%23d4e4f8%22%20stroke-width%3D%220.3%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Cg%20transform%3D%22translate%2835.0%2C78.6%29%20scale%280.02024%2C-0.02024%29%22%20fill%3D%22%231a2240%22%3E%0A%20%20%3Cpath%20d%3D%22M227%20-2Q123%20-2%2065.0%2041.0Q7%2084%201%20142Q-3%20188%2025.5%20210.0Q54%20232%2085%20235Q102%20237%20119.5%20228.0Q137%20219%20140%20194Q142%20175%20127.0%20159.5Q112%20144%2089%20140Q61%20135%2042%20145V139Q42%2091%2092.0%2057.5Q142%2024%20225%2024Q302%2024%20379.5%2055.0Q457%2086%20544.5%20160.0Q632%20234%20739%20363Q683%20389%20644.5%20447.0Q606%20505%20606%20608Q606%20721%20663.0%20833.5Q720%20946%20823.0%201046.5Q926%201147%201065.5%201224.5Q1205%201302%201371.5%201347.0Q1538%201392%201720%201392Q1743%201392%201764.5%201390.0Q1786%201388%201807%201385Q1830%201384%201851.5%201381.0Q1873%201378%201895%201378Q1920%201378%201945.0%201381.5Q1970%201385%201997%201385Q2034%201385%202034%201371Q2034%201353%202001%201352Q1963%201350%201933.5%201350.5Q1904%201351%201878%201351Q1849%201344%201828.0%201336.5Q1807%201329%201784%201320Q1630%201252%201469.5%201091.5Q1309%20931%201131%20673Q1010%20499%20878%20365H886Q992%20365%201108.5%20417.0Q1225%20469%201326.5%20561.0Q1428%20653%201491.5%20774.5Q1555%20896%201555%201036Q1555%201059%201559.0%201062.5Q1563%201066%201566%201066Q1578%201066%201578%201017Q1578%20873%201514.5%20749.5Q1451%20626%201347.0%20533.5Q1243%20441%201119.0%20389.0Q995%20337%20874%20337H851Q690%20180%20525.5%2089.0Q361%20-2%20227%20-2ZM757%20384Q794%20429%20833.5%20481.0Q873%20533%20916%20592Q1107%20855%201273.0%201015.5Q1439%201176%201578.0%201256.5Q1717%201337%201827%201358Q1802%201362%201772.0%201364.0Q1742%201366%201722%201366Q1619%201366%201500.5%201330.5Q1382%201295%201262.0%201233.5Q1142%201172%201033.0%201093.0Q924%201014%20838.5%20926.0Q753%20838%20703.5%20750.0Q654%20662%20654%20583Q654%20495%20682.5%20449.5Q711%20404%20757%20384Z%22%2F%3E%0A%20%20%3Cg%20transform%3D%22translate%281233%2C0%29%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M212%20-2Q124%20-2%2062.0%2040.5Q0%2083%200%20142Q0%20188%2031.0%20207.0Q62%20226%2093%20226Q110%20226%20126.5%20215.5Q143%20205%20143%20180Q143%20161%20126.5%20146.0Q110%20131%2087%20131Q74%20131%2061.5%20132.5Q49%20134%2039%20141V135Q39%2086%2088.0%2055.0Q137%2024%20220%2024Q270%2024%20318.5%2038.5Q367%2053%20427.0%2094.5Q487%20136%20571.0%20215.5Q655%20295%20775.0%20422.5Q895%20550%201064%20738Q1255%20957%201425.0%201094.0Q1595%201231%201730%201303Q1675%201359%201576.5%201388.5Q1478%201418%201350%201418Q1280%201418%201200.5%201403.5Q1121%201389%201051%201363Q931%201319%20815.5%201243.0Q700%201167%20607.0%201077.0Q514%20987%20459.0%20898.0Q404%20809%20404%20738Q404%20678%20444.0%20650.0Q484%20622%20541%20622Q626%20622%20729.5%20672.0Q833%20722%20930.0%20810.0Q1027%20898%201096.5%201013.5Q1166%201129%201184%201260Q1188%201280%201190.0%201286.0Q1192%201292%201198%201292Q1209%201292%201209%201270Q1209%201125%201148.0%201002.5Q1087%20880%20987.0%20790.0Q887%20700%20767.5%20650.0Q648%20600%20531%20600Q471%20600%20422.5%20633.5Q374%20667%20374%20741Q374%20838%20428.5%20937.5Q483%201037%20579.0%201127.0Q675%201217%20801.0%201287.5Q927%201358%201070.5%201399.0Q1214%201440%201362%201440Q1632%201440%201778%201328Q1857%201366%201920.0%201383.0Q1983%201400%202028%201400Q2061%201400%202061%201390Q2061%201384%202029.5%201379.5Q1998%201375%201940.0%201360.0Q1882%201345%201804%201305Q1898%201216%201898%201083Q1898%20994%201843.0%20908.5Q1788%20823%201697.5%20753.0Q1607%20683%201502%20640Q1582%20569%201582%20439Q1582%20354%201534.5%20275.0Q1487%20196%201406.5%20133.5Q1326%2071%201225.0%2034.5Q1124%20-2%201016%20-2Q920%20-2%20885.0%2035.0Q850%2072%20850%20109Q850%20161%20895.0%20223.0Q940%20285%201015.0%20341.0Q1090%20397%201182.0%20433.0Q1274%20469%201368%20469Q1389%20469%201389%20457Q1389%20443%201358%20443Q1280%20443%201196.5%20410.5Q1113%20378%201042.0%20327.0Q971%20276%20927.0%20218.0Q883%20160%20883%20108Q883%2078%20911.0%2052.0Q939%2026%201020%2026Q1091%2026%201170.0%2067.0Q1249%20108%201318.0%20181.0Q1387%20254%201430.5%20350.5Q1474%20447%201474%20559Q1474%20599%201459%20623Q1410%20607%201360.0%20597.5Q1310%20588%201262%20588Q1216%20588%201192.0%20603.0Q1168%20618%201168%20634Q1168%20658%201218.0%20678.0Q1268%20698%201332%20698Q1400%20698%201454%20671Q1538%20712%201616.0%20782.0Q1694%20852%201744.0%20946.5Q1794%201041%201794%201153Q1794%201223%201752%201277Q1730%201264%201706.5%201248.0Q1683%201232%201658%201214Q1575%201152%201494.0%201075.0Q1413%20998%201325.0%20895.0Q1237%20792%201133%20652Q945%20400%20768.5%20249.0Q592%2098%20432%2032Q377%2010%20322.5%204.0Q268%20-2%20212%20-2ZM1263%20620Q1335%20620%201423%20657Q1391%20675%201333%20675Q1286%20675%201252.5%20664.5Q1219%20654%201219%20642Q1219%20635%201231.5%20627.5Q1244%20620%201263%20620Z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20128%20128%22%3E%0A%3Crect%20x%3D%2218%22%20y%3D%2218%22%20width%3D%2292%22%20height%3D%2292%22%20rx%3D%225%22%20fill%3D%22%23c2d7f8%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Crect%20x%3D%2223%22%20y%3D%2223%22%20width%3D%2282%22%20height%3D%2282%22%20rx%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%23a8c4e8%22%20stroke-width%3D%220.8%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Crect%20x%3D%2227%22%20y%3D%2227%22%20width%3D%2274%22%20height%3D%2274%22%20rx%3D%223%22%20fill%3D%22none%22%20stroke%3D%22%23d4e4f8%22%20stroke-width%3D%220.3%22%20transform%3D%22rotate%2845%2064%2064%29%22%2F%3E%0A%3Cg%20transform%3D%22translate%2835.0%2C78.6%29%20scale%280.02024%2C-0.02024%29%22%20fill%3D%22%231a2240%22%3E%0A%20%20%3Cpath%20d%3D%22M227%20-2Q123%20-2%2065.0%2041.0Q7%2084%201%20142Q-3%20188%2025.5%20210.0Q54%20232%2085%20235Q102%20237%20119.5%20228.0Q137%20219%20140%20194Q142%20175%20127.0%20159.5Q112%20144%2089%20140Q61%20135%2042%20145V139Q42%2091%2092.0%2057.5Q142%2024%20225%2024Q302%2024%20379.5%2055.0Q457%2086%20544.5%20160.0Q632%20234%20739%20363Q683%20389%20644.5%20447.0Q606%20505%20606%20608Q606%20721%20663.0%20833.5Q720%20946%20823.0%201046.5Q926%201147%201065.5%201224.5Q1205%201302%201371.5%201347.0Q1538%201392%201720%201392Q1743%201392%201764.5%201390.0Q1786%201388%201807%201385Q1830%201384%201851.5%201381.0Q1873%201378%201895%201378Q1920%201378%201945.0%201381.5Q1970%201385%201997%201385Q2034%201385%202034%201371Q2034%201353%202001%201352Q1963%201350%201933.5%201350.5Q1904%201351%201878%201351Q1849%201344%201828.0%201336.5Q1807%201329%201784%201320Q1630%201252%201469.5%201091.5Q1309%20931%201131%20673Q1010%20499%20878%20365H886Q992%20365%201108.5%20417.0Q1225%20469%201326.5%20561.0Q1428%20653%201491.5%20774.5Q1555%20896%201555%201036Q1555%201059%201559.0%201062.5Q1563%201066%201566%201066Q1578%201066%201578%201017Q1578%20873%201514.5%20749.5Q1451%20626%201347.0%20533.5Q1243%20441%201119.0%20389.0Q995%20337%20874%20337H851Q690%20180%20525.5%2089.0Q361%20-2%20227%20-2ZM757%20384Q794%20429%20833.5%20481.0Q873%20533%20916%20592Q1107%20855%201273.0%201015.5Q1439%201176%201578.0%201256.5Q1717%201337%201827%201358Q1802%201362%201772.0%201364.0Q1742%201366%201722%201366Q1619%201366%201500.5%201330.5Q1382%201295%201262.0%201233.5Q1142%201172%201033.0%201093.0Q924%201014%20838.5%20926.0Q753%20838%20703.5%20750.0Q654%20662%20654%20583Q654%20495%20682.5%20449.5Q711%20404%20757%20384Z%22%2F%3E%0A%20%20%3Cg%20transform%3D%22translate%281233%2C0%29%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M212%20-2Q124%20-2%2062.0%2040.5Q0%2083%200%20142Q0%20188%2031.0%20207.0Q62%20226%2093%20226Q110%20226%20126.5%20215.5Q143%20205%20143%20180Q143%20161%20126.5%20146.0Q110%20131%2087%20131Q74%20131%2061.5%20132.5Q49%20134%2039%20141V135Q39%2086%2088.0%2055.0Q137%2024%20220%2024Q270%2024%20318.5%2038.5Q367%2053%20427.0%2094.5Q487%20136%20571.0%20215.5Q655%20295%20775.0%20422.5Q895%20550%201064%20738Q1255%20957%201425.0%201094.0Q1595%201231%201730%201303Q1675%201359%201576.5%201388.5Q1478%201418%201350%201418Q1280%201418%201200.5%201403.5Q1121%201389%201051%201363Q931%201319%20815.5%201243.0Q700%201167%20607.0%201077.0Q514%20987%20459.0%20898.0Q404%20809%20404%20738Q404%20678%20444.0%20650.0Q484%20622%20541%20622Q626%20622%20729.5%20672.0Q833%20722%20930.0%20810.0Q1027%20898%201096.5%201013.5Q1166%201129%201184%201260Q1188%201280%201190.0%201286.0Q1192%201292%201198%201292Q1209%201292%201209%201270Q1209%201125%201148.0%201002.5Q1087%20880%20987.0%20790.0Q887%20700%20767.5%20650.0Q648%20600%20531%20600Q471%20600%20422.5%20633.5Q374%20667%20374%20741Q374%20838%20428.5%20937.5Q483%201037%20579.0%201127.0Q675%201217%20801.0%201287.5Q927%201358%201070.5%201399.0Q1214%201440%201362%201440Q1632%201440%201778%201328Q1857%201366%201920.0%201383.0Q1983%201400%202028%201400Q2061%201400%202061%201390Q2061%201384%202029.5%201379.5Q1998%201375%201940.0%201360.0Q1882%201345%201804%201305Q1898%201216%201898%201083Q1898%20994%201843.0%20908.5Q1788%20823%201697.5%20753.0Q1607%20683%201502%20640Q1582%20569%201582%20439Q1582%20354%201534.5%20275.0Q1487%20196%201406.5%20133.5Q1326%2071%201225.0%2034.5Q1124%20-2%201016%20-2Q920%20-2%20885.0%2035.0Q850%2072%20850%20109Q850%20161%20895.0%20223.0Q940%20285%201015.0%20341.0Q1090%20397%201182.0%20433.0Q1274%20469%201368%20469Q1389%20469%201389%20457Q1389%20443%201358%20443Q1280%20443%201196.5%20410.5Q1113%20378%201042.0%20327.0Q971%20276%20927.0%20218.0Q883%20160%20883%20108Q883%2078%20911.0%2052.0Q939%2026%201020%2026Q1091%2026%201170.0%2067.0Q1249%20108%201318.0%20181.0Q1387%20254%201430.5%20350.5Q1474%20447%201474%20559Q1474%20599%201459%20623Q1410%20607%201360.0%20597.5Q1310%20588%201262%20588Q1216%20588%201192.0%20603.0Q1168%20618%201168%20634Q1168%20658%201218.0%20678.0Q1268%20698%201332%20698Q1400%20698%201454%20671Q1538%20712%201616.0%20782.0Q1694%20852%201744.0%20946.5Q1794%201041%201794%201153Q1794%201223%201752%201277Q1730%201264%201706.5%201248.0Q1683%201232%201658%201214Q1575%201152%201494.0%201075.0Q1413%20998%201325.0%20895.0Q1237%20792%201133%20652Q945%20400%20768.5%20249.0Q592%2098%20432%2032Q377%2010%20322.5%204.0Q268%20-2%20212%20-2ZM1263%20620Q1335%20620%201423%20657Q1391%20675%201333%20675Q1286%20675%201252.5%20664.5Q1219%20654%201219%20642Q1219%20635%201231.5%20627.5Q1244%20620%201263%20620Z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E">
@@ -2372,6 +2379,79 @@ body:not(.theme-infernal) .ws-op-text b{color:#0a1e42}
 .ws-op-detail{display:none;width:100%;margin-top:6px;padding:9px 11px;font-family:'Consolas','Courier New',monospace;font-size:0.72rem;line-height:1.65;color:var(--text-muted);max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-all;background:rgba(10,16,32,0.22);border:1px solid rgba(165,188,230,0.1);border-radius:9px}
 body:not(.theme-infernal) .ws-op-detail{background:rgba(246,249,252,0.4);border-color:rgba(196,212,232,0.34);color:#33486b}
 .ws-op-card.expanded .ws-op-detail{display:block}
+/* ═══ v22-sync：MCP 品牌卡（麦当劳金红 / 瑞幸蓝白，与手机端同款） ═══ */
+.ws-op-card.mcpb{padding:10px 12px 10px 13px;max-width:460px}
+.ws-op-card.mcpb-mcd{background:linear-gradient(135deg,rgba(255,199,44,0.10),rgba(218,41,28,0.05));border-color:rgba(255,199,44,0.42)}
+.ws-op-card.mcpb-mcd::before{background:#FFC72C}
+.ws-op-card.mcpb-lk{background:linear-gradient(135deg,rgba(42,60,144,0.16),rgba(120,150,220,0.07));border-color:rgba(96,120,200,0.42)}
+.ws-op-card.mcpb-lk::before{background:#3A50AE}
+body:not(.theme-infernal) .ws-op-card.mcpb-mcd{background:linear-gradient(135deg,rgba(255,236,190,0.75),rgba(255,247,240,0.6));border-color:rgba(226,178,60,0.5)}
+body:not(.theme-infernal) .ws-op-card.mcpb-lk{background:linear-gradient(135deg,rgba(224,232,252,0.8),rgba(242,246,255,0.65));border-color:rgba(96,120,200,0.45)}
+.mcpb-logo{flex:none;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(20,35,70,0.18)}
+.mcpb-mcd .mcpb-logo{background:#DA291C}
+.mcpb-lk .mcpb-logo{background:#2A3C90}
+.mcpb-logo.lg-mcd{background:#DA291C}.mcpb-logo.lg-lk{background:#2A3C90}.mcpb-logo.lg-pl{background:#15192b}.mcpb-logo.lg-exa{background:#1f5fd6}/* v23-sync */
+.mcpb-logo svg{width:17px;height:17px}
+.mcpb-hd{display:flex;align-items:center;gap:8px;width:100%;min-width:0}
+.mcpb-tt{flex:1;min-width:0;display:flex;align-items:baseline;gap:6px;overflow:hidden}
+.mcpb-tt b{font-weight:600;font-size:0.8rem;color:var(--light);white-space:nowrap}
+body:not(.theme-infernal) .mcpb-tt b{color:#132a52}
+.mcpb-act{font-size:0.68rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcpb-st{flex:none;font-size:0.62rem;letter-spacing:0.05em;padding:2px 8px;border-radius:999px;border:1px solid var(--glass-border);color:var(--text-muted)}
+.mcpb-st.ok{color:#3f9d6b;border-color:rgba(78,170,120,0.5);background:rgba(78,170,120,0.1)}
+.mcpb-st.bad{color:#d98a8a;border-color:rgba(217,138,138,0.5);background:rgba(217,138,138,0.09)}
+.mcpb-st.pend,.mcpb-st.run{color:#c9973f;border-color:rgba(222,168,90,0.5);background:rgba(222,168,90,0.1);animation:wsPulse 1.4s ease-in-out infinite}
+.mcpb.pending .mcpb-logo{animation:wsPulse 1.2s ease-in-out infinite}
+.mcpb-go{margin-left:2px}
+.mcpb-note{width:100%;font-size:0.74rem;line-height:1.55;color:var(--text-secondary)}
+body:not(.theme-infernal) .mcpb-note{color:#33486b}
+.mcpb-note.bad{color:#d98a8a}
+.mcpb-args{width:100%;font-size:0.68rem;color:var(--text-muted);background:rgba(127,150,200,0.08);border:1px dashed var(--glass-border);border-radius:8px;padding:5px 8px}
+.mcpb-list,.mcpb-kv{width:100%;display:flex;flex-direction:column;gap:2px}
+.mcpb-row{display:flex;align-items:baseline;gap:8px;font-size:0.76rem;line-height:1.5;padding:2px 0;border-bottom:1px dashed rgba(150,170,210,0.18)}
+.mcpb-row:last-child{border-bottom:none}
+.mcpb-row .mn{flex:1;min-width:0;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:not(.theme-infernal) .mcpb-row .mn{color:#274673}
+.mcpb-row .mn i{font-style:normal;font-size:0.66rem;color:var(--text-muted);margin-left:5px}
+.mcpb-row .mq{flex:none;font-size:0.7rem;color:var(--text-muted)}
+.mcpb-row .mp{flex:none;font-variant-numeric:tabular-nums;color:var(--light);font-size:0.76rem}
+body:not(.theme-infernal) .mcpb-row .mp{color:#132a52}
+.mcpb-row .mp.t{max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mcpb-row.dim{color:var(--text-muted);font-size:0.68rem;border-bottom:none}
+.mcpb-cps{width:100%;display:flex;flex-wrap:wrap;gap:6px}
+.mcpb-cp{display:inline-flex;align-items:center;gap:5px;font-size:0.68rem;color:var(--text-secondary);border:1px dashed rgba(222,168,90,0.55);background:rgba(255,199,44,0.09);border-radius:7px;padding:3px 8px}
+.mcpb-cp b{font-weight:600;color:#c9973f}
+.mcpb-cp i{font-style:normal;color:var(--text-muted);font-size:0.62rem}
+.mcpb-lk .mcpb-cp{border-color:rgba(96,120,200,0.55);background:rgba(72,96,190,0.09)}
+.mcpb-lk .mcpb-cp b{color:#5f7ad0}
+.mcpb-ft{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mcpb-pk{font-size:0.72rem;color:var(--text-secondary);border:1px solid var(--glass-border);border-radius:8px;padding:3px 9px;background:rgba(127,150,200,0.08)}
+.mcpb-pk b{font-size:0.88rem;letter-spacing:0.12em;color:var(--light)}
+body:not(.theme-infernal) .mcpb-pk b{color:#132a52}
+.mcpb-sum{flex:1;min-width:0;text-align:right;font-size:0.7rem;color:var(--text-muted)}
+.mcpb-logo.mini{width:18px;height:18px;border-radius:6px;display:inline-flex;vertical-align:-4px;margin-right:6px;box-shadow:none}
+.mcpb-logo.mini svg{width:12px;height:12px}
+.ib-mcp-pre{display:inline-flex;align-items:center;gap:6px;margin-right:8px;padding:4px 12px 4px 8px;border-radius:999px;border:1px dashed var(--glass-border);background:rgba(127,150,200,0.06);color:inherit;font-size:0.76rem;cursor:pointer;font-family:inherit}
+.ib-mcp-pre:hover{background:rgba(127,150,200,0.14)}
+/* v24-sync：MCP 预设收纳——「预设」一颗按钮弹出同款 .ib-select 下拉，四枚预设按行排列（徽标 / 名称 / 一句说明 / 令牌标），已添加的置灰；卡顶长说明搬入 GUIDE → DIY */
+.ib-mcp-prewrap{display:inline-block}
+.ib-mcp-prewrap .ibs-menu{right:auto;min-width:318px;max-height:none;padding:6px}
+.ib-mcp-prebtn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px}
+.ib-mcp-prebtn svg{width:10px;height:10px;flex:none;transition:transform .35s var(--transition)}
+.ib-select.open .ib-mcp-prebtn svg{transform:rotate(180deg)}
+.ib-mcp-premenu-hd{font-size:0.68rem;opacity:.62;padding:4px 9px 6px;letter-spacing:.04em}
+.ib-mcp-preitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;background:none;cursor:pointer;border-radius:9px;padding:7px 9px;color:#2a4a74;font-family:'Noto Sans SC',sans-serif;transition:background .2s,color .2s}
+body.theme-infernal .ib-mcp-preitem{color:#bcc8dd}
+.ib-mcp-preitem:hover{background:rgba(120,170,220,0.14);color:#16325c}
+body.theme-infernal .ib-mcp-preitem:hover{background:rgba(150,185,235,0.12);color:#e2e8f4}
+.ib-mcp-preitem[disabled]{opacity:.5;cursor:default}
+.ib-mcp-preitem[disabled]:hover{background:none}
+.ib-mcp-preitem .mcpb-logo.mini{margin-right:0;vertical-align:middle}
+.ib-mcp-preitem .pre-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ib-mcp-preitem .pre-n{font-size:0.78rem;white-space:nowrap}
+.ib-mcp-preitem .pre-s{font-size:0.67rem;opacity:.66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib-mcp-preitem .pre-tag{flex:none;font-size:0.64rem;padding:2px 7px;border-radius:999px;border:1px solid var(--glass-border);opacity:.8}
+.api-section.ib-mcp-lift,.api-section:has(.ib-mcp-prewrap.open){position:relative;z-index:6}/* 卡片自带 translateZ 形成层叠上下文，展开时抬高整卡，菜单不被下方卡片压住 */
 .ws-op-detail-actions{display:none;width:100%;margin-top:6px;gap:8px}
 .ws-op-detail-actions .ws-file-btn{letter-spacing:0.015em}
 .ws-op-card.expanded .ws-op-detail-actions{display:flex}
@@ -4922,6 +5002,9 @@ body.theme-infernal .set-block{box-shadow:inset 0 1px 0 rgba(222,236,252,0.06)}
 .set-block .sb-t svg{width:12px;height:12px;opacity:0.85}
 .set-block .tog-line{border-bottom:1px solid var(--eph-line)}
 .set-block .tog-line:last-child{border-bottom:none}
+.set-block .tog-line.tog-stack{flex-direction:column;align-items:stretch;gap:9px;padding-bottom:12px}/* fix-r7：上下布局变体——文案块在上、控件通栏在下，与右列 Permissions 区（.f-row 下拉＋.aip-inline 开关）同一排版口径 */
+.set-block .tog-line.tog-stack>span{display:block}
+.set-block .tog-line.tog-stack .ib-select{width:100%}
 .set-block .f-row{margin:10px 0 11px}
 .set-block .f-hint{padding-bottom:9px}
 /* v34 — AI 权限重设计：撤去逐位预览卡，所选 AI 的两枚开关直接横列于下拉之下 */
@@ -6272,6 +6355,18 @@ body:not(.theme-infernal) .chat-music-card{background:rgba(250,253,255,.58);bord
           <option value="10">10 轮</option>
         </select>
       </div>
+      <div class="api-form-group" style="margin-top:12px"><!-- v22-sync：单次输出上限（与手机端共用 outputSettings.maxTokens） -->
+        <label>单次输出上限 <span style="font-weight:400;opacity:0.5;font-size:0.72rem">（默认自动：按服务商顶格给，超限自动降档；与手机端共用）</span></label>
+        <select id="api-max-tokens" onchange="saveOutputSettings()">
+          <option value="0" selected>自动（推荐）</option>
+          <option value="4096">4096</option>
+          <option value="8192">8192</option>
+          <option value="16384">16384</option>
+          <option value="32768">32768</option>
+          <option value="65536">65536</option>
+          <option value="131072">131072</option>
+        </select>
+      </div>
       <div class="api-form-group" style="margin-top:16px">
         <label>聊天排版净化（Markdown 渲染处理）</label>
         <select id="api-mdmode-select" onchange="_mdSaveModeChange()">
@@ -6839,7 +6934,8 @@ i would like the room to be enough.
         </div>
         <div class="guide-sub">
           <p><strong>外部工具</strong>：添加 HTTP 接口让 AI 在对话中调用外部操作（如 Home Assistant 等）。每个工具配置名称、URL、请求方法和参数。支持调用前确认。请求由浏览器直接发出，目标接口需允许跨域（CORS）。</p>
-          <p><strong>MCP 服务器</strong>：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具。连接失败时请检查跨域（CORS）设置。</p>
+          <p><strong>MCP 服务器</strong>：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具，并可单独设置「轮上限」（连续自动调用的轮数上限，1~99），留空则为默认值 5。连接失败时请检查跨域（CORS）设置。</p>
+          <p><strong>MCP 预设</strong>（DIY 页 → MCP 服务器 →「预设」下拉）：四枚官方端点，点一下即入列，已添加的在菜单里置灰；添加后即普通服务器条目，可随时删除。<em>麦当劳 / 瑞幸咖啡</em>为品牌官方开放平台（Streamable HTTP + Bearer Token），需鉴权：添加后把开放平台领到的个人 Token 填进该行「令牌」栏再点「连接」——麦当劳到 open.mcd.cn/mcp 手机号登录、控制台激活并复制 Token；瑞幸到 open.lkcoffee.com 登录领取（与账号绑定、约一个月有效）；Token 随请求以 Authorization: Bearer 发送、只存在本机；调用结果会渲染成对应品牌卡片，与手机端互导的聊天记录里的品牌卡同样可见。<em>Parallel / Exa 联网搜索</em>为官方公开端点，无需令牌、允许浏览器直连，点一下即入列并自动连接，AI 之后可自行搜索 / 抓网页——Parallel 提供 web_search（整理好的网页摘录）+ web_fetch（抓网页正文），Exa 提供 web_search_exa（语义搜索、带高亮摘要）+ web_fetch_exa（网页读成 Markdown）；公开端点有限流，重度使用可到各家官网领 API key 填入令牌栏提额。<!-- v24-sync：自 MCP 卡顶部搬入 --></p>
           <p><strong>连接 GitHub 仓库</strong>：① GitHub 生成访问令牌（勾 repo 权限）→ ② 电脑上运行官方 github-mcp-server，填入令牌 → ③ 用 mcp-proxy 转成本机网址（形如 http://127.0.0.1:端口/sse，启动时需允许本站来源）→ ④ 网址填入上方 MCP 服务器，启用外部工具。令牌就是你仓库的钥匙，不要发给任何人；那两个程序一关，连接就断了；建议保留「调用前询问」。</p>
         </div>
         <div class="guide-sub">
@@ -7584,6 +7680,10 @@ i would like the room to be enough.
             <div class="tog-line">
               <span><span class="tl-t">允许 AI 接入日历</span><span class="tl-s">总开关。关闭后取消所有AI读取日程和新增便笺的权限，已有的便笺仍可查看。</span></span>
               <label class="ib-switch"><input type="checkbox" id="set-allownotes" checked><span class="kn"></span></label>
+            </div>
+            <div class="tog-line tog-stack"><!-- v20-sync：① 同一事项重复留笺口径 --><!-- fix-r7：改为上下布局——文案在上、下拉通栏在下，对齐右列 Permissions 区（下拉在上、开关在下）的排版口径；原左文右钮写法在窄列里把说明文字挤成四行 -->
+              <span><span class="tl-t">同一事项重复留笺</span><span class="tl-s">同一日程 / 节日的同一日期，每位 AI 每天最多留几张便笺；「仅一次」＝整个日期只留一张。</span></span>
+              <div class="ib-select" id="ibsel-notedup"></div><!-- v21-sync：改用同页通用 ibsel 下拉组件，替换 v20-sync 的裸原生 select；fix-r7：去掉内联 132px 定宽，随 .tog-stack 通栏 -->
             </div>
           </div>
           <div class="set-block" id="sb-holiday">
@@ -9313,6 +9413,7 @@ async function _ioDoImport(){
   try{await loadApiConfigs()}catch(e){}
   try{_refreshCachedUserName()}catch(e){}
   _calEarliest=null;
+  try{if(window.IBCAL&&IBCAL.invalidate)await IBCAL.invalidate()}catch(e){}/* fix-r7：导入后重建日历模块缓存——此前 calEvents/calNotes 写进库却不刷 ITEMS/NOTES，工作台报已导入而日历为空，需刷新页面才见 */
   _ioStep('完成',100);
   var unknown=Object.keys(data).filter(function(k){return Array.isArray(data[k])&&list.indexOf(k)<0});
   var extra='';
@@ -9539,7 +9640,7 @@ function _ibGuardInit(){
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){if(_ibFsDirty&&_ibFsState==='granted')_ibFsSyncNow('hidden')/* 切后台即抢写一份，静默 */}});
   _ibRenderGuardPanel();
 }
-async function importAll(e){const file=e.target.files[0];if(!file)return;try{const text=await file.text();const data=JSON.parse(text);/* v46 — 逐条 await dbPut 改为按仓批量写入（每个仓库一个事务）：万条级备份的导入不再逐条排队，卡死概率大幅下降；仓名与备份文件的字段名一一对应，music 不参与导出入（与旧行为一致） */for(const _s of IB_STORES){if(_s==='music')continue;if(Array.isArray(data[_s])&&data[_s].length){try{await dbPutAll(_s,data[_s])}catch(_e){}}}await migrateLockedPosts();try{localStorage.removeItem('ib_guardMuted')}catch(e2){}var _go=document.getElementById('ib-guard-overlay');if(_go){_go.remove();_ibGuardShown=false}_ibToolsCache=null;/* 导入可能带来新的外部工具配置，使缓存失效 */await loadApiConfigs();_refreshCachedUserName();_calEarliest=null;/* 同步刷新内存缓存：API 配置、用户名头像、日历最早日期 */toast('数据已导入');navTo(currentPage)}catch(err){toast('导入失败：文件格式错误')}e.target.value=''}
+async function importAll(e){const file=e.target.files[0];if(!file)return;try{const text=await file.text();const data=JSON.parse(text);/* v46 — 逐条 await dbPut 改为按仓批量写入（每个仓库一个事务）：万条级备份的导入不再逐条排队，卡死概率大幅下降；仓名与备份文件的字段名一一对应，music 不参与导出入（与旧行为一致） */for(const _s of IB_STORES){if(_s==='music')continue;if(Array.isArray(data[_s])&&data[_s].length){try{await dbPutAll(_s,data[_s])}catch(_e){}}}await migrateLockedPosts();try{localStorage.removeItem('ib_guardMuted')}catch(e2){}var _go=document.getElementById('ib-guard-overlay');if(_go){_go.remove();_ibGuardShown=false}_ibToolsCache=null;/* 导入可能带来新的外部工具配置，使缓存失效 */await loadApiConfigs();_refreshCachedUserName();_calEarliest=null;/* 同步刷新内存缓存：API 配置、用户名头像、日历最早日期 */try{if(window.IBCAL&&IBCAL.invalidate)await IBCAL.invalidate()}catch(_e3){}/* fix-r7：同 _ioDoImport，老入口一并重建日历缓存 */toast('数据已导入');navTo(currentPage)}catch(err){toast('导入失败：文件格式错误')}e.target.value=''}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
 
@@ -11618,6 +11719,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
     if(m.images&&m.images.length)m.images.forEach(function(img){var el=document.createElement('img');el.className='chat-bubble-img';el.loading='lazy';el.decoding='async';el.src=img.dataUrl;el.alt=img.name||'image';el.onclick=function(){_viewImageFull(img.dataUrl)};div.appendChild(el)});
     if(m.wsSearches||m.memOps)_amAppendExtraCards(div,m.wsSearches||[],m.memOps||[]);
     if(m.calNotes&&window.IBCAL)try{m.calNotes.forEach(function(r){div.appendChild(IBCAL.noteCard(r))})}catch(e){}
+    if(m.ibOps&&m.ibOps.length)try{m.ibOps.forEach(function(r){div.appendChild(_ibOpCardFromMobile(r))})}catch(e){}/* v22-sync：手机端 ibOps 结果卡 */
     if(!isUser&&m.musicCard)try{div.appendChild(_musicBuildCardD(m.musicCard))}catch(e){}
     if(m.id){const db=document.createElement('button');db.className='chat-msg-del';db.textContent='✕';db.title='删除此消息';db.onclick=function(ev){ev.stopPropagation();deleteSingleMsg(m.id,div,frag)};div.appendChild(db)}
   }else{
@@ -11650,6 +11752,7 @@ function _buildMsgEl(m,isFullscreen,isGroupCont){
     if(m.images&&m.images.length)m.images.forEach(function(img){var el=document.createElement('img');el.className='chat-bubble-img';el.loading='lazy';el.decoding='async';el.src=img.dataUrl;el.alt=img.name||'image';el.style.maxWidth='180px';el.onclick=function(){_viewImageFull(img.dataUrl)};div.appendChild(el)});
     if(m.wsSearches||m.memOps)_amAppendExtraCards(div,m.wsSearches||[],m.memOps||[]);
     if(m.calNotes&&window.IBCAL)try{m.calNotes.forEach(function(r){div.appendChild(IBCAL.noteCard(r))})}catch(e){}
+    if(m.ibOps&&m.ibOps.length)try{m.ibOps.forEach(function(r){div.appendChild(_ibOpCardFromMobile(r))})}catch(e){}/* v22-sync：手机端 ibOps 结果卡 */
     if(!isUser&&m.musicCard)try{div.appendChild(_musicBuildCardD(m.musicCard))}catch(e){}
     if(m.id){const db=document.createElement('button');db.className='chat-msg-del';db.textContent='✕';db.title='删除此消息';db.onclick=function(ev){ev.stopPropagation();deleteSingleMsg(m.id,div,frag)};div.appendChild(db)}
   }
@@ -12287,7 +12390,7 @@ function _segmentAiText(text){
       last=akClose.lastIndex;_WS_OPEN_RE.lastIndex=last;continue;
     }
     if(kind==='mem_write'){/* v76 r2：<ws_mem_write>正文即记忆内容（与手机端 v74-m 同协议）；截断补救与其余成对标签一致 */
-      var mwOp={type:'mem_write',body:''};
+      var mwOp={type:'mem_write',body:'',attrs:attrs||''};/* v20-sync：② 携带可选参数（importance/valence/arousal/tags/domain） */
       var mwClose=/<\/ws_mem_write\s*>/ig;mwClose.lastIndex=afterOpen;
       var mwm=mwClose.exec(text);
       if(!mwm){var mwBody=text.slice(afterOpen).trim();if(mwBody)mwOp.body=mwBody;mwOp.truncated=true;segs.push({type:'op',op:mwOp});last=text.length;break}
@@ -13103,6 +13206,7 @@ function collapseSameRole(msgs){
     if(last&&last.role===m.role){last.content+='\n\n'+m.content}
     else out.push({role:m.role,content:m.content});
   }
+  while(out.length&&out[0].role!=='user')out.shift();/* fix①（群聊）：与手机端 collapseSameRoleM 对齐——群聊每轮 1 条 user + N 条 assistant 天然打破交替，窗口起点更易落在成员自己的发言上 */
   return out;
 }
 
@@ -13261,9 +13365,12 @@ async function sendChatMessage(voiceMsg){
           if(gMemCtx)_gTailCtx+=(_gTailCtx?'\n\n':'')+gMemCtx;
         }
         if(_gAmInj.tail)_gTailCtx+=(_gTailCtx?'\n\n':'')+_gAmInj.tail;
+        try{var _gAdvS=await _ibAdvGet();if(_gAdvS&&_gAdvS.beyond&&cfg&&cfg.beyond&&cfg.beyond.on){var _sgG=await _ibSigGetD(cfg.id);if(_sgG&&_sgG.sigAI)_gTailCtx+=(_gTailCtx?'\n\n':'')+'【Beyond 当前资料】你的个性签名当前是'+(_sgG.sig?('「'+String(_sgG.sig).slice(0,200)+'」'):'（暂未设置）')+'。'}}catch(e){}/* v18-sync：群聊同样携带签名资料行（与 1对1 同文；走末条用户消息，零缓存代价） */
         /* 工作区注入：本成员发起的读取/反馈精准回注；无主或已移出成员的条目由首个发言者兜底 */
         var _gInjMine=function(it){var a=it&&it.actor;if(a===selfName)return true;return _gWsFirstTurn&&(!a||allNames.indexOf(a)<0)};
+        _ibDrainLog=[];var _gDrainT=_ibDrainLog;/* fix③（群聊）：本成员取走登记 */
         var _gWsInject=_getWsReadInjection(_gInjMine)+_getWsOpFeedbackInjection(_gInjMine)+_getWsRunOutputInjection(_gInjMine)+_getIbToolResultInjection(_gInjMine)+_getWsHelpInjectionD(_gInjMine);
+        _ibDrainLog=null;
         if(_gWsInject)_gTailCtx+=(_gTailCtx?'\n':'')+_gWsInject;
         _gWsFirstTurn=false;
         /* 群聊思考链 — 移到 system prompt 最前面 */
@@ -13276,6 +13383,7 @@ async function sendChatMessage(voiceMsg){
         }
         if(cfg.imageGen)sysContent+=_IMGGEN_INSTR_BLOCK;
     if(await _askGlobalGet())sysContent+=_ASK_INSTR_BLOCK;/* v55：选项卡改全局开关（与手机端一致） */
+        try{var _gAdvB=await _ibAdvGet();if(_gAdvB&&_gAdvB.beyond&&cfg&&cfg.beyond&&cfg.beyond.on)sysContent+=await _ibBeyondInstrD(cfg)}catch(e){}/* v18-sync：社交圈指令进群聊——与 1对1 完全同一份常量块、同一组开关（进阶指令 Beyond 总开关＋该成员 beyond.on）整块注入；开关不变则 System 字节不变，缓存前缀稳定；提示词零改动。群聊本就执行 ws 标签（_execWsOps），发布/评论/转发/签名/查看群内即刻生效 */
     sysContent+=_IB_PERSONA_LOCK;/* v87 人格收束（群聊） */
         messages.unshift({role:'system',content:sysContent});
         if(_gTailCtx){/* 群聊尾部挂载：优先找用户本人的消息（无 senderName 且 role=user），找不到才回退到最后一条 user */
@@ -13385,6 +13493,7 @@ async function sendChatMessage(voiceMsg){
           const _gElapsed=Math.round((Date.now()-_gTypStart)/1000);
           if(typingEl){typingEl.textContent=selfName+'（'+_gElapsed+'秒）';typingEl.style.animation='none';setTimeout(()=>{if(typingEl.parentNode)typingEl.remove()},1000)}
         }
+        _gDrainT=null;/* fix③：本成员请求已送达 */
         if(!rawReply||!String(rawReply).trim()){appendChatBubble('ai','（未收到有效回复）',selfName);continue}
         let cleanReply=sanitizeGroupReply(rawReply,selfName,allNames);
         if(!groupThinking){var gParsed=_parseThinking(cleanReply);if(gParsed.thinking)groupThinking=gParsed.thinking;cleanReply=gParsed.reply}
@@ -13436,6 +13545,7 @@ async function sendChatMessage(voiceMsg){
         }
         if(activeFriendId!==_targetFriend)_markUnread(_targetFriend);
       }catch(err){
+        if(typeof _gDrainT!=='undefined'&&_gDrainT&&_gDrainT.length){_gDrainT.forEach(function(f){try{f()}catch(e2){}});_gDrainT=null}/* fix③：本成员请求未送达 → 取走条目放回，轮到下位成员或下次发送再回传 */
         if(_gTypTimer)clearInterval(_gTypTimer);
         if(typingEl&&typingEl.parentNode)typingEl.remove();
         _showStreamingUI(false);
@@ -13508,6 +13618,7 @@ async function sendChatMessage(voiceMsg){
 
   let ss={enabled:false};/* fix: 提升到 try 外供末尾延迟摘要使用，原 const 声明在 try 内、catch 后引用必抛 ReferenceError */
   let _sealTs=0;/* 封档线时间戳：同 ss 提升至 try 外供延迟摘要闭包引用 */
+  let _drainT=null,_apiDone=false;/* fix③：注入回执登记数组与“请求已送达”标——供 catch 判定是否回灌 */
   try{
     const lim=await getReadingLimits();
     _sealTs=await getChatSealTimestamp(_targetFriend);
@@ -13537,6 +13648,7 @@ async function sendChatMessage(voiceMsg){
       if(m.role!=='user'&&_mm.role==='user')_mm._groupSender=true;
       return _mm;
     });
+    while(messages.length&&messages[0].role!=='user')messages.shift();/* fix①：阶梯窗口前移可能让首条落在 AI 消息上——Anthropic 要求 messages 首条必须是 user（否则整请求 400：first message must use the "user" role），手机端 buildHist 已有同款守卫，桌面端补齐 */
     if(_silentHelp)messages.push({role:'user',content:text});/* ICode HELP 内部续答：只发给 API，不落库、不渲染用户气泡 */
     let sysContent=cfg.systemPrompt||'';
     if(cfg.nickname)sysContent=(sysContent?sysContent+'\n':'')+'你的身份/昵称是「'+cfg.nickname+'」。';
@@ -13554,23 +13666,25 @@ async function sendChatMessage(voiceMsg){
     if(_targetThread){const _thr=await (async()=>{try{return await dbGet('chatThreads',_targetThread)}catch(e){return null}})();_threadMemOk=_thr&&_thr.memoryEnabled}
     try{_ibSetMemScope(_threadMemOk,false,false)}catch(e){}/* 1对1：检索口径＝注入口径 */
     /* ── 缓存重排（核心）：所有逐轮变化的内容从 system 移至末条用户消息 ── */
+    const _injMineD=function(it){if(it&&it.cfgId)return it.cfgId===cfg.id;var a=it&&it.actor;return !a||a===(cfg.nickname||cfg.model||'AI')};/* fix②：1对1 注入也按“归属这位 AI”过滤——并行开两个对话时，A 的文件读取/工具输出/博客全文/进阶结果不再被 B 的请求整队吸走（群聊已有 _gInjMine，此处补齐；无主旧条目仍先到先得） */
+    _drainT=[];/* fix③：本次请求的取走登记 */
     let _tailCtx='';
     /* 时间戳：每分钟都变，必须放在 tail */
     _tailCtx+='当前时间：'+new Date().toLocaleString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long',hour:'2-digit',minute:'2-digit'})+'。';
-    try{var _pg=_presenceTake(_targetFriend);if(_pg)_tailCtx+=_pg}catch(e){}/* v46 Presence：离开时长随本条消息带给 AI，不单独发消息 */
+    _ibDrainLog=_drainT;try{var _pg=_presenceTake(_targetFriend);if(_pg)_tailCtx+=_pg}catch(e){}_ibDrainLog=null;/* fix③：瞬时开合 *//* v46 Presence：离开时长随本条消息带给 AI，不单独发消息 */
     /* 「正在播放」（Presence 内开关，默认关）：随播放/暂停变化 → tail，不进 system */
     try{if(ss.musicEnabled){var _mtD=_musicTailD();if(_mtD)_tailCtx+=(_tailCtx?'\n\n':'')+_mtD}}catch(e){}
     /* CALENDAR：临近日程栏走 tail（挂末条用户消息），按天生成，一天之内逐字不变 */
     try{if(window.IBCAL){const _calT=await IBCAL.buildTail(cfg);if(_calT)_tailCtx+='\n\n'+_calT}}catch(e){}
     try{var _advB=await _ibAdvGet();if(_advB&&_advB.beyond&&cfg&&cfg.beyond&&cfg.beyond.on){var _sgD=await _ibSigGetD(cfg.id);if(_sgD&&_sgD.sigAI)_tailCtx+='\n\n【Beyond 当前资料】你的个性签名当前是'+(_sgD.sig?('「'+String(_sgD.sig).slice(0,200)+'」'):'（暂未设置）')+'。'}}catch(e){}/* v88：签名随资料区逐轮携带（很短），System 协议只留用法 */
-    try{var _advT=_ibAdvDrain();if(_advT)_tailCtx+='\n\n'+_advT}catch(e){}/* 进阶指令结果只挂末条用户消息，前缀不动 */
+    _ibDrainLog=_drainT;try{var _advT=_ibAdvDrain(_injMineD);if(_advT)_tailCtx+='\n\n'+_advT}catch(e){}_ibDrainLog=null;/* 进阶指令结果只挂末条用户消息，前缀不动；fix②③：按归属取用＋失败可回灌 */
     /* 摘要：每次生成后变化 → 移至 tail */
     if(summaryText)_tailCtx+='\n\n【对话历史备忘（此为后台参考信息，不要向对方复述或提及此段内容的存在）】\n'+summaryText;
     if(_threadMemOk){const memCtx=await getMemoryContext(cfg.id,{userMessage:_ctxText});
     if(memCtx)_tailCtx+=(_tailCtx?'\n\n':'')+memCtx;}
     if(_amInj.tail)_tailCtx+=(_tailCtx?'\n\n':'')+_amInj.tail;
     /* 注入工作区待读取文件 */
-    var _wsReadCtx=_getWsReadInjection()+_getWsOpFeedbackInjection()+_getWsRunOutputInjection()+_getIbToolResultInjection()+_getWsHelpInjectionD()+_getBlogReadInjection();
+    _ibDrainLog=_drainT;var _wsReadCtx=_getWsReadInjection(_injMineD)+_getWsOpFeedbackInjection(_injMineD)+_getWsRunOutputInjection(_injMineD)+_getIbToolResultInjection(_injMineD)+_getWsHelpInjectionD(_injMineD)+_getBlogReadInjection(_injMineD);_ibDrainLog=null;/* fix②③ */
     if(_wsReadCtx)_tailCtx+=(_tailCtx?'\n':'')+_wsReadCtx;
     if(thinkingOn){
       if(cfg.provider==='deepseek'){
@@ -13709,6 +13823,7 @@ async function sendChatMessage(voiceMsg){
         }
       }});
       /* 清理UI */
+      _apiDone=true;/* fix③：流式请求已送达 */
       _showStreamingUI(false);
       if(_calLive)_calLive.finish();
       _memLive.finish();
@@ -13793,6 +13908,7 @@ async function sendChatMessage(voiceMsg){
       const _srchLogN=[];/* 任务A：非流式同样收集搜索记录（三家通用） */
       const _callResN={};/* 并发隔离：本次调用的思考与截断结果 */
       let rawReply=await callApiChat(cfg,messages,{wantThinking:thinkingOn,autoContinue:true,chatKey:_targetFriend,result:_callResN,searchLog:_srchLogN});
+      _apiDone=true;/* fix③：非流式请求已送达 */
       clearInterval(_typTimer);
       const _elapsed=Math.round((Date.now()-_typStart)/1000);
       const te=document.getElementById('chat-typing-'+_targetFriend);
@@ -13839,6 +13955,7 @@ async function sendChatMessage(voiceMsg){
       else _markUnread(_targetFriend);
     }
   }catch(err){
+    if(_drainT&&_drainT.length&&!_apiDone){_drainT.forEach(function(f){try{f()}catch(e2){}});_drainT=null}/* fix③：请求未送达（网络/超时/中止/4xx）→ 本次取走的读取结果、工具输出、教程、博客与进阶结果原样放回队首，下次发送自动再注入 */
     if(_typTimer)clearInterval(_typTimer);
     const te=document.getElementById('chat-typing-'+_targetFriend);if(te)te.remove();
     _showStreamingUI(false);
@@ -14180,8 +14297,8 @@ var _lastApiFinish='';/* 结束原因镜像（length/max_tokens/MAX_TOKENS = 被
    两路对话同时进行时会互相串扰（停止只停最新一路、思考文本挂错对话、截断标记与自动续写误判）。
    现改为：每次聊天调用创建独立状态对象，按对话 ID 注册，停止按钮按当前查看的对话定位。 */
 var _chatCallStates={};/* key = 好友/群 ID → {think,finish,stopped,ac} */
-function _newCallState(opts){var st={key:(opts&&opts.chatKey)||'',think:'',finish:'',stopped:false,ac:null};if(st.key)_chatCallStates[st.key]=st;return st}
-function _endCallState(st){if(st&&st.key&&_chatCallStates[st.key]===st)delete _chatCallStates[st.key]}
+function _newCallState(opts){var st={key:(opts&&opts.chatKey)||'',think:'',finish:'',stopped:false,ac:null};if(st.key){_chatCallStates[st.key]=st;try{_syncStreamBtnsD()}catch(e){}}return st}/* v19-sync：① 注册当口即刷新按钮——发送瞬间停止键就位，不再等切窗 */
+function _endCallState(st){if(st&&st.key&&_chatCallStates[st.key]===st){delete _chatCallStates[st.key];try{_syncStreamBtnsD()}catch(e){}}}/* v19-sync：① 注销当口即恢复发送键 */
 function _mSetThink(opts,v){_lastApiThinking=v;if(opts&&opts._st)opts._st.think=v}
 function _mSetFinish(opts,v){_lastApiFinish=v;if(opts&&opts._st)opts._st.finish=v}
 function _finishIsTrunc(f){return f==='length'||f==='max_tokens'||f==='MAX_TOKENS'}
@@ -14197,7 +14314,7 @@ let _memStreamWasStopped=false;
 function stopMemoryStreaming(){_memStreamWasStopped=true;if(_memStreamAbortController){_memStreamAbortController.abort();_memStreamAbortController=null}}
 function _showStreamingUI(_show){_syncStreamBtnsD()}/* v93（任务②）：形参保留兼容旧调用点；按钮形态改为纯状态推导——只看「当前查看的对话」是否在传输 */
 function _syncStreamBtnsD(){
-  var st=_chatCallStates[activeFriendId];var streaming=!!(st&&st.ac);
+  var st=_chatCallStates[activeFriendId];var streaming=!!st;/* v19-sync：① 判定改「注册即传输中」——ac 在首个分片抵达前与自动续写轮间隙为 null，原 st&&st.ac 让停止键在发送当口不出现、切窗回来赶上 ac 已赋值才补显；调用状态在 callApiChatStream 入口注册、finally 注销，寿命恰等于一次完整传输，据它显隐即可 */
   ['chat-stop-full','chat-stop-mini'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=streaming?'':'none'});
   ['chat-send-full','chat-send-btn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=streaming?'none':''});
   _syncSendBtnD();
@@ -14213,7 +14330,8 @@ function _syncStreamBtnsD(){
    若某个具体模型/中转支持不到这个数，请求会报错，下方包装器会读取错误里的建议值自动降档重试，
    所以这里可以放心写大——宁可"顶格再回退"，也不要"保守而浪费"。 */
 const _PROVIDER_MAX_OUT={deepseek:65536,anthropic:64000,openai:32768,grok:32768,moonshot:32768,mistral:32768,qwen:32768,glm:32768,doubao:32768,minimax:32768,yi:16384,baichuan:16384,gemini:65536,custom:32768};
-function _chatMaxTokens(cfg){return _PROVIDER_MAX_OUT[cfg&&cfg.provider]||16384}
+var _maxTokensPref=0;/* v22-sync：「单次输出上限」手动档（0=自动按上表顶格）；存 apiSettings/outputSettings.maxTokens，与手机端共用同一条记录 */
+function _chatMaxTokens(cfg){if(_maxTokensPref>0)return Math.max(1024,Math.min(400000,_maxTokensPref));return _PROVIDER_MAX_OUT[cfg&&cfg.provider]||16384}
 /* ── imgfix-r1：图片能力自愈 ──
    背景：custom 等渠道默认按「支持图片识别」处理，但部分中转或纯文本模型会用 4xx
    直接拒收 image_url 内容块（典型报错：unknown variant image_url, expected text），
@@ -14283,14 +14401,18 @@ function _wsDedupSeam(prev,next){
 }
 var _maxContinuesPref=3;/* 任务6：自动续写轮数（可在 API 设置页配置；被截断时自动续写的最大次数） */
 async function loadOutputSettings(){
-  try{const s=await dbGet('apiSettings','outputSettings');if(s&&s.maxContinues!=null)_maxContinuesPref=Math.max(0,Math.min(10,parseInt(s.maxContinues)||3))}catch(e){}
+  try{const s=await dbGet('apiSettings','outputSettings');if(s&&s.maxContinues!=null)_maxContinuesPref=Math.max(0,Math.min(10,parseInt(s.maxContinues)||3));_maxTokensPref=Math.max(0,parseInt(s&&s.maxTokens)||0)}catch(e){}
   const el=document.getElementById('api-max-continues');if(el)el.value=String(_maxContinuesPref);
+  const mt=document.getElementById('api-max-tokens');if(mt){var _mv=String(_maxTokensPref||0);mt.value=_mv;if(mt.value!==_mv)mt.value='0'}/* v22-sync：单次输出上限回填（库值不在选项集时显示自动） */
   const mc=document.getElementById('api-mdmode-select');if(mc)mc.value=_mdMode();
 }
 async function saveOutputSettings(){
   const el=document.getElementById('api-max-continues');
   _maxContinuesPref=Math.max(0,Math.min(10,parseInt(el&&el.value)||3));
-  try{await dbPut('apiSettings',{id:'outputSettings',maxContinues:_maxContinuesPref})}catch(e){}
+  const mt=document.getElementById('api-max-tokens');if(mt)_maxTokensPref=Math.max(0,parseInt(mt.value)||0);
+  /* v22-sync：合并写——此前整条覆写 {id,maxContinues} 会抹掉手机端写在同一记录里的 toolRounds / wsRounds / maxTokens，互导一次设置就丢 */
+  try{var prev=null;try{prev=await dbGet('apiSettings','outputSettings')}catch(e){}
+    await dbPut('apiSettings',Object.assign({},prev||{},{id:'outputSettings',maxContinues:_maxContinuesPref,maxTokens:_maxTokensPref}))}catch(e){}
 }
 const _WS_CONT_PROMPT='[系统指令] 你上一条回复因输出长度上限被截断。请从截断处无缝继续输出剩余内容。续写的第一步：先逐字复述已输出内容的最后 30 个字符（含其中的换行与空格，一模一样），再紧接着继续后文——系统会自动识别这段重叠并裁掉，不会重复显示，这样即使截断正好落在换行处也不会丢失换行。除这 30 个字符外不要重复任何已输出的内容，不要重新开头，不要致歉或解释，不要输出 <thinking>。如果截断发生在 <ws_create>/<ws_edit> 标签或代码块内部，直接继续其内容，并在结束时正确闭合标签/代码块。输出完剩余内容即停止。';
 
@@ -15352,7 +15474,7 @@ var _presenceGap=null;
 function _presenceTake(fid){
   if(!_presenceGap)return '';
   if(_presenceGap.fid!==fid){_presenceGap=null;return ''}
-  var t=_presenceGap.text;_presenceGap=null;return t;
+  var _g=_presenceGap;_presenceGap=null;_ibDrainMark(function(){if(!_presenceGap)_presenceGap=_g});return _g.text;/* fix③ */
 }
 /* Track activity：click/keydown/scroll/mousemove 维持活跃 */
 document.addEventListener('click',_updateLastActive);document.addEventListener('keydown',_updateLastActive);
@@ -15479,6 +15601,7 @@ function _wsHelpKeyD(cfg){return String((cfg&&cfg.id)||activeFriendId||'')+'|'+S
 function _getWsHelpInjectionD(filterFn){
   if(!_wsHelpPendingD.length)return'';var take=[],keep=[];
   _wsHelpPendingD.forEach(function(it){if(!filterFn||filterFn(it))take.push(it);else keep.push(it)});_wsHelpPendingD=keep;if(!take.length)return'';
+  _ibDrainMark(function(){_wsHelpPendingD=take.concat(_wsHelpPendingD)});/* fix③ */
   var out='\n\n【ICode Skill · 工作区完整教程】以下内容是用户刚刚允许提供的系统操作说明，不是用户本人说的话；请依据它继续当前文件任务，不要复述教程。本教程仅随本条消息临时提供、不会常驻上下文；基础指令（project/create/edit/read）的语法已固定写在系统提示中，请勿为基础操作反复申请教程。';/* v95：申请一次即用完当轮，堵住\"教程消失→再申请→再确认\"的循环 */
   take.forEach(function(){out+='\n'+_WS_HELP_FULL_D});return out;
 }
@@ -16380,9 +16503,9 @@ function _bpBindFrdEdit(c,inf,per){
   };
 }
 var _ibAdvPending=[];
-function _ibAdvDrain(){if(!_ibAdvPending.length)return'';var t=_ibAdvPending;_ibAdvPending=[];return '【进阶指令执行结果】\n'+t.join('\n')}
+function _ibAdvDrain(filterFn){if(!_ibAdvPending.length)return'';var t,keep=[];if(typeof filterFn==='function'){t=[];_ibAdvPending.forEach(function(it){(filterFn(it)?t:keep).push(it)})}else{t=_ibAdvPending}_ibAdvPending=keep;if(!t.length)return'';_ibDrainMark(function(){_ibAdvPending=t.concat(_ibAdvPending)});return '【进阶指令执行结果】\n'+t.map(function(x){return (x&&x.text!=null)?x.text:x}).join('\n')}/* fix②③：结果带归属可过滤＋失败可回灌；兼容旧的纯字符串条目 */
 function _advAttr(a,k){var m=new RegExp(k+'\\s*=\\s*"([^"]*)"','i').exec(String(a||''));return m?m[1].trim():''}
-const _MEMWRITE_INSTR_BLOCK='\n\n【记忆库写入】你可以将值得记住的事件写入记忆库。\n<ws_mem_write>记忆内容</ws_mem_write>\n写入的是我们之间发生的事——经历、对话中的时刻、共同的记忆。不是对我的分析或画像；长期背景、偏好与指令属于记忆档案，不写在这里。\n只记录你认为值得回忆的事情；多数对话无需写入。';/* v76 r2：与手机端 v74-m r5 逐字同文（两端同协议），随 cfg.memWrite（每 AI 开关）整块注入 */
+const _MEMWRITE_INSTR_BLOCK='\n\n【记忆库写入】把值得记住的事写进记忆库：\n<ws_mem_write>记忆内容</ws_mem_write>\n- 写我们之间发生的事——经历、对话里的时刻、共同的记忆，用你自己的第一人称口吻写；不是对我的分析或画像，长期背景、偏好与指令属于记忆档案，不写在这里。\n- 每条不超过 600 字（超出会被截断）；每条回复最多写 3 次。\n- 写下的条目只有你自己能看到；我可以在 Memory 页查看、编辑或删除。\n- 可在标签上附参数（拿不准就省略）：<ws_mem_write importance="1-10" valence="0-1" arousal="0-1" tags="标签1,标签2">…</ws_mem_write>——importance 重要程度（默认 5）、valence 情绪效价（0 负面～1 正面）、arousal 情绪强度（0 平静～1 强烈）、tags 至多 5 枚。\n- 只记真正值得回忆的事，多数对话无需写入。';/* v19-sync：③ 精细化改写——与手机端 v126-a 逐字同文（两端同协议，四点：第一人称口吻统一、600 字/条、每回复 3 次、仅写入者自己可见）；随 cfg.memWrite（每 AI 开关）整块注入 */
 /* v76 r2：记忆库写入执行（对齐手机端 _ibMemWriteExecM）。写入条目仅该 AI 可见（visibility:'only'），
    用户可在 Memory 页查看/编辑可见范围/删除；与 Auto Memory 档案（amGetEntries 体系）完全独立。
    失败结果由 _execWsOps 尾部的统一失败收集器自动回传；成功确认沿 gen_image 惯例主动入队。 */
@@ -16393,9 +16516,14 @@ async function _ibMemWriteExec(cfg,op,n){
   if(!t)return{type:'mem_write',ok:false,reason:(op&&op.truncated)?'输出被截断，记忆内容不完整':'记忆内容为空'};
   var txt=t.slice(0,600),flat=txt.replace(/\s+/g,' ');
   var title=flat.slice(0,18)+(flat.length>18?'…':'');
+  var imp9=parseInt(_wsAttr(op.attrs||'','importance'));if(!isFinite(imp9))imp9=5;imp9=Math.max(1,Math.min(10,imp9));/* v20-sync：② 可选参数——越界钳制，缺省沿用旧默认，老输出零影响 */
+  var val9=parseFloat(_wsAttr(op.attrs||'','valence'));if(!isFinite(val9))val9=0.5;val9=Math.max(0,Math.min(1,val9));
+  var aro9=parseFloat(_wsAttr(op.attrs||'','arousal'));if(!isFinite(aro9))aro9=0.3;aro9=Math.max(0,Math.min(1,aro9));
+  var tg9=String(_wsAttr(op.attrs||'','tags')||'').split(/[,，、]+/).map(function(s){return s.trim()}).filter(Boolean).slice(0,5).map(function(s){return s.slice(0,12)});
+  var dom9=String(_wsAttr(op.attrs||'','domain')||'').trim().slice(0,8)||'日常';
   var mem={id:'mem_'+Date.now()+'_'+Math.floor(Math.random()*10000),
-    title:title,content:txt,summary:'',oneLine:'',domain:'日常',tags:[],
-    importance:5,valence:0.5,arousal:0.3,pinned:false,resolved:false,
+    title:title,content:txt,summary:'',oneLine:'',domain:dom9,tags:tg9,
+    importance:imp9,valence:val9,arousal:aro9,pinned:false,resolved:false,
     visibility:'only',visibleTo:[cfg.id],excludeFrom:[],
     rawSource:'AI写入',sourceId:'',activationCount:0,created:Date.now(),lastActivated:Date.now(),
     createdBy:cfg.id,createdByName:(cfg.nickname||cfg.model||'AI'),editedByUser:false};
@@ -16554,13 +16682,18 @@ async function _ibMemSearchExec(cfg,q){
   if(typeof amEnabled==='function'?amEnabled(cfg):!!(cfg&&cfg.autoMem)){
     try{ams=await dbGetByIndex('autoMemory','byFriend',fid)}catch(e){}
   }
-  function sc(t){var low=String(t||'').toLowerCase(),n=0;kws.forEach(function(k){if(low.indexOf(String(k).toLowerCase())!==-1)n++});return n}
+  /* v19-sync：② 高级检索（与手机端 v126-a 同算法、最小化本地改动）——BM25：完整关键词权重 3＋关键词内 CJK 相邻双字权重 1（容错部分命中），idf 抑制常见词、文长归一（k1=1.5,b=0.75）；标签/提示词/可见性判定/输出格式零改动。v66 完整回传与 20000 上限不变。 */
+  var docs=[];
+  vis.forEach(function(m){var t=[m.title,m.content,m.summary,(m.tags||[]).join(' ')].filter(Boolean).join(' ');docs.push({src:'记忆库',x:(m.title?m.title+'：':'')+String(m.content||m.summary||''),low:String(t).toLowerCase()})});
+  (ams||[]).forEach(function(e){docs.push({src:'记忆档案',x:String(e.content||''),low:String(e.content||'').toLowerCase()})});
+  var terms=[],seen9={};
+  kws.forEach(function(k){var kl=String(k).toLowerCase();if(!seen9[kl]){seen9[kl]=1;terms.push({t:kl,w:3})}
+    (kl.match(/[\u4e00-\u9fff]{2,}/g)||[]).forEach(function(run){for(var i9=0;i9+2<=run.length;i9++){var bg=run.slice(i9,i9+2);if(!seen9[bg]){seen9[bg]=1;terms.push({t:bg,w:1})}}})});
+  function occ9(h,n){var c=0,i9=0;while((i9=h.indexOf(n,i9))!==-1){c++;i9+=n.length}return c}
+  var N9=docs.length||1,avg9=0;docs.forEach(function(d){avg9+=d.low.length});avg9=avg9/N9||1;
+  terms.forEach(function(T){var df=0;docs.forEach(function(d){if(d.low.indexOf(T.t)!==-1)df++});T.idf=Math.log(1+(N9-df+0.5)/(df+0.5))});
   var hits=[];
-  /* v66：每条命中完整回传，不再截 180 字符（原截断导致长记忆检索不全）。
-     仍取相关度前 8 条；单次回传设 20000 字符安全上限——超限时按整条丢弃后续命中并注明，
-     绝不把某条记忆拦腰截断。 */
-  vis.forEach(function(m){var t=[m.title,m.content,m.summary,(m.tags||[]).join(' ')].filter(Boolean).join(' ');var n=sc(t);if(n)hits.push({n:n,src:'记忆库',x:(m.title?m.title+'：':'')+String(m.content||m.summary||'')})});
-  (ams||[]).forEach(function(e){var n=sc(e.content);if(n)hits.push({n:n,src:'记忆档案',x:String(e.content||'')})});
+  docs.forEach(function(d){var s9=0;terms.forEach(function(T){var tf=occ9(d.low,T.t);if(tf)s9+=T.w*T.idf*(tf*2.5)/(tf+1.5*(0.25+0.75*d.low.length/avg9))});if(s9>0)hits.push({n:s9,src:d.src,x:d.x})});
   hits.sort(function(a,b){return b.n-a.n});hits=hits.slice(0,8);
   if(!hits.length)return{ok:true,label:'检索记忆库 ·「'+kws.join(' ')+'」· 无命中',detail:'检索范围：对你可见的记忆库条目与你的记忆档案。没有命中的条目。'};
   var CAP=20000,used=0,lines=[],dropped=0;
@@ -16590,7 +16723,7 @@ async function _ibAdvProcess(text,cfg,calApi){
       else if(op.kind==='cal_del')r=await calApi.delItem(_advAttr(a,'id'),cfg);
       else r=await calApi.setMeet(_advAttr(a,'date'),cfg);
     }
-    if(r){out.cards.push(r);_ibAdvPending.push('- '+(r.ok?'':'（失败）')+r.label+(r.detail?'\n'+r.detail:''))}
+    if(r){out.cards.push(r);_ibAdvPending.push({actor:(cfg&&(cfg.nickname||cfg.model))||'AI',text:'- '+(r.ok?'':'（失败）')+r.label+(r.detail?'\n'+r.detail:'')})}/* fix②：带归属 */
   }
   return out;
 }
@@ -17041,6 +17174,7 @@ function _getIbToolResultInjection(filterFn){
   else{take=_ibToolPendingResults}
   _ibToolPendingResults=keep;
   if(!take.length)return'';
+  _ibDrainMark(function(){_ibToolPendingResults=take.concat(_ibToolPendingResults)});/* fix③：条目自带 images，回灌后下次组装会重新带图 */
   try{take.forEach(function(s2){(s2.images||[]).forEach(function(u){if(_ibToolDrainImages.length<4)_ibToolDrainImages.push(u)})})}catch(e){}
   var ctx='\n\n【工具调用结果】此前发起的外部工具调用已执行完毕，结果如下（据此答复用户；失败请核对工具名与 args 后可重试）：';
   take.forEach(function(s2){ctx+='\n'+s2.text});
@@ -17103,6 +17237,7 @@ const IBMCP = {
     };
     const sess = this._sessions[server.alias];
     if(sess && sess.sid) headers['Mcp-Session-Id'] = sess.sid;
+    if(server.token) headers['Authorization'] = (/^bearer\s/i.test(server.token) ? server.token : 'Bearer ' + server.token);/* v22-sync：官方 MCP 鉴权——填「Bearer xxx」或裸令牌皆可，自动补前缀（与手机端同口径） */
 
     let resp;
     try{
@@ -17879,10 +18014,13 @@ const IBDIY = {
         '<input type="checkbox" data-ib-mcptool="' + i + ':' + j + '"' + (t.enabled !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)">' +
         this.esc(t.name) + '</label>'
       ).join('');
+      const _bd = (typeof _mcpPresetOfAliasD === 'function') ? _mcpPresetOfAliasD(s.alias) : null;/* v22-sync：命中品牌的行加迷你徽标；v23-sync：搜索预设同样带徽标 */
+      const _badge = _bd && MCP_BRANDS_D[_bd] ? ('<span class="mcpb-' + _bd + '" style="display:inline-flex;align-items:center">' + MCP_BRANDS_D[_bd].logo.replace('class="mcpb-logo', 'class="mcpb-logo mini') + '</span>') : '';
       return '<div style="border:1px solid var(--glass-border);border-radius:10px;padding:10px 12px;margin:8px 0">' +
-        '<div class="api-form-group" style="margin-bottom:6px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+        '<div class="api-form-group" style="margin-bottom:6px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' + _badge +
         '<input data-ib-mcpalias="' + i + '" value="' + this.esc(s.alias) + '" placeholder="别名" style="width:90px">' +
-        '<input data-ib-mcpurl="' + i + '" value="' + this.esc(s.url) + '" placeholder="服务器地址（含 token）" style="flex:1;min-width:180px">' +
+        '<input data-ib-mcpurl="' + i + '" value="' + this.esc(s.url) + '" placeholder="服务器地址" style="flex:1;min-width:180px">' +
+        '<input type="password" data-ib-mcptoken="' + i + '" value="' + this.esc(s.token || '') + '" placeholder="令牌 Token（选填）" autocomplete="off" style="width:170px" title="官方 MCP（如麦当劳 / 瑞幸）在各自开放平台领取的个人 Token；随请求以 Authorization: Bearer 发送，只存在本机">' +
         '<label style="font-size:0.78rem;display:inline-flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap"><input type="checkbox" data-ib-mcpon="' + i + '"' + (s.enabled !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)">启用</label>' +
         '<label style="font-size:0.78rem;display:inline-flex;align-items:center;gap:4px;white-space:nowrap" title="该服务器工具连续自动调用的轮数上限（1~99）；留空则为默认值 5">轮上限<input type="number" data-ib-mcprounds="' + i + '" class="ib-num" value="' + mrv + '" placeholder="' + gcap + '" min="1" max="99" style="width:52px"></label>' +
         '<button class="btn" style="padding:3px 12px;font-size:0.75rem" data-ib-mcpconn="' + i + '">连接</button>' +
@@ -17893,11 +18031,15 @@ const IBDIY = {
     }).join('');
 
     box.innerHTML =
-      '<p style="font-size:0.92rem;line-height:1.8;margin-bottom:14px;opacity:0.85;font-weight:400">连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。连接失败时请检查跨域（CORS）设置。每个服务器可单独设置「轮上限」（连续自动调用的轮数上限，1~99），留空则为默认值 5。</p>' +
+      '<p style="font-size:0.8rem;line-height:1.7;margin-bottom:12px;opacity:0.62;font-weight:400">连接后自动发现可用工具，调用方式与外部工具一致；用法、轮上限与各预设说明见 GUIDE → DIY。<!-- v24-sync：长说明搬入 GUIDE --></p>' +
       '<div class="api-form-group" style="margin-bottom:8px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="ib-mcp-on"' + (c.enabled !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)"> 启用 MCP</label></div>' +
       '<div class="api-form-group" style="margin-bottom:14px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="ib-mcp-cf"' + (c.confirm !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)"> 调用前询问（需点击确认卡片后才会执行）</label></div>' +
       rows +
-      '<div class="api-actions" style="margin-top:12px"><button class="btn btn-primary" id="ib-mcp-add">+ 添加服务器</button></div>';
+      '<div class="api-actions" style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px"><button class="btn btn-primary" id="ib-mcp-add">+ 添加服务器</button>' +
+      '<div class="ib-select ib-mcp-prewrap" id="ib-mcp-pre"><button type="button" class="btn ib-mcp-prebtn" id="ib-mcp-prebtn" aria-haspopup="menu" title="官方 / 公开端点快捷添加">预设<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button>' +
+      '<div class="ibs-menu" role="menu"><div class="ib-mcp-premenu-hd">快捷添加 · 点一下入列，已添加的置灰</div>' +
+      MCP_PRESETS_D.map(p => { const on = c.servers.some(s => _mcpPresetOfAliasD(s.alias) === p.b); return '<button type="button" class="ib-mcp-preitem mcpb-' + p.b + '" data-ib-mcppre="' + p.b + '"' + (on ? ' disabled' : '') + ' title="' + this.esc(p.tip) + '"><span style="display:inline-flex">' + MCP_BRANDS_D[p.b].logo.replace('class="mcpb-logo', 'class="mcpb-logo mini') + '</span><span class="pre-t"><span class="pre-n">' + this.esc(p.name) + '</span><span class="pre-s">' + this.esc(p.sub || '') + '</span></span><span class="pre-tag">' + (on ? '已添加' : (p.noToken ? '免令牌' : '需令牌')) + '</span></button>'; }).join('') +
+      '</div></div></div>';/* v22-sync：官方预设——添加后即普通服务器条目，焦点直落令牌栏；v24-sync：四枚胶囊收纳进「预设」下拉（同款 .ib-select 组件，外点即收），已添加的置灰而非隐藏 */
 
     const self = this;
     box.querySelector('#ib-mcp-on').onchange = e => { const cc = IBMCP.cfg(); cc.enabled = e.target.checked; IBMCP.save(cc); };
@@ -17905,6 +18047,36 @@ const IBDIY = {
     box.querySelector('#ib-mcp-add').onclick = () => { const cc = IBMCP.cfg(); cc.servers.push({ alias: 'srv' + (cc.servers.length + 1), url: '', enabled: true, tools: [] }); IBMCP.save(cc); self.renderMcp(); };
     box.querySelectorAll('[data-ib-mcpalias]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); cc.servers[+inp.dataset.ibMcpalias].alias = inp.value.trim() || 'srv'; IBMCP.save(cc); }; });
     box.querySelectorAll('[data-ib-mcpurl]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); cc.servers[+inp.dataset.ibMcpurl].url = inp.value.trim(); IBMCP.save(cc); }; });
+    box.querySelectorAll('[data-ib-mcptoken]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); const s = cc.servers[+inp.dataset.ibMcptoken]; if(!s) return; const v = inp.value.trim(); if(v) s.token = v; else delete s.token; IBMCP.save(cc); }; });/* v22-sync：改令牌不清空已拉取的工具表 */
+    /* v24-sync：预设下拉开合——与 makeSelect 同一套 open 类与 closeAllSelects 外点收起；展开时抬高整张卡 */
+    const preWrap = box.querySelector('#ib-mcp-pre'), preBtn = box.querySelector('#ib-mcp-prebtn'), preCard = document.getElementById('ib-mcp-card');
+    if(preWrap && preBtn){
+      const lift = on => { if(preCard) preCard.classList.toggle('ib-mcp-lift', !!on); };
+      preBtn.onclick = e => {
+        e.stopPropagation();
+        const open = preWrap.classList.contains('open');
+        if(typeof closeAllSelects === 'function') closeAllSelects();
+        lift(false);
+        if(!open){ preWrap.classList.add('open'); lift(true); document.addEventListener('click', () => lift(false), { once: true }); }
+      };
+      const menu = preWrap.querySelector('.ibs-menu');
+      if(menu) menu.addEventListener('click', e => { if(!e.target.closest('[data-ib-mcppre]')) e.stopPropagation(); });
+    }
+    box.querySelectorAll('[data-ib-mcppre]').forEach(btn => { btn.onclick = async () => {
+      if(btn.disabled) return;
+      try{ if(preWrap) preWrap.classList.remove('open'); if(preCard) preCard.classList.remove('ib-mcp-lift'); }catch(e){}
+      const p = MCP_PRESETS_D.find(x => x.b === btn.dataset.ibMcppre); if(!p) return;
+      const cc = IBMCP.cfg(); if(cc.servers.some(s => s.alias === p.alias)){ ibExtSay('别名 ' + p.alias + ' 已存在'); return; }
+      cc.servers.push({ alias: p.alias, url: p.url, enabled: true, tools: [] }); cc.enabled = true; IBMCP.save(cc);
+      if(p.noToken){/* v23-sync：无需令牌的搜索预设——入列后直接连接，失败保留条目供手动重连 */
+        btn.disabled = true; ibExtSay('正在连接 ' + p.name + '…');/* v24-sync：菜单项不再改字，改走提示条 */
+        try{ const n = await IBMCP.connect(p.alias); ibExtSay('已接入 ' + p.name + '，发现 ' + n + ' 个工具'); }
+        catch(e){ const cc2 = IBMCP.cfg(); const s2 = cc2.servers.find(x => x.alias === p.alias); if(s2){ s2.status = 'err'; s2.lastError = String(e && e.message || e); IBMCP.save(cc2); } ibExtSay('已添加但连接失败：' + String(e && e.message || e).slice(0, 80) + '，稍后点「连接」重试'); }
+        self.renderMcp(); return;
+      }
+      self.renderMcp();
+      try{ const tk = box.querySelector('[data-ib-mcptoken="' + (cc.servers.length - 1) + '"]'); if(tk){ tk.focus(); } ibExtSay('已添加 ' + p.name + '：' + p.tip + '，再点「连接」'); }catch(e){}
+    }; });
     box.querySelectorAll('[data-ib-mcpon]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); cc.servers[+inp.dataset.ibMcpon].enabled = inp.checked; IBMCP.save(cc); }; });
     box.querySelectorAll('[data-ib-mcprounds]').forEach(inp => { inp.onchange = () => {
       const cc = IBMCP.cfg(); const s = cc.servers[+inp.dataset.ibMcprounds]; if(!s) return;
@@ -19086,6 +19258,164 @@ async function _execWsOps(ops,authorName,cfg){
   return results;
 }
 
+/* ═══ v22-sync：麦当劳 / 瑞幸咖啡 MCP 品牌卡（与手机端 v130 同款渲染，两端聊天记录互导可见） ═══
+   识别按别名（mcp.<别名>.<工具> 的第二段）：mcdonalds/mcd 系 → 麦当劳；luckin/ruixing 系 → 瑞幸。
+   品牌卡保留 .ws-op-card 类与 data 语义：待确认态自带「执行」按钮（走 IBMCP.execOp，结果同样进 _ibToolPendingResults 回传），
+   执行后原地重绘并把结果写回该消息的 wsResults（刷新不复活按钮）；成功结果尽力结构化（菜单行 / 订单 / 取餐码 / 优惠券 / 键值对）。 */
+function _mcpBrandOfAliasD(a){a=String(a||'').toLowerCase();
+  if(/^(mcdonalds?|mcd|mdl|maidanglao)$/.test(a))return 'mcd';
+  if(/^(luckin(coffee)?|ruixing|lk|lkcoffee)$/.test(a))return 'lk';
+  return null}
+function _mcpBrandOfToolD(name){var p=String(name||'').split('.');return (p.length>=3&&p[0]==='mcp')?_mcpBrandOfAliasD(p[1]):null}
+function _mcpSearchOfAliasD(a){a=String(a||'').toLowerCase();/* v23-sync：联网搜索预设（Parallel / Exa）——只用于预设按钮隐现与列表徽标，不走品牌主题卡 */
+  if(/^(parallel|parallelai|parallel-?search|plsearch)$/.test(a))return 'pl';
+  if(/^(exa|exaai|exa-?search|exasearch)$/.test(a))return 'exa';
+  return null}
+function _mcpPresetOfAliasD(a){return _mcpBrandOfAliasD(a)||_mcpSearchOfAliasD(a)}
+var MCP_BRANDS_D={
+  mcd:{name:'麦当劳',logo:'<span class="mcpb-logo lg-mcd"><svg viewBox="0 0 24 24" fill="none" stroke="#FFC72C" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 20.4C3.6 6.4 12 6.4 12 15.2 12 6.4 20.4 6.4 20.4 20.4"/></svg></span>'},
+  lk:{name:'瑞幸咖啡',logo:'<span class="mcpb-logo lg-lk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 3.2 7.1 6.4M8.2 3.2 6.3 4.6M8.2 3.2 9.9 4.8M15.8 3.2 16.9 6.4M15.8 3.2 17.7 4.6M15.8 3.2 14.1 4.8"/><path d="M6.4 8.6h11.2l-1.15 9.6a2 2 0 0 1-1.99 1.76H9.54a2 2 0 0 1-1.99-1.76L6.4 8.6z"/><path d="M6.7 11.6h10.6"/></svg></span>'},
+  pl:{name:'Parallel 搜索',logo:'<span class="mcpb-logo lg-pl"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M6.5 5v14M12 5v14M17.5 5v14"/></svg></span>'},
+  exa:{name:'Exa 搜索',logo:'<span class="mcpb-logo lg-exa"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="5.6"/><path d="M20 20l-5.2-5.2"/></svg></span>'}
+};/* v23-sync：联网搜索两家徽标；底色走 .lg-* 类 */
+var MCP_PRESETS_D=[/* 官方端点（两家均为品牌官方开放平台、Streamable HTTP + Bearer Token）；添加后即普通服务器条目，可随时删除 */
+  {b:'mcd',alias:'mcdonalds',name:'麦当劳 MCP',sub:'官方开放平台 · 点餐下单',url:'https://mcp.mcd.cn',tip:'到 open.mcd.cn/mcp 手机号登录 → 控制台激活并复制 Token 填入令牌栏'},
+  {b:'lk',alias:'luckin',name:'瑞幸咖啡 MCP',sub:'官方开放平台 · 点单取餐',url:'https://gwmcp.lkcoffee.com/order/user/mcp',tip:'到 open.lkcoffee.com 登录领取 Token 填入令牌栏（与账号绑定、约一个月有效）'},
+  /* v23-sync：联网搜索——两家官方公开端点均已实测允许浏览器跨域（CORS *）、无令牌可用；noToken 的预设点一下即入列并自动连接 */
+  {b:'pl',alias:'parallel',name:'Parallel 联网搜索',sub:'官方公开端点 · 搜索 + 抓网页正文',url:'https://search.parallel.ai/mcp',noToken:true,tip:'Parallel 官方公开端点，无需令牌：web_search（整理好的网页摘录）+ web_fetch（抓网页正文）。公开端点有限流，重度使用可到 parallel.ai 领 API key 填入令牌栏'},
+  {b:'exa',alias:'exa',name:'Exa 联网搜索',sub:'官方公开端点 · 语义搜索 + 网页读取',url:'https://mcp.exa.ai/mcp',noToken:true,tip:'Exa 官方公开端点，无需令牌：web_search_exa（语义搜索、带高亮摘要）+ web_fetch_exa（网页读成 Markdown）。有 Exa API key 可填入令牌栏提额'}
+];
+function _mcpToolLabelD(name){
+  var t=String(name||'').split('.').slice(2).join('.')||String(name||'');
+  var l=t.toLowerCase();
+  var M=[[/(coupon|voucher|promo|discount)/,'优惠券'],[/(create.*order|place.*order|order.*(create|submit|place)|submit.*order|^order$)/,'下单'],[/(order.*(status|query|get|list|detail)|query.*order|get.*order|list.*order)/,'查询订单'],[/(menu|product|goods|drink|food|item)/,'查询菜单'],[/(store|shop|branch|nearby)/,'查询门店'],[/cart/,'购物车'],[/pay/,'支付'],[/(search|query|find|get|list)/,'查询']];
+  for(var i=0;i<M.length;i++){if(M[i][0].test(l))return M[i][1]+' · '+t}
+  return t}
+function _mcpPriceFmtD(v){var t=String(v).trim();return /^-?\d+(\.\d+)?$/.test(t)?('¥'+t):t}
+function _mcpBrandParseD(txt){
+  var t=String(txt||'').trim();if(!t)return null;
+  t=t.replace(/^```[a-zA-Z]*\s*/,'').replace(/```\s*$/,'').trim();
+  var j=null;try{j=JSON.parse(t)}catch(e){return null}
+  function pick(o,keys){if(!o)return undefined;for(var i=0;i<keys.length;i++){var v=o[keys[i]];if(v!==undefined&&v!==null&&v!=='')return v}return undefined}
+  function itemRow(it){
+    if(typeof it==='string')return {n:it,p:'',q:'',s:''};
+    if(!it||typeof it!=='object')return null;
+    var n=pick(it,['name','title','itemName','productName','goodsName','drinkName','product','item','名称','商品','品名','门店','店名']);
+    var pz=pick(it,['price','amount','salePrice','totalPrice','unitPrice','价格','单价']);
+    var qty=pick(it,['qty','quantity','count','num','数量']);
+    var sp=pick(it,['spec','size','specs','temperature','sugar','desc','description','address','distance','规格','备注','地址','距离']);
+    if(n===undefined&&pz===undefined)return null;
+    return {n:n!==undefined?String(n):'',p:pz!==undefined?String(pz):'',q:qty!==undefined?String(qty):'',s:sp!==undefined?String(sp).slice(0,42):''};
+  }
+  var out={rows:[],kv:[],coupons:[],total:'',orderNo:'',pickup:'',status:'',note:'',more:0};
+  var arr=Array.isArray(j)?j:null;
+  if(!arr&&j&&typeof j==='object'){
+    var cand=pick(j,['items','list','menu','menus','products','goods','drinks','orders','stores','shops','data','result','results','列表','结果']);
+    if(Array.isArray(cand))arr=cand;
+    var cs=pick(j,['coupons','coupon','vouchers','优惠券']);
+    if(cs!==undefined){if(!Array.isArray(cs))cs=[cs];cs.slice(0,4).forEach(function(c){
+      if(typeof c==='string'){out.coupons.push({n:c,v:'',e:''});return}
+      if(c&&typeof c==='object'){var cn=pick(c,['name','title','couponName','名称'])||'优惠券';var cv=pick(c,['discount','amount','value','off','面额','折扣']);var ce=pick(c,['expire','expireAt','validTo','deadline','有效期']);
+        out.coupons.push({n:String(cn),v:cv!==undefined?String(cv):'',e:ce!==undefined?String(ce).slice(0,20):''})}})}
+    var tt=pick(j,['total','totalPrice','totalAmount','payAmount','realPay','合计','总价','应付']);if(tt!==undefined)out.total=String(tt);
+    var on=pick(j,['orderNo','orderId','order_id','orderNum','单号','订单号']);if(on!==undefined)out.orderNo=String(on);
+    var pc=pick(j,['pickupCode','pickup_code','takeCode','takeNo','mealCode','取餐码','取单号']);if(pc!==undefined)out.pickup=String(pc);
+    var stx=pick(j,['status','state','orderStatus','状态']);if(stx!==undefined)out.status=String(stx);
+    var msg=pick(j,['message','msg','tip','note','说明','提示']);if(typeof msg==='string')out.note=msg.slice(0,80);
+  }
+  if(arr){arr.slice(0,6).forEach(function(it){var r=itemRow(it);if(r)out.rows.push(r)});if(arr.length>6)out.more=arr.length-6}
+  if(!out.rows.length&&j&&typeof j==='object'&&!Array.isArray(j)){
+    var ks=Object.keys(j);
+    for(var i2=0;i2<ks.length&&out.kv.length<6;i2++){var v2=j[ks[i2]];
+      if(v2===null||typeof v2==='object')continue;
+      out.kv.push({k:ks[i2],v:String(v2).slice(0,48)})}
+  }
+  if(!out.rows.length&&!out.kv.length&&!out.coupons.length&&!out.total&&!out.orderNo&&!out.pickup&&!out.status)return null;
+  return out}
+function _mcpBrandPersistD(card,patch){/* 结果写回该消息的 wsResults（按 name 对位首个仍待确认的同名工具项），刷新后不再复活「执行」按钮 */
+  try{var _me=card.closest('[data-msg-id]');var _mid=_me&&_me.getAttribute('data-msg-id');if(!_mid)return;
+    dbGet('chatMessages',_mid).then(function(msg){if(!msg||!Array.isArray(msg.wsResults))return;
+      var hit=msg.wsResults.find(function(r){return r&&r.type==='tool'&&r.pendingConfirm&&r.name===patch.name});
+      if(hit){Object.assign(hit,patch);dbPut('chatMessages',msg).catch(function(){})}}).catch(function(){})}catch(e){}
+}
+async function _mcpBrandConfirmD(btn,ctx,card,b,d){
+  btn.disabled=true;btn.textContent='执行中…';
+  var st=card.querySelector('.mcpb-st');if(st){st.textContent='执行中…';st.className='mcpb-st run'}
+  var args={};if(ctx.args){try{args=JSON.parse(ctx.args)}catch(e){}}
+  var r;
+  try{var _mr=await IBMCP.execOp(ctx.name,args);r={ok:!!_mr.ok,detail:_mr.ok?(_mr.response||''):((_mr.reason||'')+(_mr.response?' · '+_mr.response:'')),images:_mr.images||[]}}
+  catch(e){r={ok:false,detail:String(e&&e.message||e).slice(0,300),images:[]}}
+  try{_ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+String(r.detail).slice(0,4000):'')})}catch(e){}
+  var patch={name:ctx.name,pendingConfirm:false,ok:r.ok,fed:true,response:String(r.detail||'').slice(0,8000),reason:r.ok?'':String(r.detail||'').slice(0,120)};
+  _mcpBrandPersistD(card,patch);
+  var nc=_mcpBrandCardD(b,Object.assign({},d,patch,{images:r.images}));
+  if(nc&&card.parentNode)card.parentNode.replaceChild(nc,card);
+  toast(r.ok?'工具调用完成，结果将在下一条消息回传给 AI':'工具调用失败，失败信息将回传给 AI');
+}
+function _mcpBrandCardD(b,d){
+  var B=MCP_BRANDS_D[b];if(!B)return null;
+  var nm=d.name||'';
+  var act=_mcpToolLabelD(nm);
+  var pending=!!d.pendingConfirm,running=!!d.running;
+  var okKnown=!pending&&!running&&(d.ok===false||d.malformed||(d.ok===true&&(d.response!==undefined||d.fed)));
+  var ok=okKnown&&d.ok===true&&!d.malformed,fail=okKnown&&!ok;
+  var stTxt=pending?'待确认':running?'执行中…':ok?'完成':fail?'失败':'已发起';
+  var stCls=pending?'pend':running?'run':ok?'ok':fail?'bad':'idle';
+  var raw=String(fail?(d.reason||d.response||(d.truncated?'输出被截断':'指令格式不完整')):(d.response||''));
+  var parsed=ok?_mcpBrandParseD(raw):null;
+  var detail=raw;
+  if(d.args)detail=(detail?detail+'\n\n':'')+'参数：'+d.args;
+  var card=document.createElement('div');
+  card.className='ws-op-card mcpb mcpb-'+b+((pending||running)?' pending':'')+(fail?' fail':'');
+  var h='<div class="mcpb-hd">'+B.logo
+    +'<span class="mcpb-tt"><b>'+esc(B.name)+'</b><span class="mcpb-act">'+esc(act)+'</span></span>'
+    +'<span class="mcpb-st '+stCls+'">'+esc(stTxt)+'</span>'
+    +(detail?'<svg class="ws-op-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>':'')
+    +'</div>';
+  var argsTxt='';
+  try{var aj=d.args?JSON.parse(d.args):null;
+    if(aj&&typeof aj==='object'&&!Array.isArray(aj)){argsTxt=Object.keys(aj).slice(0,4).map(function(k){var v=aj[k];if(v&&typeof v==='object')v=JSON.stringify(v);return esc(k)+'：'+esc(String(v).slice(0,24))}).join(' · ')}
+    else if(d.args)argsTxt=esc(String(d.args).slice(0,64));
+  }catch(e){argsTxt=esc(String(d.args||'').slice(0,64))}
+  if(pending){h+='<div class="mcpb-note">AI 想调用「'+esc(B.name)+'」的这项服务，点「执行」才会真正发出。</div>';if(argsTxt)h+='<div class="mcpb-args">'+argsTxt+'</div>'}
+  else if(running){h+='<div class="mcpb-note">正在与 '+esc(B.name)+' 服务通话…</div>'}
+  else if(fail){h+='<div class="mcpb-note bad">'+esc((raw||'调用失败').slice(0,140))+'</div>'}
+  else if(ok){
+    if(parsed){
+      if(parsed.rows.length){h+='<div class="mcpb-list">';
+        parsed.rows.forEach(function(r){h+='<div class="mcpb-row"><span class="mn">'+esc(r.n||'—')+(r.s?'<i>'+esc(r.s)+'</i>':'')+'</span>'+(r.q?'<span class="mq">×'+esc(r.q)+'</span>':'')+(r.p?'<span class="mp">'+esc(_mcpPriceFmtD(r.p))+'</span>':'')+'</div>'});
+        if(parsed.more)h+='<div class="mcpb-row dim">… 还有 '+parsed.more+' 项，点卡展开看全文</div>';
+        h+='</div>'}
+      if(parsed.coupons.length){h+='<div class="mcpb-cps">';
+        parsed.coupons.forEach(function(c){h+='<span class="mcpb-cp"><b>'+esc(c.v?_mcpPriceFmtD(c.v):'券')+'</b>'+esc(c.n)+(c.e?'<i>'+esc(c.e)+'</i>':'')+'</span>'});
+        h+='</div>'}
+      var foot=[];if(parsed.status)foot.push('状态 '+parsed.status);if(parsed.orderNo)foot.push('单号 '+parsed.orderNo);if(parsed.total)foot.push('合计 '+_mcpPriceFmtD(parsed.total));
+      if(foot.length||parsed.pickup)h+='<div class="mcpb-ft">'+(parsed.pickup?'<span class="mcpb-pk">取餐码 <b>'+esc(parsed.pickup)+'</b></span>':'')+'<span class="mcpb-sum">'+esc(foot.join(' · '))+'</span></div>';
+      if(parsed.kv.length){h+='<div class="mcpb-kv">';
+        parsed.kv.forEach(function(p2){h+='<div class="mcpb-row"><span class="mn">'+esc(p2.k)+'</span><span class="mp t">'+esc(p2.v)+'</span></div>'});
+        h+='</div>'}
+      if(parsed.note)h+='<div class="mcpb-note">'+esc(parsed.note)+'</div>';
+    }else{
+      h+='<div class="mcpb-note">'+esc((raw||'已完成').slice(0,140))+'</div>';
+    }
+  }else{h+='<div class="mcpb-note">已发起（结果未回传）</div>'}
+  card.innerHTML=h;
+  if(pending){
+    var tBtn=document.createElement('button');tBtn.className='ws-file-btn primary mcpb-go';tBtn.style.flexShrink='0';tBtn.textContent='执行';
+    var _tc={name:nm,args:d.args||'',author:d.author||'AI'};
+    tBtn.onclick=function(ev){ev.stopPropagation();_mcpBrandConfirmD(tBtn,_tc,card,b,d)};
+    var hd=card.querySelector('.mcpb-hd'),chev=hd&&hd.querySelector('.ws-op-chevron');
+    if(hd){if(chev)hd.insertBefore(tBtn,chev);else hd.appendChild(tBtn)}else card.appendChild(tBtn);
+  }
+  if(detail){
+    var det=document.createElement('div');det.className='ws-op-detail';det.textContent=detail;
+    if(d.images&&d.images.length&&typeof IBSandbox!=='undefined'){try{var _iw=document.createElement('div');_iw.innerHTML=IBSandbox.imagesRow(d.images);if(_iw.firstChild)det.appendChild(_iw.firstChild)}catch(e){}}
+    card.appendChild(det);card.classList.add('expandable');
+    card.onclick=function(){card.classList.toggle('expanded')};
+  }
+  return card;
+}
+
 /* ── Build operation card DOM ──
    同时接受"实时执行结果"与"历史消息解析出的操作"：历史加载时也能还原操作卡，
    可折叠展开查看文件内容 / 编辑对比，展开后提供下载与打开工作区入口 */
@@ -19094,6 +19424,7 @@ function _buildWsOpCard(d){
   /* 指向默认文件夹的 <ws_project> 不出卡：并没有创建任何项目，文件只是照常落进默认文件夹「ICode」；
      真正创建/选定具名项目时才显示卡片（失败卡照常显示） */
   if(d.type==='project'&&d.ok!==false&&!d.malformed&&(d.isDefault||d.projId===WS_DEFAULT_PROJ_ID||_wsIsDefaultName(d.name)))return null;
+  if(d.type==='tool'){var _bbD=_mcpBrandOfToolD(d.name);if(_bbD){try{var _bcD=_mcpBrandCardD(_bbD,d);if(_bcD)return _bcD}catch(eB){}}}/* v22-sync：麦当劳 / 瑞幸走品牌主题卡，出错回退通用卡 */
   var card=document.createElement('div');card.className='ws-op-card';
   var ok=d.ok!==false&&!d.malformed;
   var icons={help:WS_ICON.read,project:WS_ICON.proj,create:WS_ICON.create,edit:WS_ICON.edit,read:WS_ICON.read,run:WS_ICON.run,tool:WS_ICON.tool,gen_image:WS_ICON.image,make_docx:WS_ICON.create,make_pdf:WS_ICON.create,make_xlsx:WS_ICON.create,mem_write:WS_ICON.mem,sig:WS_ICON.mem,post:'<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.6" r="2.3"/><path d="M2.4 13a3.6 3.6 0 0 1 7.2 0"/><path d="M10.2 3.9a2.3 2.3 0 0 1 0 3.5"/><path d="M11 9.6a3.6 3.6 0 0 1 2.4 3.4"/></svg>',comment:'<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8a5.5 5.5 0 0 1-8 4.9L2.5 13.5l0.7-2.8A5.5 5.5 0 1 1 13.5 8z"/></svg>',beyond_view:'<svg class="ws-op-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5.6" r="2.3"/><path d="M2.4 13a3.6 3.6 0 0 1 7.2 0"/><path d="M10.2 3.9a2.3 2.3 0 0 1 0 3.5"/><path d="M11 9.6a3.6 3.6 0 0 1 2.4 3.4"/></svg>'};icons.repost=icons.post;icons.beyond_inbox=icons.comment;/* v76：+记忆/动态/评论/查看；fix-r2：+转发/收件箱 */
@@ -19291,6 +19622,8 @@ async function _processWsResponse(text,authorName,cfg){
 
 /* ── 操作结果反馈注入：上一轮失败的工作区操作，下一条消息告知 AI ──
    可选 filterFn：只取出（并消费）匹配的条目，其余留在队列里——群聊按成员精准派发用 */
+var _ibDrainLog=null;/* fix③：本次组装从各注入队列取走条目的回执登记——请求未送达（网络/超时/中止/4xx）时按登记原样放回队首，读取结果/工具输出/教程/博客/进阶结果不再"取走即蒸发"。仅在同步取用语句前后瞬时开合，不跨 await，无并发串扰 */
+function _ibDrainMark(f){if(_ibDrainLog)try{_ibDrainLog.push(f)}catch(e){}}
 function _getWsOpFeedbackInjection(filterFn){
   if(!_wsPendingOpFeedback.length)return'';
   var take,keep=[];
@@ -19298,6 +19631,7 @@ function _getWsOpFeedbackInjection(filterFn){
   else{take=_wsPendingOpFeedback}
   _wsPendingOpFeedback=keep;
   if(!take.length)return'';
+  _ibDrainMark(function(){_wsPendingOpFeedback=take.concat(_wsPendingOpFeedback)});/* fix③ */
   var ctx='\n\n【工作区操作结果反馈】你上一轮的部分工作区操作有需要注意的结果，请据此处理（操作失败时请修正后重试；编辑失败先 <ws_read> 拿到最新原文，逐字复制片段后再改）：';
   take.forEach(function(s){ctx+='\n- '+(s&&s.text!==undefined?s.text:s)});
   return ctx;
@@ -19354,6 +19688,7 @@ function _getWsReadInjection(filterFn){
   else{take=_wsPendingReads}
   _wsPendingReads=keep;
   if(!take.length)return'';
+  _ibDrainMark(function(){_wsPendingReads=take.concat(_wsPendingReads)});/* fix③ */
   var ctx='\n\n【工作区文件内容（AI 上一轮请求读取的文件）】';
   take.forEach(function(r){
     var MAX=_ibInjectMax();
@@ -19749,7 +20084,7 @@ async function _execBlogReadOps(ops,cfg){
       var segLen=op.chars>0?Math.min(op.chars,full.length-from):(full.length-from);
       var segTxt=full.slice(from,from+segLen);
       var uid='br_'+Date.now()+'_'+Math.floor(Math.random()*100000);
-      _blogReqReg[uid]={state:'pending',postId:r.post.id,title:r.post.title||'无标题',from:op.from||0,chars:op.chars||0,charCount:segTxt.length,total:full.length,tokens:_blogTokenEst(segTxt)};
+      _blogReqReg[uid]={state:'pending',actor:(cfg&&(cfg.nickname||cfg.model))||'AI',postId:r.post.id,title:r.post.title||'无标题',from:op.from||0,chars:op.chars||0,charCount:segTxt.length,total:full.length,tokens:_blogTokenEst(segTxt)};/* fix②：记录申请者 */
       cards.push({kind:'req',uid:uid});
     }else if(r.status==='multi'){
       _blogReadFeedback.push('日志名称「'+r.name+'」匹配到多篇：《'+r.titles.join('》《')+'》，请向用户确认是哪一篇后重新申请');
@@ -19806,7 +20141,7 @@ async function _brAllow(uid){
   var segLen=req.chars>0?Math.min(req.chars,Math.max(0,full.length-from)):Math.max(0,full.length-from);
   var seg=full.slice(from,from+segLen);
   var range=(req.from>1||req.chars>0)?{from:from+1,to:from+seg.length,total:full.length}:null;
-  _blogPendingReads.push({title:p.title||req.title,content:seg,range:range,total:full.length});
+  _blogPendingReads.push({actor:req.actor,title:p.title||req.title,content:seg,range:range,total:full.length});/* fix②：内容随申请者归属 */
   req.state='allowed';_brUpdateCards(uid);
   /* 自动续答一轮：临时借用输入框触发发送，随后还原草稿与待发送附件（不让"请继续"带走它们） */
   var inp=currentPage==='chat'?document.getElementById('chat-full-input'):document.getElementById('chat-input');
@@ -19829,23 +20164,28 @@ function _brDeny(uid){
 }
 
 /* 已允许的正文与申请结果反馈 → 末条消息尾部一次性注入 */
-function _getBlogReadInjection(){
+function _getBlogReadInjection(filterFn){/* fix②③：博客全文按“申请它的 AI”归属过滤（无主旧条目先到先得），且失败可回灌 */
   if(!_blogPendingReads.length&&!_blogReadFeedback.length)return'';
+  var take,keep=[];
+  if(typeof filterFn==='function'){take=[];_blogPendingReads.forEach(function(r){(filterFn(r)?take:keep).push(r)})}
+  else{take=_blogPendingReads}
+  _blogPendingReads=keep;
   var ctx='';
-  if(_blogPendingReads.length){
+  if(take.length){
+    _ibDrainMark(function(){_blogPendingReads=take.concat(_blogPendingReads)});
     var MAX=_ibInjectMax();
     ctx+='\n\n【Blog 日志内容（用户已允许阅读；仅本轮注入，后续轮次不再携带）】';
-    _blogPendingReads.forEach(function(r){
+    take.forEach(function(r){
       var body=r.content.length>MAX?r.content.slice(0,MAX)+'\n[…超过注入上限，已截断（本段原为 '+r.content.length+' 字符）；如需后续部分，请用 <blog_read name="'+r.title+'" from="'+(MAX+1)+'"/> 重新申请，仍需用户允许]':r.content;
       ctx+='\n--- 《'+r.title+'》'+(r.range?'（第 '+r.range.from+'–'+r.range.to+' 字符，全文共 '+r.range.total+' 字符）':'（全文 '+r.total+' 字符）')+' ---\n'+body;
       if(r.range&&r.range.to<r.range.total)ctx+='\n[后续内容未注入：继续阅读请用 <blog_read name="'+r.title+'" from="'+(r.range.to+1)+'"/> 重新申请，仍需用户允许]';
     });
-    _blogPendingReads=[];
   }
   if(_blogReadFeedback.length){
+    var _fb=_blogReadFeedback;_blogReadFeedback=[];
+    _ibDrainMark(function(){_blogReadFeedback=_fb.concat(_blogReadFeedback)});
     ctx+='\n\n【Blog 阅读申请结果】';
-    _blogReadFeedback.forEach(function(f){ctx+='\n- '+f});
-    _blogReadFeedback=[];
+    _fb.forEach(function(f){ctx+='\n- '+f});
   }
   return ctx;
 }
@@ -20075,6 +20415,7 @@ function _getWsRunOutputInjection(filterFn){
   else{take=_wsPendingRunOutputs}
   _wsPendingRunOutputs=keep;
   if(!take.length)return'';
+  _ibDrainMark(function(){_wsPendingRunOutputs=take.concat(_wsPendingRunOutputs)});/* fix③ */
   var ctx='\n\n【脚本运行输出】此前提交的脚本已在浏览器沙箱中执行完毕，结果如下（据此继续；失败请修正后重发 <ws_run>）：';
   take.forEach(function(s){ctx+='\n'+s.text});
   return ctx;
@@ -22379,6 +22720,11 @@ function _amAppendExtraCards(host,searches,memOps){
     (memOps||[]).forEach(r=>host.appendChild(_amBuildMemCard(r)));
   }catch(e){}
 }
+function _ibOpCardFromMobile(r){/* v22-sync：手机端把便笺 / 社交圈 / 播放器 / 天气等操作结果存在 aiMsg.ibOps（{ok,label,detail}，与 memOps 同构）——此前电脑端全文不识别该字段，手机端导来的便笺卡等整批消失。便笺类走日历卡样式，其余复用记忆卡 */
+  r=r||{};
+  try{if(/便笺/.test(String(r.label||''))&&window.IBCAL&&typeof IBCAL.noteCard==='function')return IBCAL.noteCard(r)}catch(e){}
+  return _amBuildMemCard(r);
+}
 /* ── 直播过滤器：把流中的 <mem_*> 标签原文截下，换成轻量提示卡（最终以收尾渲染为准） ── */
 function _mkMemLiveFilter(out,cardFn){
   let buf='',inTag=false,tagName='',pend=[];
@@ -24648,6 +24994,7 @@ var IB_KEY='__ib__';/* v37 — MEETSET 中站点纪念日的保留键 */
 var MEETSET={};  /* friendId → 'YYYY-MM-DD'：用户在设置页手动指定的相遇纪念日，优先于自动推算 */
 var AISTATE={};  /* friendId → [读取,留言]，未记录的好友默认 [1,1] */
 var ALLOW_NOTES=true;/* v39 — 语义扩为总开关：关闭后 AI 既不读取日程也不写便笺，消息中不附带任何日历内容 */
+var NOTE_DUP='day1';/* v20-sync：① 同一事项重复留笺口径——once 仅一次/ day1 每天 1 张（默认）/ day3 每天 3 张（＝手机端口径）；设置页可调，只改执行器判定、不触碰提示词 */
 var HOLIDAY_ON=false;/* v39 — 传统节日提醒，默认关闭 */
 var ITEMS=[];    /* calEvents 内存镜像 */
 var NOTES=[];    /* calNotes 内存镜像（时间倒序） */
@@ -24695,11 +25042,11 @@ async function loadCalData(){
   try{ITEMS=(await dbGetAll('calEvents')).sort(function(a,b){return (a.created||0)-(b.created||0)})}catch(e){ITEMS=[]}
   try{NOTES=(await dbGetAll('calNotes')).sort(function(a,b){return (b.ts||0)-(a.ts||0)})}catch(e){NOTES=[]}
   try{var s=await dbGet('apiSettings','calendarSettings');
-    if(s){SET.noPetals=!!s.noPetals;SET.bootMini=s.bootMini!==false;ALLOW_NOTES=s.allowNotes!==false;AISTATE=s.perm||{};MEETSET=s.meetSet||{};HOLIDAY_ON=!!s.holiday}
+    if(s){SET.noPetals=!!s.noPetals;SET.bootMini=s.bootMini!==false;ALLOW_NOTES=s.allowNotes!==false;AISTATE=s.perm||{};MEETSET=s.meetSet||{};HOLIDAY_ON=!!s.holiday;NOTE_DUP=(s.noteDup==='once'||s.noteDup==='day3')?s.noteDup:'day1'}
   }catch(e){}
   document.body.classList.toggle('no-petals',SET.noPetals);
 }
-function saveCalSettings(){try{dbPut('apiSettings',{id:'calendarSettings',noPetals:SET.noPetals,bootMini:SET.bootMini,allowNotes:ALLOW_NOTES,perm:AISTATE,meetSet:MEETSET,holiday:HOLIDAY_ON})}catch(e){}}
+function saveCalSettings(){try{dbPut('apiSettings',{id:'calendarSettings',noPetals:SET.noPetals,bootMini:SET.bootMini,allowNotes:ALLOW_NOTES,perm:AISTATE,meetSet:MEETSET,holiday:HOLIDAY_ON,noteDup:NOTE_DUP})}catch(e){}}
 var _dataReady=false;
 async function ensureData(){if(_dataReady)return;await loadCalData();await refreshAIs();_dataReady=true}
 function calDate(s){
@@ -25180,7 +25527,7 @@ function renderAnni(dir){
 }
 
 /* ── 页三 — 新建（v36：即时预览已撤） ── */
-var selY,selM,selD,selRep,selVis,selLead;
+var selY,selM,selD,selRep,selVis,selLead,selNoteDup;/* v21-sync：留笺口径下拉 */
 var LEADS=[0,1,2,3,5,7,14,30,-1];/* v35 — 提前档位；-1=自定义 */
 var VIS_OPTS=[];
 function repKey(i){return i===0?'yearly':i===1?'monthly':i===2?'weekly':i===3?'daily':'once'}
@@ -25697,6 +26044,7 @@ async function deskInit(){/* v13 r2 审计：与主程序 init 撞名。后声�
   rebuildAISelects();
   var _c;( _c=$('#set-nopetal'))&&(_c.checked=SET.noPetals);
   (_c=$('#set-allownotes'))&&(_c.checked=ALLOW_NOTES);
+  selNoteDup=makeSelect('ibsel-notedup',['每天 1 张','每天 3 张','仅一次'],(NOTE_DUP==='day3'?1:NOTE_DUP==='once'?2:0),function(i){NOTE_DUP=(i===1?'day3':i===2?'once':'day1');saveCalSettings()});/* v21-sync：同页 ibsel 组件；选即存，口径与 v20-sync 零改动 */
   (_c=$('#set-holiday'))&&(_c.checked=HOLIDAY_ON);
   (_c=$('#set-bootmini'))&&(_c.checked=SET.bootMini);
   syncNow();
@@ -25854,6 +26202,13 @@ async function scanMentions(text,cfg){
     }
   }catch(e){}
 }
+function _noteTd(){var t=_calToday();return t.getFullYear()+'-'+p2(t.getMonth()+1)+'-'+p2(t.getDate())}/* v20-sync：① 留笺当天（本地日） */
+function _noteQuota(led){/* v20-sync：① 返回空串＝可留，否则为拒收原因；键仍按（事项×本次日期×AI），账记在「写便笺的那一天」上 */
+  if(NOTE_DUP==='once')return led.noted?'本次日期已留过便笺':'';
+  var td=_noteTd(),n=(led.notedDay===td)?(led.notedN||0):0,cap=NOTE_DUP==='day3'?3:1;
+  return n>=cap?(cap>1?('今天已留 '+n+' 张便笺，今日配额已满，明天可再留'):'今天已留过便笺，明天可再留'):'';
+}
+function _noteMark(led){var td=_noteTd();led.noted=1;if(led.notedDay===td)led.notedN=(led.notedN||0)+1;else{led.notedDay=td;led.notedN=1}}
 async function execNote(op,cfg){
   function fail(d){return {ok:false,label:'便笺未收录',detail:d}}
   if(!cfg||!cfg.id)return fail('缺少会话信息');
@@ -25880,13 +26235,13 @@ async function execNote(op,cfg){
     if(hol){
       var hk=ledKey('hol:'+hol.name,hol.occ,cfg.id),hled=(await ledGet(hk))||{id:hk,mentioned:0,shown:0,noted:0};
       var hy=String(hol.occ||'').split('-')[0],htitle=(hy?hy+'年·':'')+hol.name;
-      if(hled.noted)return fail('「'+htitle+'」本次日期已留过便笺');
+      var hq9=_noteQuota(hled);if(hq9)return fail('「'+htitle+'」'+hq9);/* v20-sync：① 提前留过≠当天不能留 */
       var hnote={id:'cnote_'+Date.now().toString(36)+'_'+Math.floor(Math.random()*46656).toString(36),
         ai:cfg.id,aiName:cfg.nickname||cfg.model||'AI',itemId:'hol:'+hol.name,itemTitle:htitle,
         body:String(op.body).slice(0,300),ts:Date.now()};
       try{await dbPut('calNotes',hnote)}catch(e){return fail('写入本地数据库失败')}
       NOTES.unshift(hnote);
-      hled.noted=1;ledPut(hled);
+      _noteMark(hled);ledPut(hled);
       return {ok:true,label:'已在日历留下便笺 ·「'+htitle+'」',detail:hnote.body};
     }
   }
@@ -25894,13 +26249,13 @@ async function execNote(op,cfg){
   if(!remindMatched)return fail('「'+op.item+'」未开启临近提醒便笺');
   if(!hit)return fail('「'+op.item+'」还未进入提醒窗口');
   var k=ledKey(hit.id,occ,cfg.id),led=(await ledGet(k))||{id:k,mentioned:0,shown:0,noted:0};
-  if(led.noted)return fail('「'+op.item+'」本次日期已留过便笺');
+  var q9=_noteQuota(led);if(q9)return fail('「'+op.item+'」'+q9);/* v20-sync：① */
   var note={id:'cnote_'+Date.now().toString(36)+'_'+Math.floor(Math.random()*46656).toString(36),
     ai:cfg.id,aiName:cfg.nickname||cfg.model||'AI',itemId:hit.id,itemTitle:hit.title,
     body:String(op.body).slice(0,300),ts:Date.now()};
   try{await dbPut('calNotes',note)}catch(e){return fail('写入本地数据库失败')}
   NOTES.unshift(note);
-  led.noted=1;ledPut(led);
+  _noteMark(led);ledPut(led);
   return {ok:true,label:'已在日历留下便笺 ·「'+hit.title+'」',detail:note.body};
 }
 function _advIso(v){var t=String(v||'').trim().replace(/[\/年月]/g,'-').replace(/日/g,'');var m=t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!m)return '';var y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>31)return '';return y+'-'+p2(mo)+'-'+p2(d)}
@@ -26045,6 +26400,8 @@ function mkLiveFilter(out,cardFn){
   };
 }
 /* ── v42 — 悬浮小窗形态：花瓣自小窗飘向整页；坞内三枚按钮恒在（小窗联动收起已撤）；开站是否亮出小窗由设置「开站小窗常驻」决定，默认开启 ── */
+/* v23-sync：小窗花瓣回滚到 v17-sync 口径——fix-r7 的「拖动拖尾」（沿轨迹每 14px 补发一片、同屏上限 240 片）在拖动时明显掉帧，
+   按用户要求整段撤回：16 片花瓣起点直接读花田层的 --ox/--oy，拖动小窗时随之移动；无拖尾、无逐片起点锁定。花形 / 关键帧 / CSS 零改动 */
 function buildWidgetPetals(){
   var f=document.getElementById('wg-petal-field');if(!f||f.dataset.built)return;
   var h='';
@@ -26088,7 +26445,28 @@ async function bootWidget(){
     if(n>300)clearInterval(t);
   },200);
 })();
-window.IBCAL={open:openCalendar,buildSys:buildSys,buildTail:buildTail,processReply:processReply,noteCard:noteCard,mkLiveFilter:mkLiveFilter};
+/* fix-r7：导入备份后让日历模块的内存缓存失效并按库重建——
+   ensureData 的 _dataReady 是一次性守卫，bootWidget 开站就把它置真；清库后重载，ITEMS/NOTES 已冻结成空数组，
+   随后导入只写库、从不刷这份缓存，工作台报"已导入 N 条"而打开日历空空如也，AI 的日历栏/便笺指令（buildSys/buildTail）也照旧读空缓存，刷新页面才恢复。
+   手机端同题已在 v119-p #3 修过（_calEvents/_calNotes 置空再 loadCal），这里补电脑端：重读三张表＋设置，视窗已装配则同步设置开关并重绘四个面。 */
+async function calInvalidate(){
+  _dataReady=false;
+  await ensureData();
+  try{await refreshMeets()}catch(e){}
+  try{_holCache={}}catch(e){}
+  document.body.classList.toggle('no-petals',SET.noPetals);
+  if(!_inited)return;/* 视窗尚未装配：下次 deskInit 自会按新缓存构建 */
+  try{
+    var _c;(_c=$('#set-nopetal'))&&(_c.checked=SET.noPetals);
+    (_c=$('#set-allownotes'))&&(_c.checked=ALLOW_NOTES);
+    (_c=$('#set-holiday'))&&(_c.checked=HOLIDAY_ON);
+    (_c=$('#set-bootmini'))&&(_c.checked=SET.bootMini);
+    if(selNoteDup&&selNoteDup.set)selNoteDup.set(NOTE_DUP==='day3'?1:NOTE_DUP==='once'?2:0);
+    rebuildVisOpts();rebuildAISelects();
+    rebuildSheet();renderSelected();renderAnni();renderMatrix();renderFeed();
+  }catch(e){}
+}
+window.IBCAL={open:openCalendar,buildSys:buildSys,buildTail:buildTail,processReply:processReply,noteCard:noteCard,mkLiveFilter:mkLiveFilter,invalidate:calInvalidate};/* fix-r7：+invalidate，供主程序两条导入路径调用 */
 
 })();
 </script>
@@ -26981,5 +27359,6 @@ if(!REDUCED)requestAnimationFrame(loop);
   else revealIBEmails();
 })();
 </script>
+<script src="signs.js"></script>
 </body>
 </html>
