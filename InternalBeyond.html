@@ -18,6 +18,7 @@
 })();
 </script>
 <!-- InternalBeyond v17-sync · 2026-08-16 —— 本轮修订：①Chat 悬浮窗右下角自由缩放（与 Circle 悬浮窗同规格：仅本次生效，重新打开恢复默认 438×770）；②补 no-referrer（与手机端同口径）；③GUIDE 订正：IndexedDB 版本号 v14→v15、「哪些操作影响提示缓存命中」新增实测说明、对外请求边界说明；④全站体检：13 个页面遍历与生图 / 进阶指令 / 工作区 / 日历 / 信箱重交互零报错；缓存前缀实测——连开社交圈与日历、发动态、加便笺后 system 前缀逐字不变。 -->
+<!-- InternalBeyond v25-sync · 2026-08-22 —— 本轮修订（自手机端 v141-p #4 移植，仅两项）：①「自定义」服务商（中转站）适配——保存时自动整理接口地址（补 https://、去空白与多余斜杠；裸域名补 /v1/chat/completions，/vN 结尾补 /chat/completions，/chat 结尾补 /completions；完整地址原样）；报文格式按地址自动识别（/messages → Anthropic，generateContent → Gemini，其余 OpenAI 兼容）——此前「自定义」写死 OpenAI 格式，填 Anthropic 入口的中转根本跑不通；接入点：callApi / _callApiChatStreamOnce / _callApiChatOnce / 两处 IBFC.prepare 格式实参 / _vmAudioNative；自定义走 Anthropic 格式时不再带 anthropic-dangerous-direct-browser-access 头（只对官方域有意义，常撞中转的 CORS 预检）。②模型栏新增「拉取模型列表」——内置服务商按各自 models 接口单地址探测；「自定义」按地址推导一组候选（地址同级 …/models、/v1/models、Anthropic / Gemini 风格、new-api 公开模型表 /api/pricing）依次探测（单个 7 秒、总计 25 秒），首个命中即用；解析兼容 data[] / models[] / result[] / model_list[] / items[] / 嵌套 data.data / 字典映射 / model_name / 纯字符串；列表 >10 个按模型家族分组并提供关键词筛选；失败提示区分 401/403、网页而非接口、CORS、超时。内置服务商聊天链路零改动；GUIDE 未动。 -->
 <!-- InternalBeyond v24-sync · 2026-08-21 —— 本轮修订（单项）：MCP 预设收纳——DIY 页 MCP 卡原本把四枚预设胶囊（麦当劳 / 瑞幸 / Parallel / Exa）平铺在「+ 添加服务器」之后、卡顶再压一大段说明，越加越挤；现改为一颗「预设 ▾」按钮，弹出与全站同款的 .ib-select 下拉（徽标 / 名称 / 一句说明 / 免令牌·需令牌标），外点即收，已添加的置灰而非隐藏；点选逻辑不变（免令牌的入列即自动连接，需令牌的焦点直落令牌栏）；卡顶长说明整段搬进 GUIDE → DIY「MCP 服务器 / MCP 预设」两段，卡上只留一行指引。展开时整卡抬高层级（卡片自带 translateZ 层叠上下文，否则菜单会被下方卡片压住）。MCP 连接 / 调用 / 存储零改动。 -->
 <!-- InternalBeyond v23-sync · 2026-08-20 —— 本轮修订：①联网搜索 MCP 预设——MCP 卡新增「Parallel 联网搜索」「Exa 联网搜索」两枚预设按钮（官方公开端点、实测允许浏览器跨域、无需令牌；点一下即入列并自动连接；Tavily 官方端点浏览器直连不通，未收录）；服务器列表迷你徽标补底色；②Calendar 小窗花瓣回滚到 v17-sync 口径——撤掉 fix-r7 的拖动拖尾（沿轨迹补发、同屏上限 240 片，拖动时掉帧），花瓣起点随小窗 --ox/--oy 即时移动；花形 / 关键帧 / CSS 零改动。 -->
 <!-- InternalBeyond v22-sync · 2026-08-20 —— 本轮修订：①「输出与续写」新增「单次输出上限」（自动＝按服务商顶格 / 4k–128k 手动档），与手机端共用同一条 outputSettings 记录；顺手修正 saveOutputSettings 整条覆写会抹掉手机端字段（toolRounds / wsRounds）的问题，改为合并写；②手机端 AI 的操作卡（ibOps）在电脑端历史消息里也渲染成同款记忆卡 / 便笺卡，与本端 calNotes 互认；③麦当劳 / 瑞幸品牌卡移植到电脑端（四态：待确认 / 成功 / 失败 / 原始报文，确认后原地重绘并写回消息）；MCP 服务器条目新增令牌栏（Authorization: Bearer 自动补前缀、改令牌不清工具表）与两张官方预设（仅预填别名与官方地址占位，需自行填入官方或可信中转）；注意：电脑端 MCP 配置存 localStorage（ib_mcp_cfg），不随备份文件往返。 -->
@@ -5994,9 +5995,12 @@ body:not(.theme-infernal) .chat-music-card{background:rgba(250,253,255,.58);bord
         <input type="password" id="api-key" placeholder="输入你的 API Key…">
       </div>
       <div class="api-form-group">
-        <label>模型</label>
-        <input id="api-model" placeholder="例如 claude-sonnet-4-6">
-      </div>
+        <label>模型 <span style="font-weight:400;opacity:0.5;font-size:0.72rem">（可手输；或拉取列表后直接选）</span></label>
+        <div style="display:flex;gap:8px"><input id="api-model" placeholder="例如 claude-sonnet-4-6" style="flex:1;min-width:0;width:auto"><button class="btn" id="api-models-fetch" type="button" style="flex:none;white-space:nowrap">拉取模型列表</button></div>
+        <input id="api-models-q" placeholder="筛选模型（输入关键词）" autocomplete="off" autocapitalize="off" spellcheck="false" style="margin-top:8px;display:none">
+        <div id="api-models-wrap" style="margin-top:8px;display:none"><select id="api-models"><option value="">— 选择模型 —</option></select></div>
+        <div id="api-models-hint" style="display:none;font-size:0.78rem;opacity:0.75;margin-top:6px;line-height:1.6"></div>
+      </div><!-- v25-sync：#2 拉取模型列表——按服务商探测 models 接口，选中即回填「模型」文本框（仍可手输）；自手机端 v141-p #4 移植 -->
       <div class="api-form-group">
         <label>接口地址</label>
         <input id="api-endpoint" placeholder="API Endpoint URL">
@@ -9675,7 +9679,163 @@ function onProviderChange(){
     var se=document.getElementById('api-streaming-toggle');
     if(se)se.checked=!!cfg.streaming;
   }
+  _modelListReset();/* v25-sync：#2 换服务商即清空已拉取的模型列表与提示 */
 }
+
+/* ═══ v25-sync：#1/#2 自定义服务商（中转站）适配——地址整理 / 报文格式自动识别 / 拉取模型列表（多候选探测 + 家族分组 + 关键词筛选）。自手机端 v141-p #4 逐字移植，仅改元素 ID 与去掉手机端命名后缀；内置服务商聊天链路零改动 ═══ */
+function _epTidy(s){/* 去空白、补 https://、合并多余斜杠、去尾斜杠；裸域名补 /v1/chat/completions，/vN 结尾补 /chat/completions，/chat 结尾补 /completions；完整地址（chat/completions、messages、generateContent、responses、chatcompletion_v2）原样 */
+  s=String(s||'').replace(/\s+/g,'');if(!s)return '';
+  if(!/^https?:\/\//i.test(s))s='https://'+s.replace(/^\/+/,'');
+  s=s.replace(/^(https?:\/\/)\/+/i,'$1').replace(/([^:])\/{2,}/g,'$1/').replace(/\/+$/,'');
+  if(/\/messages(\?.*)?$|generateContent|\/(chat\/)?completions(\?.*)?$|\/responses(\?.*)?$|chatcompletion_v2/i.test(s))return s;
+  if(/\/chat$/i.test(s))return s+'/completions';
+  var o='';try{o=new URL(s).origin}catch(e){return s}
+  var path=s.slice(o.length);
+  if(!path)return s+'/v1/chat/completions';
+  if(/\/v\d+[a-z]*$/i.test(path))return s+'/chat/completions';
+  return s;
+}
+function _cfgFmt(cfg){/* 自定义服务商按地址尾缀选报文格式：/messages → Anthropic；generateContent / generativelanguage → Gemini；其余 OpenAI 兼容。内置服务商仍按 PROVIDERS.format */
+  var p=PROVIDERS[cfg&&cfg.provider]||PROVIDERS.custom;
+  if(!cfg||cfg.provider!=='custom')return p.format||'openai';
+  var ep=String(cfg.endpoint||'');
+  if(/\/messages(\?.*)?$/i.test(ep))return 'anthropic';
+  if(/generateContent|generativelanguage\.googleapis\.com/i.test(ep))return 'gemini';
+  return 'openai';
+}
+var _MODEL_FAM_ORDER=['Claude','GPT / OpenAI','Gemini','DeepSeek','Qwen 通义','GLM 智谱','Kimi','Doubao 豆包','Grok','Llama','Mistral','其他','非对话 / 其他用途'];
+function _modelFamily(id){var s=String(id||'').toLowerCase();
+  if(/embed|rerank|whisper|\btts\b|tts-|-tts|moderation|dall-e|image|audio|transcri|realtime|sora|veo|imagen|flux|diffusion|seedream|seedance|speech|voice|\bocr\b/.test(s))return '非对话 / 其他用途';
+  if(/claude/.test(s))return 'Claude';
+  if(/^(gpt|o\d|chatgpt|text-davinci|openai)/.test(s)||/gpt-/.test(s))return 'GPT / OpenAI';
+  if(/gemini|gemma/.test(s))return 'Gemini';
+  if(/deepseek/.test(s))return 'DeepSeek';
+  if(/qwen|qwq|qvq/.test(s))return 'Qwen 通义';
+  if(/glm|codegeex/.test(s))return 'GLM 智谱';
+  if(/kimi|moonshot/.test(s))return 'Kimi';
+  if(/doubao|\bseed\b|seed-/.test(s))return 'Doubao 豆包';
+  if(/grok/.test(s))return 'Grok';
+  if(/llama/.test(s))return 'Llama';
+  if(/mistral|mixtral|codestral|ministral|magistral/.test(s))return 'Mistral';
+  return '其他'}
+function _modelListReq(prov,endpoint,key){/* 内置服务商：按各自 models 接口单地址探测（OpenAI 兼容 /v1/models、Anthropic /v1/models、Gemini /v1beta/models），与聊天通道同一套鉴权头 */
+  var ep=String(endpoint||'').trim().replace(/\/+$/,'');
+  var H={};
+  if(prov==='gemini'||/generativelanguage\.googleapis\.com/i.test(ep)){
+    var gb=ep.replace(/\/models(\/.*)?$/i,'');if(!/\/v\d+[a-z]*$/i.test(gb))gb='https://generativelanguage.googleapis.com/v1beta';
+    if(key)H['x-goog-api-key']=key;
+    return{url:gb+'/models?pageSize=500',headers:H,kind:'gemini'};
+  }
+  if(prov==='anthropic'||/api\.anthropic\.com/i.test(ep)){
+    var ab=ep.replace(/\/v1\/messages.*$/i,'');if(!ab)ab='https://api.anthropic.com';
+    if(key)H['x-api-key']=key;H['anthropic-version']='2023-06-01';H['anthropic-dangerous-direct-browser-access']='true';
+    return{url:ab+'/v1/models?limit=1000',headers:H,kind:'anthropic'};
+  }
+  var ob=ep.replace(/\/(chat\/completions|completions|messages|text\/chatcompletion_v2|responses)(\?.*)?$/i,'');
+  if(!ob)return null;
+  ob=ob.replace(/\/models$/i,'');
+  if(!/\/v\d+[a-z]*$/i.test(ob))ob+='/v1';
+  if(key)H['Authorization']='Bearer '+key;
+  return{url:ob+'/models',headers:H,kind:'openai'};
+}
+function _modelListReqCustom(endpoint,key){/* 自定义：按地址推导一组候选 models 地址，依次探测，首个返回列表即用：地址同级 …/models → /v1/models → Anthropic 风格（x-api-key / Bearer）→ Gemini 风格（header / ?key=）→ new-api 公开模型表 /api/pricing；/messages 地址先试 Anthropic 风格，generateContent 先试 Gemini 风格 */
+  var ep=_epTidy(endpoint);if(!ep)return [];
+  var o='';try{o=new URL(ep).origin}catch(e){return []}
+  var path=ep.slice(o.length);
+  var isAnth=/\/messages(\?.*)?$/i.test(path),isGem=/generateContent|\/v1beta\b/i.test(path);
+  var base=path.replace(/\/(chat\/completions|completions|messages|responses|text\/chatcompletion_v2|embeddings)(\?.*)?$/i,'').replace(/\/models(\/[^\/]*)?(:[a-z]+)?$/i,'').replace(/\/+$/,'');
+  var verB=/\/v\d+[a-z]*$/i.test(base)?base:'';
+  var ver1=verB||(base+'/v1');
+  var HB={},HA={'anthropic-version':'2023-06-01'},HG={};
+  if(key){HB['Authorization']='Bearer '+key;HA['x-api-key']=key;HG['x-goog-api-key']=key}
+  var L=[],seen={};
+  var add=function(u,h,kind){var sig=kind+'|'+u+'|'+JSON.stringify(h);if(seen[sig])return;seen[sig]=1;L.push({url:o+u,headers:h,kind:kind})};
+  var oa=function(){add(ver1+'/models',HB,'openai');if(base&&base!==ver1)add(base+'/models',HB,'openai');add('/v1/models',HB,'openai')};
+  var an=function(){var ab=verB||'/v1';add(ab+'/models?limit=1000',HA,'anthropic');add(ab+'/models?limit=1000',Object.assign({'anthropic-version':'2023-06-01'},HB),'anthropic');add('/v1/models?limit=1000',HA,'anthropic')};
+  var ge=function(){var gb=/\/v1beta$/i.test(base)?base:(verB?verB.replace(/\/v\d+[a-z]*$/i,'/v1beta'):(base+'/v1beta'));add(gb+'/models?pageSize=500',HG,'gemini');if(key)add(gb+'/models?pageSize=500&key='+encodeURIComponent(key),{},'gemini');add('/v1beta/models?pageSize=500',HG,'gemini')};
+  if(isAnth){an();oa();ge()}else if(isGem){ge();oa();an()}else{oa();an();ge()}
+  add('/api/pricing',{},'newapi');
+  return L;
+}
+function _modelListParse(kind,j){
+  var out=[];
+  var push=function(id,name){id=String(id||'').trim();if(!id)return;out.push({id:id,name:String(name||'').trim()})};
+  if(kind==='gemini'){((j&&j.models)||[]).forEach(function(m){if(!m)return;var ok=!m.supportedGenerationMethods||m.supportedGenerationMethods.indexOf('generateContent')!==-1;if(ok)push(String(m.name||'').replace(/^models\//,''),m.displayName)})}
+  else{/* 兼容中转返回形态——data[] / models[] / result[] / model_list[] / items[] / 嵌套 data.data、data.models / data 为字典映射 / 纯字符串数组；字段 id / model_name / name / model */
+    var arr=null;
+    if(Array.isArray(j))arr=j;
+    else if(j&&typeof j==='object'){
+      var cand=[j.data,j.models,j.result,j.model_list,j.items,j.list];
+      for(var ci=0;ci<cand.length&&!arr;ci++){var c=cand[ci];if(Array.isArray(c))arr=c;else if(c&&typeof c==='object'){if(Array.isArray(c.data))arr=c.data;else if(Array.isArray(c.models))arr=c.models}}
+      if(!arr&&j.data&&typeof j.data==='object'&&!Array.isArray(j.data)){arr=Object.keys(j.data).map(function(k){var v=j.data[k];return(v&&typeof v==='object')?Object.assign({id:k},v):k})}
+    }
+    (arr||[]).forEach(function(m){if(typeof m==='string')push(m,'');else if(m&&typeof m==='object')push(m.id||m.model_name||m.name||m.model,m.display_name||m.displayName||'')});
+  }
+  var seen={};out=out.filter(function(m){if(seen[m.id])return false;seen[m.id]=1;return true});
+  out.sort(function(a,b){return a.id.localeCompare(b.id)});
+  return out;
+}
+function _modelListReset(){try{var qq=document.getElementById('api-models-q');if(qq){qq.style.display='none';qq.value=''}var w=document.getElementById('api-models-wrap');if(w)w.style.display='none';var s=document.getElementById('api-models');if(s)s.innerHTML='<option value="">— 选择模型 —</option>';var h=document.getElementById('api-models-hint');if(h){h.style.display='none';h.textContent=''}}catch(e){}}
+(function _modelListWire(){/* 多候选依次探测（单个 7 秒、总计 25 秒），命中即停；列表 >10 个按家族分组 + 关键词筛选；失败提示按原因分类 */
+  var byId=function(id){return document.getElementById(id)};
+  var btn=byId('api-models-fetch'),sel=byId('api-models'),wrap=byId('api-models-wrap'),hint=byId('api-models-hint'),q=byId('api-models-q');
+  if(!btn||!sel)return;
+  var _busy=false,_last=[];
+  function _hint(t,bad){if(!hint)return;hint.style.display=t?'':'none';hint.textContent=t||'';hint.style.color=bad?'#e08a8a':''}
+  function _esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+  function _draw(list,kw){
+    var cur=byId('api-model').value.trim();kw=String(kw||'').trim().toLowerCase();
+    var L=kw?list.filter(function(m){return (m.id+' '+m.name).toLowerCase().indexOf(kw)!==-1}):list;
+    var opt=function(m){return'<option value="'+_esc(m.id)+'"'+(m.id===cur?' selected':'')+'>'+_esc(m.id+((m.name&&m.name!==m.id)?('  ·  '+m.name):''))+'</option>'};
+    var h='<option value="">— 选择模型（'+(kw?('匹配 '+L.length+' / '):'共 ')+list.length+' 个）—</option>';
+    if(L.length>10){var G={},order=[];L.forEach(function(m){var f=_modelFamily(m.id);if(!G[f]){G[f]=[];order.push(f)}G[f].push(m)});order.sort(function(a,b){return _MODEL_FAM_ORDER.indexOf(a)-_MODEL_FAM_ORDER.indexOf(b)});h+=order.map(function(f){return'<optgroup label="'+_esc(f)+'">'+G[f].map(opt).join('')+'</optgroup>'}).join('')}
+    else h+=L.map(opt).join('');
+    sel.innerHTML=h;
+  }
+  async function _try(req,ms){/* 单次探测 → {ok,list,status,err,html,net} */
+    var ac=new AbortController();var tm=setTimeout(function(){ac.abort()},ms);
+    try{
+      var r=await fetch(req.url,{headers:req.headers,signal:ac.signal});clearTimeout(tm);
+      var tx=await r.text();var j=null;try{j=JSON.parse(tx)}catch(e){}
+      var html=!j&&/^\s*<(!doctype|html)/i.test(tx);
+      if(!r.ok)return{ok:false,status:r.status,html:html,err:(j&&j.error&&(j.error.message||j.error))?String(j.error.message||j.error).slice(0,80):''};
+      var list=_modelListParse(req.kind,j);
+      return{ok:list.length>0,list:list,status:r.status,html:html,err:list.length?'':'无模型列表'};
+    }catch(e){clearTimeout(tm);var m=String((e&&e.message)||e||'');var ab=/abort/i.test(m);return{ok:false,status:0,err:ab?'超时':m,net:!ab}}
+  }
+  btn.addEventListener('click',async function(){
+    if(_busy)return;
+    var prov=byId('api-provider').value,ep=byId('api-endpoint').value,key=byId('api-key').value.trim();
+    var reqs=prov==='custom'?_modelListReqCustom(ep,key):[_modelListReq(prov,ep,key)].filter(Boolean);
+    if(!reqs.length){_hint('请先填写接口地址',true);return}
+    _busy=true;btn.disabled=true;var old=btn.textContent;_hint('');
+    var hit=null,tries=[],t0=Date.now();
+    for(var i=0;i<reqs.length;i++){
+      if(i&&Date.now()-t0>25000)break;
+      btn.textContent=reqs.length>1?('拉取中 '+(i+1)+'/'+reqs.length+'…'):'拉取中…';
+      var res=await _try(reqs[i],reqs.length>1?7000:20000);tries.push(res);
+      if(res.ok){hit={req:reqs[i],list:res.list};break}
+    }
+    if(hit){
+      _last=hit.list;_draw(_last,'');
+      if(wrap)wrap.style.display='';
+      if(q){q.value='';q.style.display=_last.length>10?'':'none'}
+      var where=hit.req.url.replace(/^https?:\/\//,'').replace(/\?.*$/,'').slice(0,60);
+      _hint(hit.req.kind==='newapi'?('已从中转站公开模型表拉取 '+_last.length+' 个（'+where+'）——该表列出站点全部模型，以你的密钥实际可用为准'):('已拉取 '+_last.length+' 个模型（'+where+'）'));
+    }else{
+      var msg,st=tries.map(function(t){return t.status}).filter(Boolean);
+      if(tries.some(function(t){return t.status===401||t.status===403}))msg='密钥无效、无权限或余额不足（HTTP '+(st.indexOf(401)!==-1?401:403)+'）';
+      else if(tries.some(function(t){return t.html}))msg='该地址返回的是网页而不是接口，请核对接口地址（通常以 /v1/chat/completions 结尾）';
+      else if(tries.length&&tries.every(function(t){return t.net}))msg='无法连接，或该接口不允许浏览器跨域（CORS）——可手输模型名';
+      else if(tries.length&&tries.every(function(t){return t.err==='超时'}))msg='超时——接口无响应，可手输模型名';
+      else msg=(reqs.length>1?('已尝试 '+tries.length+' 个地址，均未返回模型列表'):('HTTP '+(st[0]||'—')+(tries[0]&&tries[0].err?('：'+tries[0].err):'')))+'——可手输模型名';
+      _hint('拉取失败：'+msg.slice(0,140),true);
+    }
+    _busy=false;btn.disabled=false;btn.textContent=old;
+  });
+  sel.addEventListener('change',function(){if(sel.value){byId('api-model').value=sel.value;toast('模型已选：'+sel.value)}});
+  if(q)q.addEventListener('input',function(){if(_last.length)_draw(_last,q.value)});
+})();
 
 /* MULTI-API MANAGEMENT */
 let apiConfigs=[];
@@ -9974,6 +10134,7 @@ function editApi(id){
   document.getElementById('api-key').value=cfg.apiKey||'';
   document.getElementById('api-model').value=cfg.model||'';
   document.getElementById('api-endpoint').value=cfg.endpoint||'';
+  _modelListReset();/* v25-sync：#2 编辑器换对象时清空上一份拉取结果（editApi 不经 onProviderChange） */
   document.getElementById('api-system').value=cfg.systemPrompt||'';
   var isDefault=cfg.systemPrompt&&(cfg.systemPrompt===DEFAULT_SYSTEM_PROMPT||cfg.systemPrompt===INFERNAL_SYSTEM_PROMPT);
   if(isDefault){document.getElementById('api-system').value='';document.getElementById('api-system').placeholder=getDefaultPromptForTheme();document.getElementById('api-system-default-hint').style.display='block';_sysPromptCleared=false}else{document.getElementById('api-system').placeholder='设置AI的系统提示词…';document.getElementById('api-system-default-hint').style.display='none';_sysPromptCleared=true}
@@ -10023,7 +10184,7 @@ async function saveCurrentApi(){
     provider:document.getElementById('api-provider').value,
     apiKey:document.getElementById('api-key').value,
     model:document.getElementById('api-model').value,
-    endpoint:document.getElementById('api-endpoint').value,
+    endpoint:(document.getElementById('api-provider').value==='custom'?_epTidy(document.getElementById('api-endpoint').value):document.getElementById('api-endpoint').value),/* v25-sync：#1 自定义地址保存时整理（补 https://、去空白与多余斜杠、裸域名补 /v1/chat/completions 等）；内置服务商原样 */
     systemPrompt:document.getElementById('api-system').value||(_sysPromptCleared?'':getDefaultPromptForTheme()),
     nickname:effName,
     relationship:document.getElementById('api-relationship').value.trim().slice(0,16)||'',
@@ -11505,14 +11666,14 @@ async function _annoEnrichPostCards(){
 
 /* API CALL HELPER */
 async function callApi(cfg,userMsg){
-  const format=PROVIDERS[cfg.provider]?.format||'openai';
+  const format=_cfgFmt(cfg);/* v25-sync：#1 自定义服务商按地址自动识别格式；内置服务商结果与旧写法逐字相同 */
   let url=cfg.endpoint;
   let headers={'Content-Type':'application/json'};
   let body;
   if(format==='anthropic'){
     headers['x-api-key']=cfg.apiKey;
     headers['anthropic-version']='2023-06-01';
-    headers['anthropic-dangerous-direct-browser-access']='true';
+    if(cfg.provider!=='custom'||/api\.anthropic\.com/i.test(String(cfg.endpoint||'')))headers['anthropic-dangerous-direct-browser-access']='true';/* v25-sync：#1 自定义中转不带此头——非官方域不需要，且常撞中转的 CORS 预检 */
     _ccBeta(headers,cfg);
     const ab={model:cfg.model,max_tokens:4096,messages:[{role:'user',content:userMsg}]};
     if(cfg.systemPrompt){if(cfg.promptCache!==false){ab.system=[{type:'text',text:cfg.systemPrompt,cache_control:_ccObj(cfg)}]}else{ab.system=cfg.systemPrompt}}
@@ -12781,7 +12942,7 @@ async function loadVoiceTransUI(){
 /* 能否直接听音频：Gemini 原生通道恒可；OpenAI 兼容通道按模型名判断（gemini 系经兼容层/中转、GPT-Audio、Qwen-Omni 等）；Anthropic 文本接口不支持 */
 function _vmAudioNative(cfg){
   if(!cfg)return false;
-  const fmt=(PROVIDERS[cfg.provider]&&PROVIDERS[cfg.provider].format)||'openai';
+  const fmt=_cfgFmt(cfg);/* v25-sync：#1 自定义按地址识别格式；内置服务商结果不变 */
   if(fmt==='gemini')return true;
   if(fmt==='anthropic')return false;
   return /(gemini|omni|audio)/i.test(String(cfg.model||''));
@@ -14426,7 +14587,7 @@ async function callApiChatStream(cfg,messages,opts){
   var st=_newCallState(opts);/* 并发隔离：本次调用的独立状态（思考/结束原因/停止/可中止句柄），按 chatKey 注册供停止按钮定位 */
   /* FC：原生函数调用（anthropic/openai 走 tools 参数；无工具块/开关关/其他厂商 → 不激活，回落 XML 通道） */
   var _fcCtx=null;
-  try{if(typeof IBFC!=='undefined'){var _fcv=IBFC.prepare(messages,PROVIDERS[cfg.provider]?.format||'openai',{vision:_ibVisionOn(cfg)});if(_fcv&&_fcv.active){_fcCtx=_fcv;msgs=_fcCtx.messages}}}catch(e){_fcCtx=null}
+  try{if(typeof IBFC!=='undefined'){var _fcv=IBFC.prepare(messages,_cfgFmt(cfg),{vision:_ibVisionOn(cfg)});if(_fcv&&_fcv.active){_fcCtx=_fcv;msgs=_fcCtx.messages}}}catch(e){_fcCtx=null}/* v25-sync：#1 格式实参改 _cfgFmt——自定义按地址识别，内置不变 */
   try{/* 并发隔离：任何退出路径都在函数尾 finally 注销本对话的调用状态 */
   for(var round=0;;round++){
     var hold='',holding=round>0;/* 续写轮先缓冲开头，做接缝去重后再上屏 */
@@ -14498,7 +14659,7 @@ async function callApiChat(cfg,messages,opts){
   var st=_newCallState(null);/* 并发隔离：仅用于按调用隔离思考/结束原因；非流式没有停止入口，不注册停止路由（与原行为一致） */
   /* FC：原生函数调用（与流式同一套；无工具块/开关关/其他厂商 → 不激活） */
   var _fcCtx=null;
-  try{if(typeof IBFC!=='undefined'){var _fcv=IBFC.prepare(messages,PROVIDERS[cfg.provider]?.format||'openai',{vision:_ibVisionOn(cfg)});if(_fcv&&_fcv.active){_fcCtx=_fcv;msgs=_fcCtx.messages}}}catch(e){_fcCtx=null}
+  try{if(typeof IBFC!=='undefined'){var _fcv=IBFC.prepare(messages,_cfgFmt(cfg),{vision:_ibVisionOn(cfg)});if(_fcv&&_fcv.active){_fcCtx=_fcv;msgs=_fcCtx.messages}}}catch(e){_fcCtx=null}/* v25-sync：#1 格式实参改 _cfgFmt——自定义按地址识别，内置不变 */
   try{/* 并发隔离：任何退出路径都在函数尾 finally 注销状态 */
   for(var round=0;;round++){
     var o=Object.assign({},opts,{maxTokens:budget,wantMeta:true});
@@ -14586,7 +14747,7 @@ async function _callApiChatStreamOnce(cfg,messages,opts){
   const wantThink=!!opts.wantThinking;
   const onChunk=opts.onChunk||(()=>{});
   const onThink=opts.onThink||(()=>{});/* 思考链实时回调 */
-  const fmt=PROVIDERS[cfg.provider]?.format||'openai';
+  const fmt=_cfgFmt(cfg);/* v25-sync：#1 自定义服务商按地址自动识别格式；内置服务商结果与旧写法逐字相同 */
   /* 思考链：DeepSeek / OpenAI 追加逐轮硬提醒（挂末条 user 消息副本，零缓存代价）。
      OpenAI 推理模型（GPT-5 / o 系列）会把"输出思考过程"理解为要求披露内部思维链而礼貌拒绝，
      故对 openai 改用"思路笔记（公开草稿）"措辞绕开其 CoT 保护策略；DeepSeek 保留原措辞 */
@@ -14620,7 +14781,8 @@ async function _callApiChatStreamOnce(cfg,messages,opts){
     let url,hdrs={},body;
     if(fmt==='anthropic'){
       url=cfg.endpoint;
-      hdrs={'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+      hdrs={'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01'};
+      if(cfg.provider!=='custom'||/api\.anthropic\.com/i.test(String(cfg.endpoint||'')))hdrs['anthropic-dangerous-direct-browser-access']='true';/* v25-sync：#1 自定义中转不带此头——非官方域不需要，且常撞中转的 CORS 预检 */
       _ccBeta(hdrs,cfg);
       const sysMsg=_msgs.find(m=>m.role==='system');
       const chatMsgs=_msgs.filter(m=>m.role!=='system').map(m=>{if(m&&m._fc){var _c=Object.assign({},m);delete _c._fc;return _c}return{role:m.role,content:_adaptContentForApi(m.content,'anthropic')}});
@@ -14823,7 +14985,7 @@ async function _callApiChatOnce(cfg,messages,opts){
   const timeoutMs=opts.timeoutMs||60000;
   const wantThink=!!opts.wantThinking;
   const pack=(text,truncated)=>opts.wantMeta?{text:text,truncated:!!truncated}:text;
-  const fmt=PROVIDERS[cfg.provider]?.format||'openai';
+  const fmt=_cfgFmt(cfg);/* v25-sync：#1 自定义服务商按地址自动识别格式；内置服务商结果与旧写法逐字相同 */
 
   /* ===== 思考链稳健化：修复"长对话中 <thinking> 逐渐消 */
   /* 思考链：DeepSeek 追加 THINK_REMINDER；Anthropic 预填 <thinking> */
@@ -14855,7 +15017,8 @@ async function _callApiChatOnce(cfg,messages,opts){
     if(sysMsg){if(cfg.promptCache!==false&&cfg.provider==='anthropic'){body.system=[{type:'text',text:sysMsg.content,cache_control:_ccObj(cfg)}]}else{body.system=sysMsg.content}}
     if(cfg.temperature!=null)body.temperature=cfg.temperature;
     const hdrs={'Content-Type':'application/json','x-api-key':cfg.apiKey,
-      'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+      'anthropic-version':'2023-06-01'};
+    if(cfg.provider!=='custom'||/api\.anthropic\.com/i.test(String(cfg.endpoint||'')))hdrs['anthropic-dangerous-direct-browser-access']='true';/* v25-sync：#1 自定义中转不带此头——非官方域不需要，且常撞中转的 CORS 预检 */
     _ccBeta(hdrs,cfg);
     const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),timeoutMs);
     try{
