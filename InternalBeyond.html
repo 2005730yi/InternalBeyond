@@ -17,6 +17,7 @@
   window.addEventListener('DOMContentLoaded',sweep);
 })();
 </script>
+<!-- InternalBeyond v27-sync · 2026-08-23 —— 本轮修订（MCP 下单链专修，与手机端 v151/v147 同源；原生 FC 通道本就整份传 schema，本轮主要修 XML 通道与共用解析/展示层）：①XML 模式 promptBlock 完整回传工具 schema——原先只给 120 字描述＋裸参数名（前 8 个），类型/枚举/嵌套/字段说明全丢，麦当劳/瑞幸多步下单只能靠猜；现描述放宽至 2000 字并附完整 inputSchema JSON（单工具 3000 字安全截断兜底），connect 落库 description 600→6000（已连服务器需重连一次刷新）。②截断链整治——工具结果送达上限 4000/700 统一放宽至 12000、品牌确认路落库 8000→12000，全部改 _ibCut 安全截断（不从 emoji 等代理对中间切开产生乱码、截断必明示）。③_extract 的 structuredContent 恒并入（MCP 2025-06-18 标准字段）——原先仅 content 为空才读，两者同回时结构化字段整个被扔掉。④_mcpBrandParseD 重写——支持 {success,code,data:{…}} 信封逐层下钻（≤4 层）＋全树有界深搜，新认 payH5Url/payOrderUrl/payOrderQrCodeUrl 等支付字段，品牌卡新增「去支付/支付二维码」按钮（点按不触发展开），说明文档混排围栏 JSON 也能捞；orderProductList 等数组键补录。⑤关键结果备忘——排队一次送达即失忆的问题：含订单/支付字段的成功 MCP 结果自动登记（每 AI 2 条、30 分钟过期、仅本页会话），后续注入随行携带，AI 不再「查完单就把支付链接忘了」。麦当劳品牌卡「去支付」文字浅黄 #FFE7A8（用户定色）。MCP 连接 / 会话 / SSE / FC 台账零改动。 -->
 <!-- InternalBeyond v17-sync · 2026-08-16 —— 本轮修订：①Chat 悬浮窗右下角自由缩放（与 Circle 悬浮窗同规格：仅本次生效，重新打开恢复默认 438×770）；②补 no-referrer（与手机端同口径）；③GUIDE 订正：IndexedDB 版本号 v14→v15、「哪些操作影响提示缓存命中」新增实测说明、对外请求边界说明；④全站体检：13 个页面遍历与生图 / 进阶指令 / 工作区 / 日历 / 信箱重交互零报错；缓存前缀实测——连开社交圈与日历、发动态、加便笺后 system 前缀逐字不变。 -->
 <!-- InternalBeyond v25-sync · 2026-08-22 —— 本轮修订（自手机端 v141-p #4 移植，仅两项）：①「自定义」服务商（中转站）适配——保存时自动整理接口地址（补 https://、去空白与多余斜杠；裸域名补 /v1/chat/completions，/vN 结尾补 /chat/completions，/chat 结尾补 /completions；完整地址原样）；报文格式按地址自动识别（/messages → Anthropic，generateContent → Gemini，其余 OpenAI 兼容）——此前「自定义」写死 OpenAI 格式，填 Anthropic 入口的中转根本跑不通；接入点：callApi / _callApiChatStreamOnce / _callApiChatOnce / 两处 IBFC.prepare 格式实参 / _vmAudioNative；自定义走 Anthropic 格式时不再带 anthropic-dangerous-direct-browser-access 头（只对官方域有意义，常撞中转的 CORS 预检）。②模型栏新增「拉取模型列表」——内置服务商按各自 models 接口单地址探测；「自定义」按地址推导一组候选（地址同级 …/models、/v1/models、Anthropic / Gemini 风格、new-api 公开模型表 /api/pricing）依次探测（单个 7 秒、总计 25 秒），首个命中即用；解析兼容 data[] / models[] / result[] / model_list[] / items[] / 嵌套 data.data / 字典映射 / model_name / 纯字符串；列表 >10 个按模型家族分组并提供关键词筛选；失败提示区分 401/403、网页而非接口、CORS、超时。内置服务商聊天链路零改动；GUIDE 未动。 -->
 <!-- InternalBeyond v26-sync · 2026-08-23 —— 本轮修订（单项，与手机端 v147/v143 #1 同源）：MCP 官方端点「网络请求失败(可能是 CORS 未开放或地址不可达): Failed to fetch」根修——实测 mcp.mcd.cn（OPTIONS/POST 一律 403 且不带 Access-Control-Allow-Origin）与 gwmcp.lkcoffee.com（401 且无 CORS 头）均未对浏览器放行跨域，浏览器直连必然被拦、与令牌对错无关（Exa / Parallel 带 CORS * 所以一直正常）；浏览器侧无解、只能自建转发：IBMCP.cfg 新增 proxy 字段（存 ib_mcp_cfg，本机），MCP 卡新增「跨域中转（CORS 代理）」栏；_rpc 直连网络失败且填了中转时自动以 中转地址＋encodeURIComponent(目标) 重试（地址含 {url} 则占位替换），错误文案对这两家端点明说原因并指路；GUIDE → DIY 的 MCP 段补充说明并新增「跨域中转」一段与可直接部署的 Cloudflare Worker 转发代码（令牌只经过你自己的 Worker，勿用公共代理）。MCP 连接 / 会话 / SSE 解析 / 调用零改动。 -->
@@ -2430,6 +2431,14 @@ body:not(.theme-infernal) .mcpb-row .mp{color:#132a52}
 .mcpb-pk{font-size:0.72rem;color:var(--text-secondary);border:1px solid var(--glass-border);border-radius:8px;padding:3px 9px;background:rgba(127,150,200,0.08)}
 .mcpb-pk b{font-size:0.88rem;letter-spacing:0.12em;color:var(--light)}
 body:not(.theme-infernal) .mcpb-pk b{color:#132a52}
+.mcpb-payrow{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}
+.mcpb-pay{display:inline-flex;align-items:center;justify-content:center;padding:6px 16px;border-radius:10px;font-size:0.78rem;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(135deg,#1677ff,#0958d9);box-shadow:0 2px 8px rgba(22,119,255,0.35)}
+.mcpb-pay:active{transform:scale(0.97)}
+.mcpb-pay.alt{background:rgba(127,150,200,0.14);color:var(--light);box-shadow:none;border:1px solid var(--glass-line)}
+body:not(.theme-infernal) .mcpb-pay.alt{color:#132a52}
+.mcpb-mcd .mcpb-pay:not(.alt){color:#FFE7A8;background:linear-gradient(135deg,#DB0007,#a50006);box-shadow:0 2px 8px rgba(219,0,7,0.3)}/* v27-sync：用户定色 */
+.mcpb-lk .mcpb-pay:not(.alt){background:linear-gradient(135deg,#2A5CAA,#1b3f7a);box-shadow:0 2px 8px rgba(42,92,170,0.3)}
+.mcpb-payhint{font-size:0.64rem;color:var(--tx2);opacity:0.8}
 .mcpb-sum{flex:1;min-width:0;text-align:right;font-size:0.7rem;color:var(--text-muted)}
 .mcpb-logo.mini{width:18px;height:18px;border-radius:6px;display:inline-flex;vertical-align:-4px;margin-right:6px;box-shadow:none}
 .mcpb-logo.mini svg{width:12px;height:12px}
@@ -17185,6 +17194,16 @@ async function ibToolTest(id){
 
 /* ══════════ 外部工具（ws_tool）══════════ */
 var _ibToolsCache=null;
+function _ibCut(s,n){s=String(s==null?'':s);if(!(n>0)||s.length<=n)return s;var c=s.slice(0,n),cc=c.charCodeAt(c.length-1);if(cc>=0xD800&&cc<=0xDBFF)c=c.slice(0,-1);return c+'\n…[已截断：原文 '+s.length+' 字符]'}/* v27-sync：#2 安全截断——不从代理对（emoji 等）中间切开产生乱码，且截断必明示 */
+var _mcpKeyResD=[];/* v27-sync：#5 关键结果备忘 {actor,name,ts,text}——含订单/支付字段的 MCP 结果排队送达一次即失忆：AI 第一轮没复述支付链接、下轮 query-order 不带链接就只能说「链接不在我手里」；现登记最近结果、注入时随行（每 actor 2 条、30 分钟过期、仅本页会话） */
+function _mcpKeyNoteD(actor,name,detail){try{
+  var s9=String(detail||'');if(!/^mcp\./i.test(String(name||'')))return;
+  if(!(/(payH5Url|payOrderUrl|payOrderQrCodeUrl|payUrl|payLink|qrCodeUrl|cashierUrl)/i.test(s9)||(/create|submit|place|pay/i.test(String(name||''))&&/(orderId|orderNo|订单号|payId)/i.test(s9))))return;
+  _mcpKeyResD=_mcpKeyResD.filter(function(x){return Date.now()-x.ts<1800000});
+  var mine=_mcpKeyResD.filter(function(x){return x.actor===actor});
+  while(mine.length>=2){var _i9=_mcpKeyResD.indexOf(mine.shift());if(_i9>=0)_mcpKeyResD.splice(_i9,1)}
+  _mcpKeyResD.push({actor:actor,name:name,ts:Date.now(),text:'- [此前已回传的关键结果备忘·勿因此重复调用] 工具「'+name+'」：'+_ibCut(s9,4000)});
+}catch(e){}}
 var _ibToolPendingResults=[];/* 待注入的工具调用结果 */
 var _ibToolDrainImages=[];/* 视觉回注：随文本一同出队的工具图片（下次发送时并入图像块，上限4张） */
 async function getIbTools(){
@@ -17238,7 +17257,7 @@ async function _ibToolFetch(tool,args){
   }
 }
 function _ibQueueToolResult(author,name,ok,detail){
-  _ibToolPendingResults.push({actor:author,images:[],text:'- 工具「'+name+'」：'+(ok?'成功':'失败')+(detail?' · '+String(detail).slice(0,700):'')});
+  _ibToolPendingResults.push({actor:author,images:[],text:'- 工具「'+name+'」：'+(ok?'成功':'失败')+(detail?' · '+_ibCut(String(detail),12000):'')});
 }
 /* 执行一次 ws_tool 操作，返回结果对象（渲染层据此出卡片） */
 async function _ibExecToolOp(op,author){
@@ -17259,7 +17278,7 @@ async function _ibExecToolOp(op,author){
     }
     var _br=await IBNET.execOp(op.name,_bArgs);
     var _bDet=_br.ok?(_br.response||''):((_br.reason||'')+(_br.response?' · '+_br.response:''));
-    _ibToolPendingResults.push({actor:author,images:(_br&&_br.images)||[],text:'- 工具「'+op.name+'」：'+(_br.ok?'成功':'失败')+(_bDet?' · '+String(_bDet).slice(0,4000):'')});
+    _ibToolPendingResults.push({actor:author,images:(_br&&_br.images)||[],text:'- 工具「'+op.name+'」：'+(_br.ok?'成功':'失败')+(_bDet?' · '+_ibCut(String(_bDet),12000):'')});
     return{type:'tool',name:op.name,ok:_br.ok,fed:true,args:_bArgsRaw,response:_bDet,images:_br.images||[],reason:_br.ok?'':String(_br.reason||'').slice(0,120)};
   }
   /* MCP 工具（mcp.别名.工具名）：走 IBMCP 通道，独立于本地 Webhook 开关 */
@@ -17273,7 +17292,7 @@ async function _ibExecToolOp(op,author){
     }
     var _mr=await IBMCP.execOp(op.name,_mArgs);
     var _mDet=_mr.ok?(_mr.response||''):((_mr.reason||'')+(_mr.response?' · '+_mr.response:''));
-    _ibToolPendingResults.push({actor:author,images:(_mr&&_mr.images)||[],text:'- 工具「'+op.name+'」：'+(_mr.ok?'成功':'失败')+(_mDet?' · '+String(_mDet).slice(0,4000):'')});
+    _ibToolPendingResults.push({actor:author,images:(_mr&&_mr.images)||[],text:'- 工具「'+op.name+'」：'+(_mr.ok?'成功':'失败')+(_mDet?' · '+_ibCut(String(_mDet),12000):'')});
     return{type:'tool',name:op.name,ok:_mr.ok,fed:true,args:_mArgsRaw,response:_mDet,images:_mr.images||[],reason:_mr.ok?'':String(_mr.reason||'').slice(0,120)};
   }
   var cfg=await getIbTools();
@@ -17306,11 +17325,11 @@ async function _ibConfirmToolFromCard(btn,ctx,card){
   if(typeof IBNET!=='undefined'&&/^bridge\./.test(String(ctx.name||''))){
     var _br=await IBNET.execOp(ctx.name,args);
     r={ok:_br.ok,detail:_br.ok?(_br.response||''):((_br.reason||'')+(_br.response?' · '+_br.response:'')),images:_br.images||[]};
-    _ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+String(r.detail).slice(0,4000):'')});
+    _ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+_ibCut(String(r.detail),12000):'')});
   }else if(typeof IBMCP!=='undefined'&&/^mcp\./.test(String(ctx.name||''))){
     var _mr=await IBMCP.execOp(ctx.name,args);
     r={ok:_mr.ok,detail:_mr.ok?(_mr.response||''):((_mr.reason||'')+(_mr.response?' · '+_mr.response:'')),images:_mr.images||[]};
-    _ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+String(r.detail).slice(0,4000):'')});
+    _ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+_ibCut(String(r.detail),12000):'')});
   }else{
     var cfg=await getIbTools();
     var tool=(cfg.tools||[]).find(function(t){return t.name===ctx.name});
@@ -17333,16 +17352,20 @@ async function _ibConfirmToolFromCard(btn,ctx,card){
   toast(r.ok?'工具调用完成，结果将在下一条消息回传给 AI':'工具调用失败，失败信息将回传给 AI');
 }
 function _getIbToolResultInjection(filterFn){
-  if(!_ibToolPendingResults.length)return'';
   var take,keep=[];
   if(typeof filterFn==='function'){take=[];_ibToolPendingResults.forEach(function(it){(filterFn(it)?take:keep).push(it)})}
-  else{take=_ibToolPendingResults}
+  else{take=_ibToolPendingResults;keep=[]}
+  try{take.forEach(function(s2){var mm=/^- 工具「(mcp\.[^」]+)」：成功 · ([\s\S]+)$/.exec(String(s2.text||''));if(mm)_mcpKeyNoteD(s2.actor,mm[1],mm[2])})}catch(e){}/* v27-sync：#5 流经的成功 MCP 结果自动登记备忘 */
+  var memo=[];try{_mcpKeyResD=_mcpKeyResD.filter(function(x){return Date.now()-x.ts<1800000});_mcpKeyResD.forEach(function(x){if(typeof filterFn==='function'&&!filterFn(x))return;memo.push(x.text)})}catch(e){}
+  if(!take.length&&!memo.length)return'';
   _ibToolPendingResults=keep;
-  if(!take.length)return'';
-  _ibDrainMark(function(){_ibToolPendingResults=take.concat(_ibToolPendingResults)});/* fix③：条目自带 images，回灌后下次组装会重新带图 */
-  try{take.forEach(function(s2){(s2.images||[]).forEach(function(u){if(_ibToolDrainImages.length<4)_ibToolDrainImages.push(u)})})}catch(e){}
-  var ctx='\n\n【工具调用结果】此前发起的外部工具调用已执行完毕，结果如下（据此答复用户；失败请核对工具名与 args 后可重试）：';
+  if(take.length){
+    _ibDrainMark(function(){_ibToolPendingResults=take.concat(_ibToolPendingResults)});/* fix③：条目自带 images，回灌后下次组装会重新带图 */
+    try{take.forEach(function(s2){(s2.images||[]).forEach(function(u){if(_ibToolDrainImages.length<4)_ibToolDrainImages.push(u)})})}catch(e){}
+  }
+  var ctx=take.length?'\n\n【工具调用结果】此前发起的外部工具调用已执行完毕，结果如下（据此答复用户；失败请核对工具名与 args 后可重试）：':'\n\n【工具调用结果·备忘】以下为此前已回传的关键结果（供继续当前订单/支付流程参考，勿因此重复调用）：';
   take.forEach(function(s2){ctx+='\n'+s2.text});
+  memo.forEach(function(t9){ctx+='\n'+t9});/* v27-sync：#5 备忘随行注入（不排空、30 分钟自然过期） */
   return ctx;
 }
 
@@ -17505,7 +17528,7 @@ const IBMCP = {
     (s.tools || []).forEach(t => { oldOn[t.name] = t.enabled !== false; });
     s.tools = tools.map(t => ({
       name: t.name,
-      description: String(t.description || '').slice(0, 600),
+      description: String(t.description || '').slice(0, 6000),/* v27-sync：#1 已连服务器需重连一次刷新 */
       inputSchema: t.inputSchema || { type: 'object' },
       enabled: Object.prototype.hasOwnProperty.call(oldOn, t.name) ? oldOn[t.name] : true
     }));
@@ -17541,10 +17564,11 @@ const IBMCP = {
       const props = sch.properties || {};
       const req = sch.required || [];
       const keys = Object.keys(props);
-      hint = keys.length
-        ? '（参数：' + keys.slice(0, 8).map(k => k + (req.indexOf(k) >= 0 ? '*' : '')).join('，') + '）'
-        : '（无参数）';
-      const desc = String(t.description || '').replace(/\s+/g, ' ').slice(0, 120);
+      /* v27-sync：#1 完整回传工具 schema（XML 通道）——原先只给 120 字描述＋裸参数名，类型/枚举/嵌套/字段说明全丢，
+         麦当劳/瑞幸这类多步下单流程只能靠参数名瞎猜；原生 FC 通道本就整份传 schema、不受影响 */
+      let sc = '';try{ if(t.inputSchema) sc = JSON.stringify(t.inputSchema); }catch(e){}
+      hint = sc ? ('\n  参数 schema：' + _ibCut(sc, 3000)) : '（无参数）';
+      const desc = _ibCut(String(t.description || '').replace(/\s+/g, ' '), 2000);
       return '- mcp.' + it.alias + '.' + t.name + (desc ? '：' + desc : '') + hint;
     });
     return lines.join('\n');
@@ -17593,10 +17617,11 @@ const IBMCP = {
       else if(c.type === 'resource' && c.resource && c.resource.text) parts.push(c.resource.text);
       else if(c.type === 'audio') parts.push('[音频内容,暂不支持播放]');
     });
-    if(!parts.length && res && res.structuredContent){
-      try{ parts.push(JSON.stringify(res.structuredContent)); }catch(e){}
+    if(res && res.structuredContent !== undefined && res.structuredContent !== null){/* v27-sync：#3 MCP 2025-06-18 CallToolResult 的 structuredContent 恒并入——原先仅 content 为空才读，两者同回时结构化字段（订单/支付常放这里）整个被扔掉 */
+      try{ const sc9 = typeof res.structuredContent === 'string' ? res.structuredContent : JSON.stringify(res.structuredContent);
+        if(sc9 && sc9 !== 'null' && sc9 !== '{}' && parts.join('\n').indexOf(sc9) === -1) parts.push(sc9); }catch(e){}
     }
-    out.text = parts.join('\n').slice(0, 12000);
+    out.text = _ibCut(parts.join('\n'), 20000);
     return out;
   },
 
@@ -19467,11 +19492,34 @@ function _mcpToolLabelD(name){
   for(var i=0;i<M.length;i++){if(M[i][0].test(l))return M[i][1]+' · '+t}
   return t}
 function _mcpPriceFmtD(v){var t=String(v).trim();return /^-?\d+(\.\d+)?$/.test(t)?('¥'+t):t}
-function _mcpBrandParseD(txt){
+function _mcpBrandParseD(txt){/* 尽力而为的结构化解析：JSON → 菜单行/订单/取餐码/优惠券/门店/键值对/支付链接；解析不动返回 null 走通用文本 *//* v27-sync：#4 重写——原版只在 JSON 顶层找字段、data 不是数组就不下钻，{success,code,data:{orderId,payH5Url,…}} 这类标准信封全数漏解，也不认识任何支付字段：服务器把 payH5Url 老老实实给了、卡上就是不出「去支付」 */
   var t=String(txt||'').trim();if(!t)return null;
   t=t.replace(/^```[a-zA-Z]*\s*/,'').replace(/```\s*$/,'').trim();
-  var j=null;try{j=JSON.parse(t)}catch(e){return null}
-  function pick(o,keys){if(!o)return undefined;for(var i=0;i<keys.length;i++){var v=o[keys[i]];if(v!==undefined&&v!==null&&v!=='')return v}return undefined}
+  var j=null;try{j=JSON.parse(t)}catch(e){
+    var fb=t.match(/```(?:json)?\s*([\s\S]*?)```/i);if(fb){try{j=JSON.parse(fb[1].trim())}catch(eF){}}
+    if(j==null){var mJ=t.match(/\{[\s\S]*\}|\[[\s\S]*\]/);if(mJ){try{j=JSON.parse(mJ[0])}catch(e2){}}}
+  }
+  if(j==null||typeof j!=='object')return null;
+  function pick(o,keys){if(!o||typeof o!=='object')return undefined;for(var i=0;i<keys.length;i++){var v=o[keys[i]];if(v!==undefined&&v!==null&&v!=='')return v}return undefined}
+  var lvls=[],cur=j;
+  for(var dp=0;dp<4;dp++){
+    if(!cur||typeof cur!=='object'||Array.isArray(cur))break;
+    lvls.push(cur);
+    var nx=(cur.data!==undefined&&cur.data!==null)?cur.data:((cur.result!==undefined&&cur.result!==null)?cur.result:undefined);
+    if(!nx||typeof nx!=='object')break;
+    cur=nx;
+  }
+  function pickL(keys){for(var i=lvls.length-1;i>=0;i--){var v=pick(lvls[i],keys);if(v!==undefined)return v}return undefined}
+  function deepFind(root,keyRe,valTest){
+    var hit,seen=0;
+    (function walk(o,d){
+      if(hit!==undefined||!o||typeof o!=='object'||d>6||++seen>600)return;
+      if(Array.isArray(o)){for(var i=0;i<o.length&&hit===undefined;i++)walk(o[i],d+1);return}
+      for(var k in o){if(hit!==undefined)break;var v=o[k];
+        if(keyRe.test(k)&&v!=null&&typeof v!=='object'){if(!valTest||valTest(String(v),k))hit=String(v)}
+        else if(v&&typeof v==='object')walk(v,d+1)}
+    })(root,0);
+    return hit}
   function itemRow(it){
     if(typeof it==='string')return {n:it,p:'',q:'',s:''};
     if(!it||typeof it!=='object')return null;
@@ -19482,30 +19530,35 @@ function _mcpBrandParseD(txt){
     if(n===undefined&&pz===undefined)return null;
     return {n:n!==undefined?String(n):'',p:pz!==undefined?String(pz):'',q:qty!==undefined?String(qty):'',s:sp!==undefined?String(sp).slice(0,42):''};
   }
-  var out={rows:[],kv:[],coupons:[],total:'',orderNo:'',pickup:'',status:'',note:'',more:0};
+  var out={rows:[],kv:[],coupons:[],total:'',orderNo:'',pickup:'',status:'',note:'',more:0,payUrl:'',qrUrl:''};
   var arr=Array.isArray(j)?j:null;
-  if(!arr&&j&&typeof j==='object'){
-    var cand=pick(j,['items','list','menu','menus','products','goods','drinks','orders','stores','shops','data','result','results','列表','结果']);
-    if(Array.isArray(cand))arr=cand;
-    var cs=pick(j,['coupons','coupon','vouchers','优惠券']);
-    if(cs!==undefined){if(!Array.isArray(cs))cs=[cs];cs.slice(0,4).forEach(function(c){
-      if(typeof c==='string'){out.coupons.push({n:c,v:'',e:''});return}
-      if(c&&typeof c==='object'){var cn=pick(c,['name','title','couponName','名称'])||'优惠券';var cv=pick(c,['discount','amount','value','off','面额','折扣']);var ce=pick(c,['expire','expireAt','validTo','deadline','有效期']);
-        out.coupons.push({n:String(cn),v:cv!==undefined?String(cv):'',e:ce!==undefined?String(ce).slice(0,20):''})}})}
-    var tt=pick(j,['total','totalPrice','totalAmount','payAmount','realPay','合计','总价','应付']);if(tt!==undefined)out.total=String(tt);
-    var on=pick(j,['orderNo','orderId','order_id','orderNum','单号','订单号']);if(on!==undefined)out.orderNo=String(on);
-    var pc=pick(j,['pickupCode','pickup_code','takeCode','takeNo','mealCode','取餐码','取单号']);if(pc!==undefined)out.pickup=String(pc);
-    var stx=pick(j,['status','state','orderStatus','状态']);if(stx!==undefined)out.status=String(stx);
-    var msg=pick(j,['message','msg','tip','note','说明','提示']);if(typeof msg==='string')out.note=msg.slice(0,80);
-  }
+  if(!arr){for(var li=lvls.length-1;li>=0&&!arr;li--){var cand=pick(lvls[li],['items','list','menu','menus','products','goods','drinks','orders','stores','shops','orderProductList','productList','列表','结果']);if(Array.isArray(cand))arr=cand}}
+  var host=lvls.length?lvls[lvls.length-1]:null;
+  var cs=pickL(['coupons','coupon','vouchers','couponList','优惠券']);
+  if(cs!==undefined){if(!Array.isArray(cs))cs=[cs];cs.slice(0,4).forEach(function(c){
+    if(typeof c==='string'){out.coupons.push({n:c,v:'',e:''});return}
+    if(c&&typeof c==='object'){var cn=pick(c,['name','title','couponName','名称'])||'优惠券';var cv=pick(c,['discount','amount','value','off','面额','折扣']);var ce=pick(c,['expire','expireAt','validTo','deadline','有效期']);
+      out.coupons.push({n:String(cn),v:cv!==undefined?String(cv):'',e:ce!==undefined?String(ce).slice(0,20):''})}})}
+  var tt=pickL(['total','totalPrice','totalAmount','payAmount','realPay','realTotalAmount','realPayAmount','合计','总价','应付']);if(tt===undefined)tt=deepFind(j,/^(totalAmount|realTotalAmount|realPayAmount|payAmount|totalPrice)$/i);if(tt!=null)out.total=String(tt);
+  var on=pickL(['orderNo','orderId','order_id','orderNum','单号','订单号']);if(on===undefined)on=deepFind(j,/^(orderId|orderNo|orderNum|order_id)$/i);if(on!=null)out.orderNo=String(on);
+  var pc=pickL(['pickupCode','pickup_code','takeCode','takeNo','mealCode','pickUpCode','取餐码','取单号']);if(pc===undefined)pc=deepFind(j,/^(pickupCode|pickUpCode|takeCode|mealCode|takeNo)$/i);if(pc!=null)out.pickup=String(pc);
+  var stx=pickL(['status','state','orderStatus','orderStatusName','状态']);if(stx===undefined)stx=deepFind(j,/^(orderStatusName|orderStatus|statusName|orderState)$/i);if(stx!=null)out.status=String(stx);
+  var msg=pickL(['message','msg','tip','note','说明','提示']);if(typeof msg==='string')out.note=msg.slice(0,80);
+  var pu=pickL(['payH5Url','payUrl','payLink','payOrderUrl','h5PayUrl','payPageUrl','paymentUrl','cashierUrl','payMiniUrl','支付链接']);
+  if(pu===undefined)pu=deepFind(j,/pay.*(url|link)|cashier.*url/i,function(v,k){return /^https?:\/\//i.test(v)&&!/qr/i.test(k)});
+  if(typeof pu==='string'&&/^https?:\/\//i.test(pu))out.payUrl=pu;
+  var qu=pickL(['payOrderQrCodeUrl','payQrCodeUrl','qrCodeUrl','qrcodeUrl','payQrCode','qrCode','二维码']);
+  if(qu===undefined)qu=deepFind(j,/qr.?code/i,function(v){return /^https?:\/\//i.test(v)});
+  if(typeof qu==='string'&&/^https?:\/\//i.test(qu))out.qrUrl=qu;
   if(arr){arr.slice(0,6).forEach(function(it){var r=itemRow(it);if(r)out.rows.push(r)});if(arr.length>6)out.more=arr.length-6}
-  if(!out.rows.length&&j&&typeof j==='object'&&!Array.isArray(j)){
-    var ks=Object.keys(j);
-    for(var i2=0;i2<ks.length&&out.kv.length<6;i2++){var v2=j[ks[i2]];
-      if(v2===null||typeof v2==='object')continue;
+  if(!out.rows.length&&host){
+    var _skip9={data:1,result:1,results:1,success:1,code:1,message:1,msg:1,traceId:1,requestId:1};
+    var ks=Object.keys(host);
+    for(var i2=0;i2<ks.length&&out.kv.length<6;i2++){var v2=host[ks[i2]];
+      if(_skip9[ks[i2]]||v2===null||typeof v2==='object')continue;
       out.kv.push({k:ks[i2],v:String(v2).slice(0,48)})}
   }
-  if(!out.rows.length&&!out.kv.length&&!out.coupons.length&&!out.total&&!out.orderNo&&!out.pickup&&!out.status)return null;
+  if(!out.rows.length&&!out.kv.length&&!out.coupons.length&&!out.total&&!out.orderNo&&!out.pickup&&!out.status&&!out.payUrl&&!out.qrUrl)return null;
   return out}
 function _mcpBrandPersistD(card,patch){/* 结果写回该消息的 wsResults（按 name 对位首个仍待确认的同名工具项），刷新后不再复活「执行」按钮 */
   try{var _me=card.closest('[data-msg-id]');var _mid=_me&&_me.getAttribute('data-msg-id');if(!_mid)return;
@@ -19520,8 +19573,8 @@ async function _mcpBrandConfirmD(btn,ctx,card,b,d){
   var r;
   try{var _mr=await IBMCP.execOp(ctx.name,args);r={ok:!!_mr.ok,detail:_mr.ok?(_mr.response||''):((_mr.reason||'')+(_mr.response?' · '+_mr.response:'')),images:_mr.images||[]}}
   catch(e){r={ok:false,detail:String(e&&e.message||e).slice(0,300),images:[]}}
-  try{_ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+String(r.detail).slice(0,4000):'')})}catch(e){}
-  var patch={name:ctx.name,pendingConfirm:false,ok:r.ok,fed:true,response:String(r.detail||'').slice(0,8000),reason:r.ok?'':String(r.detail||'').slice(0,120)};
+  try{_ibToolPendingResults.push({actor:ctx.author,images:(r&&r.images)||[],text:'- 工具「'+ctx.name+'」：'+(r.ok?'成功':'失败')+(r.detail?' · '+_ibCut(String(r.detail),12000):'')})}catch(e){}
+  var patch={name:ctx.name,pendingConfirm:false,ok:r.ok,fed:true,response:_ibCut(String(r.detail||''),12000),reason:r.ok?'':String(r.detail||'').slice(0,120)};
   _mcpBrandPersistD(card,patch);
   var nc=_mcpBrandCardD(b,Object.assign({},d,patch,{images:r.images}));
   if(nc&&card.parentNode)card.parentNode.replaceChild(nc,card);
@@ -19554,7 +19607,7 @@ function _mcpBrandCardD(b,d){
   }catch(e){argsTxt=esc(String(d.args||'').slice(0,64))}
   if(pending){h+='<div class="mcpb-note">AI 想调用「'+esc(B.name)+'」的这项服务，点「执行」才会真正发出。</div>';if(argsTxt)h+='<div class="mcpb-args">'+argsTxt+'</div>'}
   else if(running){h+='<div class="mcpb-note">正在与 '+esc(B.name)+' 服务通话…</div>'}
-  else if(fail){h+='<div class="mcpb-note bad">'+esc((raw||'调用失败').slice(0,140))+'</div>'}
+  else if(fail){h+='<div class="mcpb-note bad">'+esc(_ibCut(raw||'调用失败',200))+'</div>'}
   else if(ok){
     if(parsed){
       if(parsed.rows.length){h+='<div class="mcpb-list">';
@@ -19570,11 +19623,20 @@ function _mcpBrandCardD(b,d){
         parsed.kv.forEach(function(p2){h+='<div class="mcpb-row"><span class="mn">'+esc(p2.k)+'</span><span class="mp t">'+esc(p2.v)+'</span></div>'});
         h+='</div>'}
       if(parsed.note)h+='<div class="mcpb-note">'+esc(parsed.note)+'</div>';
+      if(parsed.payUrl||parsed.qrUrl){/* v27-sync：#4 支付动作行——回传里带支付链接/二维码就直接给按钮 */
+        h+='<div class="mcpb-payrow">'
+          +(parsed.payUrl?'<a class="mcpb-pay" href="'+esc(parsed.payUrl)+'" target="_blank" rel="noopener">去支付</a>':'')
+          +(parsed.qrUrl?'<a class="mcpb-pay alt" href="'+esc(parsed.qrUrl)+'" target="_blank" rel="noopener">支付二维码</a>':'')
+          +'<span class="mcpb-payhint">支付页由品牌方提供，请在打开的页面完成付款</span></div>';
+      }
     }else{
-      h+='<div class="mcpb-note">'+esc((raw||'已完成').slice(0,140))+'</div>';
+      h+='<div class="mcpb-note">'+esc(_ibCut(raw||'已完成',200))+'</div>';
+      var _pu9=(raw.match(/https?:\/\/[^\s"'<>）)]+/g)||[]).filter(function(u){return /pay|cashier/i.test(u)})[0]||'';
+      if(_pu9)h+='<div class="mcpb-payrow"><a class="mcpb-pay" href="'+esc(_pu9)+'" target="_blank" rel="noopener">去支付</a><span class="mcpb-payhint">从回传文本中识别到的支付链接</span></div>';/* v27-sync：#4 */
     }
   }else{h+='<div class="mcpb-note">已发起（结果未回传）</div>'}
   card.innerHTML=h;
+  try{Array.prototype.forEach.call(card.querySelectorAll('.mcpb-pay'),function(aEl){aEl.addEventListener('click',function(ev){ev.stopPropagation()})})}catch(e){}/* v27-sync：#4 点支付按钮不触发卡片展开 */
   if(pending){
     var tBtn=document.createElement('button');tBtn.className='ws-file-btn primary mcpb-go';tBtn.style.flexShrink='0';tBtn.textContent='执行';
     var _tc={name:nm,args:d.args||'',author:d.author||'AI'};
