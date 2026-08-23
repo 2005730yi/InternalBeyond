@@ -19,6 +19,7 @@
 </script>
 <!-- InternalBeyond v17-sync · 2026-08-16 —— 本轮修订：①Chat 悬浮窗右下角自由缩放（与 Circle 悬浮窗同规格：仅本次生效，重新打开恢复默认 438×770）；②补 no-referrer（与手机端同口径）；③GUIDE 订正：IndexedDB 版本号 v14→v15、「哪些操作影响提示缓存命中」新增实测说明、对外请求边界说明；④全站体检：13 个页面遍历与生图 / 进阶指令 / 工作区 / 日历 / 信箱重交互零报错；缓存前缀实测——连开社交圈与日历、发动态、加便笺后 system 前缀逐字不变。 -->
 <!-- InternalBeyond v25-sync · 2026-08-22 —— 本轮修订（自手机端 v141-p #4 移植，仅两项）：①「自定义」服务商（中转站）适配——保存时自动整理接口地址（补 https://、去空白与多余斜杠；裸域名补 /v1/chat/completions，/vN 结尾补 /chat/completions，/chat 结尾补 /completions；完整地址原样）；报文格式按地址自动识别（/messages → Anthropic，generateContent → Gemini，其余 OpenAI 兼容）——此前「自定义」写死 OpenAI 格式，填 Anthropic 入口的中转根本跑不通；接入点：callApi / _callApiChatStreamOnce / _callApiChatOnce / 两处 IBFC.prepare 格式实参 / _vmAudioNative；自定义走 Anthropic 格式时不再带 anthropic-dangerous-direct-browser-access 头（只对官方域有意义，常撞中转的 CORS 预检）。②模型栏新增「拉取模型列表」——内置服务商按各自 models 接口单地址探测；「自定义」按地址推导一组候选（地址同级 …/models、/v1/models、Anthropic / Gemini 风格、new-api 公开模型表 /api/pricing）依次探测（单个 7 秒、总计 25 秒），首个命中即用；解析兼容 data[] / models[] / result[] / model_list[] / items[] / 嵌套 data.data / 字典映射 / model_name / 纯字符串；列表 >10 个按模型家族分组并提供关键词筛选；失败提示区分 401/403、网页而非接口、CORS、超时。内置服务商聊天链路零改动；GUIDE 未动。 -->
+<!-- InternalBeyond v26-sync · 2026-08-23 —— 本轮修订（单项，与手机端 v147/v143 #1 同源）：MCP 官方端点「网络请求失败(可能是 CORS 未开放或地址不可达): Failed to fetch」根修——实测 mcp.mcd.cn（OPTIONS/POST 一律 403 且不带 Access-Control-Allow-Origin）与 gwmcp.lkcoffee.com（401 且无 CORS 头）均未对浏览器放行跨域，浏览器直连必然被拦、与令牌对错无关（Exa / Parallel 带 CORS * 所以一直正常）；浏览器侧无解、只能自建转发：IBMCP.cfg 新增 proxy 字段（存 ib_mcp_cfg，本机），MCP 卡新增「跨域中转（CORS 代理）」栏；_rpc 直连网络失败且填了中转时自动以 中转地址＋encodeURIComponent(目标) 重试（地址含 {url} 则占位替换），错误文案对这两家端点明说原因并指路；GUIDE → DIY 的 MCP 段补充说明并新增「跨域中转」一段与可直接部署的 Cloudflare Worker 转发代码（令牌只经过你自己的 Worker，勿用公共代理）。MCP 连接 / 会话 / SSE 解析 / 调用零改动。 -->
 <!-- InternalBeyond v24-sync · 2026-08-21 —— 本轮修订（单项）：MCP 预设收纳——DIY 页 MCP 卡原本把四枚预设胶囊（麦当劳 / 瑞幸 / Parallel / Exa）平铺在「+ 添加服务器」之后、卡顶再压一大段说明，越加越挤；现改为一颗「预设 ▾」按钮，弹出与全站同款的 .ib-select 下拉（徽标 / 名称 / 一句说明 / 免令牌·需令牌标），外点即收，已添加的置灰而非隐藏；点选逻辑不变（免令牌的入列即自动连接，需令牌的焦点直落令牌栏）；卡顶长说明整段搬进 GUIDE → DIY「MCP 服务器 / MCP 预设」两段，卡上只留一行指引。展开时整卡抬高层级（卡片自带 translateZ 层叠上下文，否则菜单会被下方卡片压住）。MCP 连接 / 调用 / 存储零改动。 -->
 <!-- InternalBeyond v23-sync · 2026-08-20 —— 本轮修订：①联网搜索 MCP 预设——MCP 卡新增「Parallel 联网搜索」「Exa 联网搜索」两枚预设按钮（官方公开端点、实测允许浏览器跨域、无需令牌；点一下即入列并自动连接；Tavily 官方端点浏览器直连不通，未收录）；服务器列表迷你徽标补底色；②Calendar 小窗花瓣回滚到 v17-sync 口径——撤掉 fix-r7 的拖动拖尾（沿轨迹补发、同屏上限 240 片，拖动时掉帧），花瓣起点随小窗 --ox/--oy 即时移动；花形 / 关键帧 / CSS 零改动。 -->
 <!-- InternalBeyond v22-sync · 2026-08-20 —— 本轮修订：①「输出与续写」新增「单次输出上限」（自动＝按服务商顶格 / 4k–128k 手动档），与手机端共用同一条 outputSettings 记录；顺手修正 saveOutputSettings 整条覆写会抹掉手机端字段（toolRounds / wsRounds）的问题，改为合并写；②手机端 AI 的操作卡（ibOps）在电脑端历史消息里也渲染成同款记忆卡 / 便笺卡，与本端 calNotes 互认；③麦当劳 / 瑞幸品牌卡移植到电脑端（四态：待确认 / 成功 / 失败 / 原始报文，确认后原地重绘并写回消息）；MCP 服务器条目新增令牌栏（Authorization: Bearer 自动补前缀、改令牌不清工具表）与两张官方预设（仅预填别名与官方地址占位，需自行填入官方或可信中转）；注意：电脑端 MCP 配置存 localStorage（ib_mcp_cfg），不随备份文件往返。 -->
@@ -6938,8 +6939,9 @@ i would like the room to be enough.
         </div>
         <div class="guide-sub">
           <p><strong>外部工具</strong>：添加 HTTP 接口让 AI 在对话中调用外部操作（如 Home Assistant 等）。每个工具配置名称、URL、请求方法和参数。支持调用前确认。请求由浏览器直接发出，目标接口需允许跨域（CORS）。</p>
-          <p><strong>MCP 服务器</strong>：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具，并可单独设置「轮上限」（连续自动调用的轮数上限，1~99），留空则为默认值 5。连接失败时请检查跨域（CORS）设置。</p>
+          <p><strong>MCP 服务器</strong>：连接 MCP 服务器后自动发现可用工具，调用方式与外部工具一致。支持多服务器并行接入，每个服务器可独立启用或禁用其工具，并可单独设置「轮上限」（连续自动调用的轮数上限，1~99），留空则为默认值 5。连接失败时请检查跨域（CORS）设置。<strong>部分端点未对浏览器放行跨域</strong>（实测预检即 403 / 401、响应不带 Access-Control-Allow-Origin），浏览器直连必然「Failed to fetch」、与令牌对错无关——需在 MCP 卡新增的「跨域中转」栏填入自建转发，见下方「跨域中转」段。</p>
           <p><strong>MCP 预设</strong>（DIY 页 → MCP 服务器 →「预设」下拉）：四枚官方端点，点一下即入列，已添加的在菜单里置灰；添加后即普通服务器条目，可随时删除。<em>麦当劳 / 瑞幸咖啡</em>为品牌官方开放平台（Streamable HTTP + Bearer Token），需鉴权：添加后把开放平台领到的个人 Token 填进该行「令牌」栏再点「连接」——麦当劳到 open.mcd.cn/mcp 手机号登录、控制台激活并复制 Token；瑞幸到 open.lkcoffee.com 登录领取（与账号绑定、约一个月有效）；Token 随请求以 Authorization: Bearer 发送、只存在本机；调用结果会渲染成对应品牌卡片，与手机端互导的聊天记录里的品牌卡同样可见。<em>Parallel / Exa 联网搜索</em>为官方公开端点，无需令牌、允许浏览器直连，点一下即入列并自动连接，AI 之后可自行搜索 / 抓网页——Parallel 提供 web_search（整理好的网页摘录）+ web_fetch（抓网页正文），Exa 提供 web_search_exa（语义搜索、带高亮摘要）+ web_fetch_exa（网页读成 Markdown）；公开端点有限流，重度使用可到各家官网领 API key 填入令牌栏提额。<!-- v24-sync：自 MCP 卡顶部搬入 --></p>
+          <p><strong>跨域中转（CORS 代理）</strong>：给浏览器环境准备的自建转发。原理：请求先发给你自己的中转服务，由它在服务器侧转发到目标端点并补上 CORS 响应头（服务器对服务器不受浏览器跨域限制）。推荐 Cloudflare Worker（免费额度足够）：新建 Worker → 粘贴下方代码 → 部署，把「https://你的名字.workers.dev/?u=」填进 MCP 卡的「跨域中转」栏即可；地址里含 {url} 则按占位符替换，否则在末尾拼接编码后的目标地址。令牌等请求头会原样经过你的 Worker、不落任何第三方，因此<strong>务必只用自己部署的中转、不要用公共代理</strong>。Worker 代码：<code style="display:block;white-space:pre-wrap;word-break:break-all;font-size:0.74em;line-height:1.65;margin-top:6px;padding:8px 10px;border-radius:10px;background:rgba(120,140,170,0.12)">export default{async fetch(r){const u=new URL(r.url).searchParams.get(&quot;u&quot;);if(!u)return new Response(&quot;missing u&quot;,{status:400});if(r.method===&quot;OPTIONS&quot;)return new Response(null,{status:204,headers:C()});const h=new Headers(r.headers);[&quot;origin&quot;,&quot;referer&quot;,&quot;host&quot;,&quot;cf-connecting-ip&quot;,&quot;x-forwarded-for&quot;].forEach(k=&gt;h.delete(k));const p=await fetch(u,{method:r.method,headers:h,body:[&quot;GET&quot;,&quot;HEAD&quot;].includes(r.method)?undefined:r.body});const o=new Headers(p.headers);for(const[k,v]of Object.entries(C()))o.set(k,v);return new Response(p.body,{status:p.status,headers:o})}};const C=()=&gt;({&quot;Access-Control-Allow-Origin&quot;:&quot;*&quot;,&quot;Access-Control-Allow-Methods&quot;:&quot;*&quot;,&quot;Access-Control-Allow-Headers&quot;:&quot;*&quot;,&quot;Access-Control-Expose-Headers&quot;:&quot;*&quot;});</code></p><!-- v26-sync：跨域中转教程 -->
           <p><strong>连接 GitHub 仓库</strong>：① GitHub 生成访问令牌（勾 repo 权限）→ ② 电脑上运行官方 github-mcp-server，填入令牌 → ③ 用 mcp-proxy 转成本机网址（形如 http://127.0.0.1:端口/sse，启动时需允许本站来源）→ ④ 网址填入上方 MCP 服务器，启用外部工具。令牌就是你仓库的钥匙，不要发给任何人；那两个程序一关，连接就断了；建议保留「调用前询问」。</p>
         </div>
         <div class="guide-sub">
@@ -17383,9 +17385,11 @@ const IBMCP = {
     if(typeof c.enabled === 'undefined') c.enabled = true;
     if(typeof c.confirm === 'undefined') c.confirm = true;   // 调用前需确认, 默认开
     if(!Array.isArray(c.servers)) c.servers = [];
+    if(typeof c.proxy !== 'string') c.proxy = '';/* v26-sync：跨域中转（CORS 代理）地址，选填 */
     return c;
   },
   save(c){ try{ localStorage.setItem(this.KEY, JSON.stringify(c)); }catch(e){} },
+  _proxyFor(u){ let p = ''; try{ p = String(this.cfg().proxy || '').trim(); }catch(e){} if(!p) return ''; if(p.indexOf('{url}') >= 0) return p.replace('{url}', encodeURIComponent(u)); return p + encodeURIComponent(u); },/* v26-sync：中转地址拼装——含 {url} 占位则替换，否则末尾拼接编码后的完整地址 */
 
   /* ---- 底层 RPC: 兼容 直接JSON / SSE 包裹 两种返回; 自动管理会话头 ---- */
   async _rpc(server, method, params, _retried){
@@ -17406,7 +17410,13 @@ const IBMCP = {
     try{
       resp = await fetch(server.url, { method: 'POST', headers, body: JSON.stringify(body) });
     }catch(e){
-      throw new Error('网络请求失败(可能是 CORS 未开放或地址不可达): ' + (e && e.message || e));
+      const _px = this._proxyFor(server.url);/* v26-sync：直连被浏览器拦（多为对方未放行 CORS）且配置了「跨域中转」时，自动改走中转重试 */
+      if(_px){
+        try{ resp = await fetch(_px, { method: 'POST', headers, body: JSON.stringify(body) }); }
+        catch(e2){ throw new Error('网络请求失败(直连与跨域中转均未通): ' + (e2 && e2.message || e2)); }
+      }else{
+        throw new Error('网络请求失败(可能是 CORS 未开放或地址不可达): ' + (e && e.message || e) + (/mcp\.mcd\.cn|lkcoffee\.com/i.test(String(server.url || '')) ? '。实测麦当劳 / 瑞幸官方端点未对浏览器放行跨域（预检即 403/401、无 Access-Control-Allow-Origin），浏览器直连必然失败、与令牌无关——请在 MCP 卡「跨域中转」栏填入自建转发地址（部署方法见 GUIDE → DIY「跨域中转」）' : ''));
+      }
     }
 
     const sid = resp.headers && resp.headers.get && resp.headers.get('mcp-session-id');
@@ -18197,6 +18207,7 @@ const IBDIY = {
       '<p style="font-size:0.8rem;line-height:1.7;margin-bottom:12px;opacity:0.62;font-weight:400">连接后自动发现可用工具，调用方式与外部工具一致；用法、轮上限与各预设说明见 GUIDE → DIY。<!-- v24-sync：长说明搬入 GUIDE --></p>' +
       '<div class="api-form-group" style="margin-bottom:8px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="ib-mcp-on"' + (c.enabled !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)"> 启用 MCP</label></div>' +
       '<div class="api-form-group" style="margin-bottom:14px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="ib-mcp-cf"' + (c.confirm !== false ? ' checked' : '') + ' style="width:auto;accent-color:var(--accent)"> 调用前询问（需点击确认卡片后才会执行）</label></div>' +
+      '<div class="api-form-group" style="margin-bottom:14px"><label>跨域中转（CORS 代理，选填）</label><input id="ib-mcp-proxy" value="' + this.esc(c.proxy || '') + '" placeholder="https://你的中转.workers.dev/?u=" autocomplete="off" spellcheck="false" style="width:100%;min-width:220px"><div style="font-size:0.72rem;line-height:1.7;opacity:0.55;margin-top:4px">部分官方端点未对浏览器放行跨域，直连必然「Failed to fetch」：填入你自己部署的转发地址后，直连失败会自动改走中转（地址含 {url} 则占位替换，否则末尾拼接编码后的目标地址）。令牌会原样经过中转——只用自己部署的服务、勿用公共代理；部署方法见 GUIDE → DIY「跨域中转」。</div></div>' +/* v26-sync */
       rows +
       '<div class="api-actions" style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px"><button class="btn btn-primary" id="ib-mcp-add">+ 添加服务器</button>' +
       '<div class="ib-select ib-mcp-prewrap" id="ib-mcp-pre"><button type="button" class="btn ib-mcp-prebtn" id="ib-mcp-prebtn" aria-haspopup="menu" title="官方 / 公开端点快捷添加">预设<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button>' +
@@ -18207,6 +18218,7 @@ const IBDIY = {
     const self = this;
     box.querySelector('#ib-mcp-on').onchange = e => { const cc = IBMCP.cfg(); cc.enabled = e.target.checked; IBMCP.save(cc); };
     box.querySelector('#ib-mcp-cf').onchange = e => { const cc = IBMCP.cfg(); cc.confirm = e.target.checked; IBMCP.save(cc); };
+    box.querySelector('#ib-mcp-proxy').onchange = e => { const cc = IBMCP.cfg(); const v = e.target.value.trim(); if(v) cc.proxy = v; else delete cc.proxy; IBMCP.save(cc); };/* v26-sync */
     box.querySelector('#ib-mcp-add').onclick = () => { const cc = IBMCP.cfg(); cc.servers.push({ alias: 'srv' + (cc.servers.length + 1), url: '', enabled: true, tools: [] }); IBMCP.save(cc); self.renderMcp(); };
     box.querySelectorAll('[data-ib-mcpalias]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); cc.servers[+inp.dataset.ibMcpalias].alias = inp.value.trim() || 'srv'; IBMCP.save(cc); }; });
     box.querySelectorAll('[data-ib-mcpurl]').forEach(inp => { inp.onchange = () => { const cc = IBMCP.cfg(); cc.servers[+inp.dataset.ibMcpurl].url = inp.value.trim(); IBMCP.save(cc); }; });
