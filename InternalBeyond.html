@@ -27550,6 +27550,15 @@ body:not(.theme-infernal) #ibcw .mn-b.end:hover{background:rgba(64,124,194,0.28)
 #ibcw .cf-ly.me{font-size:0.84rem}
 #ibcw .cf-ly.me.cur{font-size:0.9rem}
 #ibcw .cf-sub{font-size:0.82rem;line-height:1.7;opacity:0.62;padding:0 10px;margin:4px 0 4px}
+
+body:not(.theme-infernal) #ibcw .cf-nm{color:#4f6a93;text-shadow:0 1px 0 rgba(255,255,255,0.92),0 2px 5px rgba(120,152,200,0.3),0 4px 10px rgba(120,152,200,0.16)}
+body:not(.theme-infernal) #ibcw .cf-tm{color:#6c84aa;opacity:0.92}
+body:not(.theme-infernal) #ibcw .cf-en{color:#7b91b5;opacity:0.88}
+body:not(.theme-infernal) #ibcw .cf-ly{color:#6b82a8;opacity:0.62}
+body:not(.theme-infernal) #ibcw .cf-ly.cur{color:#3f5b87;opacity:1;text-shadow:0 1px 0 rgba(255,255,255,0.6)}
+body:not(.theme-infernal) #ibcw .cf-ly.me{color:#6f93c2}
+body:not(.theme-infernal) #ibcw .cf-ly.me.cur{color:#4577b3}
+body:not(.theme-infernal) #ibcw .cf-sub{color:#6d84a8}
 #ibcw .cf-type input{font-size:0.92rem;padding:10px 15px}
 #ibcw .cf-type button{font-size:0.88rem}
 #ibcw .cf-btns{padding:10px 0 24px}
@@ -28149,7 +28158,9 @@ function renderCallFace(b){b.innerHTML='';var d=document.createElement('div');d.
  d.querySelector('.cf-nm').textContent=nmOf(cfg)}
 function refreshAcc(){try{if(!document.body.classList.contains('theme-infernal')){accCol='#41608c';return}var a=(getComputedStyle(document.body).getPropertyValue('--accent-light')||getComputedStyle(document.body).getPropertyValue('--accent')||'').trim();if(a)accCol=a}catch(e){}}
 
-var avLvl=0,avPh=0,_avwGrd=null,_avwGrdKey='';
+var avLvl=0,avPh=0,_avwGrd=null,_avwGrdKey='',_avwGlow=null,_barGrd=null,_barGrdKey='';
+function _cwLight(){try{return !document.body.classList.contains('theme-infernal')}catch(e){return true}}
+function _cwBarFill(g,W,H){if(!_cwLight())return accCol;var key=W+'|'+H;if(_barGrdKey!==key||!_barGrd){_barGrd=g.createLinearGradient(0,0,W,0);_barGrd.addColorStop(0,'#a9c6ea');_barGrd.addColorStop(0.5,'#ffffff');_barGrd.addColorStop(1,'#a9c6ea');_barGrdKey=key}return _barGrd}/* v59 ①：明亮模式声波条白→浅蓝 */
 function _cwRgb(c,fb){try{var m=String(c||'').trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);if(m){var h=m[1];if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];return parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)}var r=String(c||'').match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);if(r)return r[1]+','+r[2]+','+r[3]}catch(e){}return fb}
 function _cwDrawAvWave(lvlT){
  var cv=byQ('.cf-avwave');if(!cv)return;
@@ -28160,15 +28171,15 @@ function _cwDrawAvWave(lvlT){
  var rm=false;try{rm=document.body.classList.contains('ib-reduce')||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)}catch(e){}
  if(!rm)avPh+=0.014+avLvl*0.075;
  var W=cv.width,H=cv.height,mid=H/2,dark=document.body.classList.contains('theme-infernal');
- var col=_cwRgb(accCol,dark?'150,190,232':'86,128,184'),key=W+'|'+col;/* v58 ①：曲线颜色跟下方声波条同一色源，只是更淡，不再偏白偏亮 */
- if(_avwGrdKey!==key||!_avwGrd){_avwGrd=g.createLinearGradient(0,0,W,0);_avwGrd.addColorStop(0,'rgba('+col+',0)');_avwGrd.addColorStop(0.14,'rgba('+col+',1)');_avwGrd.addColorStop(0.86,'rgba('+col+',1)');_avwGrd.addColorStop(1,'rgba('+col+',0)');_avwGrdKey=key}
+ var col=dark?_cwRgb(accCol,'150,190,232'):'255,255,255',colG=dark?col:'158,196,238',key=W+'|'+col+'|'+colG;/* v59 ①：明亮模式改白线＋浅蓝柔光；暗色照旧跟主题强调色（v58 ①） */
+ if(_avwGrdKey!==key||!_avwGrd){_avwGrd=g.createLinearGradient(0,0,W,0);_avwGrd.addColorStop(0,'rgba('+col+',0)');_avwGrd.addColorStop(0.14,'rgba('+col+',1)');_avwGrd.addColorStop(0.86,'rgba('+col+',1)');_avwGrd.addColorStop(1,'rgba('+col+',0)');_avwGlow=g.createLinearGradient(0,0,W,0);_avwGlow.addColorStop(0,'rgba('+colG+',0)');_avwGlow.addColorStop(0.14,'rgba('+colG+',1)');_avwGlow.addColorStop(0.86,'rgba('+colG+',1)');_avwGlow.addColorStop(1,'rgba('+colG+',0)');_avwGrdKey=key}
  g.clearRect(0,0,W,H);
  var A=H*0.36*(0.12+0.88*avLvl),N=84,L=[{f:1.55,k:1,p:0,sp:1},{f:1.15,k:0.78,p:2.1,sp:-0.8},{f:1.95,k:0.62,p:4.2,sp:1.35}];
  g.lineCap='round';g.lineJoin='round';g.strokeStyle=_avwGrd;
  for(var li=0;li<L.length;li++){var ln=L[li];g.beginPath();
   for(var j=0;j<=N;j++){var t=j/N,x=t*W,env=Math.pow(Math.sin(Math.PI*t),1.15),y=mid+A*ln.k*env*Math.sin(2*Math.PI*ln.f*t+ln.p+avPh*ln.sp);if(j)g.lineTo(x,y);else g.moveTo(x,y)}
-  g.lineWidth=11;g.globalAlpha=0.05+0.1*avLvl;g.stroke();
-  g.lineWidth=li?2.6:3.2;g.globalAlpha=(li?0.3:0.42)+0.3*avLvl;g.stroke()}
+  g.strokeStyle=_avwGlow||_avwGrd;g.lineWidth=dark?11:13;g.globalAlpha=dark?(0.05+0.1*avLvl):(0.14+0.2*avLvl);g.stroke();
+  g.strokeStyle=_avwGrd;g.lineWidth=li?2.6:3.2;g.globalAlpha=dark?((li?0.3:0.42)+0.3*avLvl):((li?0.62:0.82)+0.18*avLvl);g.stroke()}/* v59 ①：明亮模式白线更实、浅蓝柔光略宽略亮 */
  g.globalAlpha=1}
 function loop(){if(!isOpen){raf=0;return}raf=requestAnimationFrame(loop);
  var cv=byQ('.cf-wave canvas');if(!cv)return;if(!cv.width){cv.width=Math.max(200,cv.clientWidth*2);cv.height=Math.max(28,(cv.clientHeight||38)*2)}
@@ -28180,7 +28191,7 @@ function loop(){if(!isOpen){raf=0;return}raf=requestAnimationFrame(loop);
  waveLvl+=(target-waveLvl)*(target>waveLvl?0.5:0.08);wavePh+=0.055+waveLvl*0.11;
  try{_cwDrawAvWave(state==='speak'?target:(state==='think'?0.14:0.07))}catch(e){}/* v58 ①：头像后声波只随 TA 说话的电平走 */
  g.clearRect(0,0,Wd,H);var N=48,gap=Wd/N,bw=Math.max(2,gap*0.42),r=Math.min(bw/2,H*0.08),base=Math.max(1.5,H*0.06),amp=H*0.42*(0.1+0.9*waveLvl);
- g.fillStyle=accCol;
+ g.fillStyle=_cwBarFill(g,Wd,H);/* v59 ①：明亮模式改白＋浅蓝（中央偏白、两端浅蓝），暗色照旧主题强调色 */
  for(var k=0;k<N;k++){var t=k/(N-1),cx=t*2-1,env=0.2+0.8*Math.exp(-cx*cx*3.1);
   var n1=Math.sin(wavePh*1.35+k*0.52),n2=Math.sin(wavePh*0.62+k*0.23+1.7),n3=Math.sin(wavePh*2.3+k*0.91+4.1);
   var h=Math.max(base,base+amp*env*Math.abs(0.55*n1+0.3*n2+0.15*n3)),x=gap*k+(gap-bw)/2,y=mid-h;
